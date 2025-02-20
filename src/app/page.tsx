@@ -1,101 +1,301 @@
-import Image from "next/image";
+'use client';
+import { useState } from 'react';
+import Board from './board';
+import SettingButtons from './setting-buttons';
+import { calculateWinner } from '@/utils';
+import { useCPUOpponent } from '@/hooks/useCPUOpponent';
+
+type BlockDirection = 'up' | 'right' | 'down' | 'left' | null;
+
+function applyBlockEffect(
+  position: number,
+  direction: BlockDirection,
+  size: number,
+): number | null {
+  let blockIndex: number | null = null;
+
+  switch (direction) {
+    case 'up':
+      blockIndex = position - size;
+      break;
+    case 'right':
+      blockIndex = position + 1;
+      if (Math.floor(position / size) !== Math.floor(blockIndex / size)) blockIndex = null;
+      break;
+    case 'down':
+      blockIndex = position + size;
+      break;
+    case 'left':
+      blockIndex = position - 1;
+      if (Math.floor(position / size) !== Math.floor(blockIndex / size)) blockIndex = null;
+      break;
+  }
+
+  if (blockIndex !== null && blockIndex >= 0 && blockIndex < size * size) {
+    return blockIndex;
+  }
+  return null;
+}
+
+function getValidBlockDirections(
+  position: number,
+  size: number,
+  squares: ('X' | 'O' | null)[]
+): BlockDirection[] {
+  const directions: BlockDirection[] = ['up', 'right', 'down', 'left'];
+  return directions.filter(dir => {
+    const blockIndex = applyBlockEffect(position, dir, size );
+    return blockIndex !== null;
+  });
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [size, setSize] = useState(9);
+  const [winLength, setWinLength] = useState(5);
+  const [squares, setSquares] = useState<('X' | 'O' | null)[]>(Array(size * size).fill(null));
+  const [xIsNext, setXIsNext] = useState<boolean>(true);
+  const [isCPUMode, setIsCPUMode] = useState(true);
+  const [cpuLevel, setCPULevel] = useState(1);
+  const [playerMana, setPlayerMana] = useState(0);
+  const [cpuMana, setCpuMana] = useState(1);
+  const [blockedSquares, setBlockedSquares] = useState<('X' | 'O' | null)[]>(Array(size * size).fill(null));
+  const [isBlockEffectActive, setIsBlockEffectActive] = useState<BlockDirection>(null);
+  const [isReplaceStoneActive, setIsReplaceStoneActive] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const winner = calculateWinner(squares, size, winLength);
+
+  function handleCPUMove(position: number, spType: 'block' | 'replace' | null) {
+    const currentPlayer = 'O';
+    
+    if (spType === 'replace' && squares[position] === 'X') {
+      const nextSquares = squares.slice();
+      nextSquares[position] = currentPlayer;
+      setSquares(nextSquares);
+      setCpuMana(prev => prev - 2);
+    } else {
+      if (spType === 'block') {
+        const validDirections = getValidBlockDirections(position, size, squares);
+        if (validDirections.length > 0) {
+          const randomDirection = validDirections[Math.floor(Math.random() * validDirections.length)];
+          const blockIndex = applyBlockEffect(position, randomDirection,  size );
+          
+          if (blockIndex !== null) {
+            const newBlockedSquares = blockedSquares.slice();
+            newBlockedSquares[blockIndex] = currentPlayer;
+            setBlockedSquares(newBlockedSquares);
+            setCpuMana(prev => prev - 1);
+          }
+        }
+      }
+
+      const nextSquares = squares.slice();
+      nextSquares[position] = currentPlayer;
+      setSquares(nextSquares);
+      
+      if (spType === null) {
+        setCpuMana(prev => prev + 1);
+      }
+    }
+    setXIsNext(true);
+  }
+
+  function handleCPULevelChange(level: number) {
+    setCPULevel(level);
+    resetGame();
+  }
+
+  useCPUOpponent({
+    squares,
+    blockedSquares,
+    size,
+    winLength,
+    isCPUMode,
+    cpuLevel,
+    isPlayerTurn: xIsNext,
+    winner,
+    cpuMana,
+    onMove: handleCPUMove,
+  });
+
+  function handleClick(i: number) {
+    const currentPlayer = xIsNext ? 'X' : 'O';
+    if (winner || (blockedSquares[i] && blockedSquares[i] !== currentPlayer)) return;
+    if (isCPUMode && !xIsNext) return;
+
+    if (isReplaceStoneActive) {
+      if (squares[i] && squares[i] !== currentPlayer) {
+        const nextSquares = squares.slice();
+        nextSquares[i] = currentPlayer;
+        setSquares(nextSquares);
+        setIsReplaceStoneActive(false);
+        if (xIsNext) {
+          setPlayerMana(prev => prev - 2);
+        } else {
+          setCpuMana(prev => prev - 2);
+        }
+        setXIsNext(!xIsNext);
+      }
+      return;
+    }
+
+    if (squares[i]) return;
+
+    const nextSquares = squares.slice();
+    nextSquares[i] = currentPlayer;
+    setSquares(nextSquares);
+
+    if (isBlockEffectActive) {
+      const blockIndex = applyBlockEffect(i, isBlockEffectActive,  size );
+      
+      if (blockIndex !== null) {
+        const newBlockedSquares = blockedSquares.slice();
+        newBlockedSquares[blockIndex] = currentPlayer;
+        setBlockedSquares(newBlockedSquares);
+      }
+
+      setIsBlockEffectActive(null);
+      if (xIsNext) {
+        setPlayerMana(prev => prev - 1);
+      } else {
+        setCpuMana(prev => prev - 1);
+      }
+    } else {
+      if (xIsNext) {
+        setPlayerMana(prev => prev + 1);
+      } else if (!isCPUMode) {
+        setCpuMana(prev => prev + 1);
+      }
+    }
+
+    setXIsNext(!xIsNext);
+  }
+
+  function handleSizeChange(newSize: number) {
+    setSize(newSize);
+    setSquares(Array(newSize * newSize).fill(null));
+    setXIsNext(true);
+    if (winLength > newSize) {
+      setWinLength(newSize);
+    }
+    resetMana();
+  }
+
+  function handleWinLengthChange(length: number) {
+    setWinLength(length);
+    setSquares(Array(size * size).fill(null));
+    setXIsNext(true);
+    resetMana();
+  }
+
+  function toggleCPUMode() {
+    setIsCPUMode(!isCPUMode);
+    resetGame();
+  }
+
+  function resetMana() {
+    setPlayerMana(0);
+    setCpuMana(0);
+  }
+
+  function resetGame() {
+    setSquares(Array(size * size).fill(null));
+    setBlockedSquares(Array(size * size).fill(null));
+    setIsBlockEffectActive(null);
+    setXIsNext(true);
+    resetMana();
+  }
+
+  function activateBlockEffect(direction: BlockDirection) {
+    if ((xIsNext && playerMana >= 1) || (!xIsNext && cpuMana >= 1)) {
+      setIsBlockEffectActive(direction);
+    }
+  }
+
+  function activateReplaceSt() {
+    if ((xIsNext && playerMana >= 2) || (!xIsNext && cpuMana >= 2)) {
+      setIsReplaceStoneActive(true);
+    }
+  }
+
+  const status = winner 
+    ? `Winner: ${winner}` 
+    : squares.every(square => square) 
+      ? "Game is a draw!" 
+      : `Next player: ${xIsNext ? 'X' : 'O'}${!xIsNext && isCPUMode ? ' (CPU thinking...)' : ''}`;
+
+  const manaStatus = `Mana - X: ${playerMana} | O: ${cpuMana}`;
+
+  return (
+    <div className="flex flex-col items-center p-5 font-sans min-h-screen">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Tic Tac Toe</h1>
+      
+      <SettingButtons
+        size={size}
+        winLength={winLength}
+        isCPUMode={isCPUMode}
+        cpuLevel={cpuLevel}
+        onSizeChange={handleSizeChange}
+        onWinLengthChange={handleWinLengthChange}
+        onCPUModeToggle={toggleCPUMode}
+        onCPULevelChange={handleCPULevelChange}
+      />
+
+      <div className="text-xl font-semibold text-gray-700 mb-6">
+        {status}
+      </div>
+
+      <div className="text-lg text-blue-600 mb-4">
+        {manaStatus}
+      </div>
+
+      <div className="mb-4 flex gap-2">
+        {(['up', 'right', 'down', 'left'] as const).map((direction) => (
+          <button
+            key={direction}
+            className={`px-4 py-2 rounded-md transition-colors duration-200 
+              ${isBlockEffectActive === direction
+                ? 'bg-purple-500 text-white' 
+                : ((xIsNext && playerMana >= 1) || (!xIsNext && cpuMana >= 1))
+                  ? 'bg-purple-200 hover:bg-purple-300'
+                  : 'bg-gray-200 cursor-not-allowed'
+              }`}
+            onClick={() => activateBlockEffect(direction)}
+            disabled={isBlockEffectActive !== null || ((xIsNext && playerMana < 1) || (!xIsNext && cpuMana < 1))}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+            {isBlockEffectActive === direction ? 'Block Effect Active' : `Block ${direction} (1 Mana)`}
+          </button>
+        ))}
+        <button
+          className={`px-4 py-2 rounded-md transition-colors duration-200 
+            ${isReplaceStoneActive
+              ? 'bg-red-500 text-white' 
+              : ((xIsNext && playerMana >= 2) || (!xIsNext && cpuMana >= 2))
+                ? 'bg-red-200 hover:bg-red-300'
+                : 'bg-gray-200 cursor-not-allowed'
+            }`}
+          onClick={() => activateReplaceSt()}
+          disabled={isReplaceStoneActive || ((xIsNext && playerMana < 2) || (!xIsNext && cpuMana < 2))}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          {isReplaceStoneActive ? 'Replace Stone Active' : 'Replace Stone (2 Mana)'}
+        </button>
+      </div>
+
+      <Board 
+        size={size}
+        squares={squares}
+        blockedSquares={blockedSquares}
+        currentPlayer={xIsNext ? 'X' : 'O'}
+        onSquareClick={handleClick}
+      />
+
+      <button 
+        className="mt-6 px-6 py-3 text-lg bg-green-500 text-white rounded-md
+                   hover:bg-green-600 transition-colors duration-200"
+        onClick={resetGame}
+      >
+        Reset Game
+      </button>
     </div>
   );
 }
+
