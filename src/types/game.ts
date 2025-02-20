@@ -1,0 +1,1 @@
+export type BlockDirection = 'up' | 'right' | 'down' | 'left' | null; 
