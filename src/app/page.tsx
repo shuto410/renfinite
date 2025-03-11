@@ -2,16 +2,20 @@
 import { useGameState } from '@/hooks/useGameState';
 import Board from './board';
 import SettingButtons from './setting-buttons';
-import { EffectButtons } from '@/components/EffectButtons';
+import { MagicButtons } from '@/components/MagicButtons';
 import { GameStatus } from '@/components/GameStatus';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const game = useGameState();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
-    <div className="flex flex-col items-center p-5 font-sans min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Tic Tac Toe</h1>
-      
+    <div className='flex flex-col items-center p-5 font-sans min-h-screen'>
       <SettingButtons
         size={game.size}
         winLength={game.winLength}
@@ -30,29 +34,32 @@ export default function Home() {
         playerMana={game.playerMana}
         cpuMana={game.cpuMana}
         squares={game.squares}
+        selectedMagic={game.selectedMagic}
       />
 
-      <EffectButtons
-        isBlockEffectActive={game.isBlockEffectActive}
-        isReplaceStoneActive={game.isReplaceStoneActive}
-        xIsNext={game.xIsNext}
-        playerMana={game.playerMana}
-        cpuMana={game.cpuMana}
-        onBlockEffect={game.activateBlockEffect}
-        onReplaceStone={game.activateReplaceSt}
-      />
+      {mounted && (
+        <MagicButtons
+          hand={game.playerHand}
+          selectedMagic={game.selectedMagic}
+          xIsNext={game.xIsNext}
+          playerMana={game.playerMana}
+          cpuMana={game.cpuMana}
+          onSelectMagic={game.setSelectedMagic}
+        />
+      )}
 
-      <Board 
+      <Board
         size={game.size}
         squares={game.squares}
         blockedSquares={game.blockedSquares}
         currentPlayer={game.xIsNext ? 'X' : 'O'}
         onSquareClick={game.handleClick}
+        lastPlacedPosition={game.lastPlacedPosition}
       />
 
-      <button 
-        className="mt-6 px-6 py-3 text-lg bg-green-500 text-white rounded-md
-                   hover:bg-green-600 transition-colors duration-200"
+      <button
+        className='mt-6 px-6 py-3 text-lg bg-green-500 text-white rounded-md
+                   hover:bg-green-600 transition-colors duration-200'
         onClick={game.resetGame}
       >
         Reset Game
@@ -60,4 +67,3 @@ export default function Home() {
     </div>
   );
 }
-

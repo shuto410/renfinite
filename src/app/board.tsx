@@ -4,17 +4,19 @@ import Square from './components/Square';
 interface BoardProps {
   size: number;
   squares: ('X' | 'O' | null)[];
-  blockedSquares: ('X' | 'O' | null)[];  // どちらがブロックしたかを記録
-  currentPlayer: 'X' | 'O';  // 現在の手番
+  blockedSquares: ('X' | 'O' | null)[]; // どちらがブロックしたかを記録
+  currentPlayer: 'X' | 'O'; // 現在の手番
+  lastPlacedPosition: number | null; // 追加
   onSquareClick: (index: number) => void;
 }
 
-export default function Board({ 
-  size, 
-  squares, 
-  blockedSquares, 
+export default function Board({
+  size,
+  squares,
+  blockedSquares,
   currentPlayer,
-  onSquareClick 
+  lastPlacedPosition,
+  onSquareClick,
 }: BoardProps): ReactNode {
   function renderBoard() {
     const rows = [];
@@ -23,26 +25,27 @@ export default function Board({
       for (let j = 0; j < size; j++) {
         const index = i * size + j;
         cells.push(
-          <Square 
+          <Square
             key={index}
-            value={squares[index]} 
+            value={squares[index]}
             blockedBy={blockedSquares[index]}
             currentPlayer={currentPlayer}
-            onSquareClick={() => onSquareClick(index)} 
-          />
+            onSquareClick={() => onSquareClick(index)}
+            isLastPlaced={lastPlacedPosition === index}
+          />,
         );
       }
       rows.push(
-        <div key={i} className="flex">
+        <div key={i} className='flex'>
           {cells}
-        </div>
+        </div>,
       );
     }
     return rows;
   }
 
   return (
-    <div className="border-2 border-gray-800 rounded-lg overflow-hidden">
+    <div className='border-2 border-gray-800 rounded-lg overflow-hidden'>
       {renderBoard()}
     </div>
   );

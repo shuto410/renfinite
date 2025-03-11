@@ -40,4 +40,31 @@ export function getValidBlockDirections(
     const blockIndex = applyBlockEffect(position, dir, size);
     return blockIndex !== null;
   });
+}
+
+export function applyCrossDestroy(
+  position: number,
+  size: number
+): number[] {
+  const row = Math.floor(position / size);
+  const col = position % size;
+  const targets: number[] = [];
+
+  // 斜め四方向のチェック
+  const directions = [
+    [-1, -1], // 左上
+    [-1, 1],  // 右上
+    [1, -1],  // 左下
+    [1, 1]    // 右下
+  ];
+
+  for (const [dr, dc] of directions) {
+    const r = row + dr;
+    const c = col + dc;
+    if (r >= 0 && r < size && c >= 0 && c < size) {
+      targets.push(r * size + c);
+    }
+  }
+
+  return targets;
 } 
