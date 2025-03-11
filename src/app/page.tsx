@@ -4,7 +4,9 @@ import Board from './board';
 import SettingButtons from './setting-buttons';
 import { MagicButtons } from '@/components/MagicButtons';
 import { GameStatus } from '@/components/GameStatus';
+import { DebugOverlay } from '@/components/DebugOverlay';
 import { useEffect, useState } from 'react';
+import { evaluateCell } from '@/hooks/useCPUOpponent';
 
 export default function Home() {
   const game = useGameState();
@@ -64,6 +66,23 @@ export default function Home() {
       >
         Reset Game
       </button>
+
+      {game.isCPUMode && (
+        <DebugOverlay
+          size={game.size}
+          squares={game.squares}
+          blockedSquares={game.blockedSquares}
+          evaluateCell={(squares, blockedSquares, position) =>
+            evaluateCell(
+              squares,
+              blockedSquares,
+              position,
+              game.size,
+              game.winLength,
+            )
+          }
+        />
+      )}
     </div>
   );
 }
