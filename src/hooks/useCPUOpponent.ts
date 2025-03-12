@@ -21,7 +21,7 @@ interface UseCPUOpponentProps {
   isCPUMode: boolean;
   cpuLevel: number;
   isPlayerTurn: boolean;
-  winner: string | null;
+  winner: 'X' | 'O' | null;
   cpuHand: Magic[];
   cpuMana: number;
   onMove: (position: number, magic: Magic | null) => void;
@@ -244,7 +244,8 @@ export function useCPUOpponent({
 
       const testSquares = squares.slice();
       testSquares[i] = 'O';
-      if (calculateWinner(testSquares, size, winLength) === 'O') {
+      const result = calculateWinner(testSquares, size, winLength);
+      if (result.winner === 'O') {
         return { position: i, magic: null };
       }
     }
@@ -257,7 +258,8 @@ export function useCPUOpponent({
         // 魔法を使用した場合の結果をシミュレート
         const testSquares = squares.slice();
         testSquares[pos] = 'O';
-        if (calculateWinner(testSquares, size, winLength) === 'O') {
+        const result = calculateWinner(testSquares, size, winLength);
+        if (result.winner === 'O') {
           return { position: pos, magic };
         }
       }
@@ -278,18 +280,25 @@ export function useCPUOpponent({
 
       const testSquares = squares.slice();
       testSquares[i] = 'X';
-      if (calculateWinner(testSquares, size, winLength) === 'X') {
-        // 通常の石で防げる場合
-        if (!squares[i] && (!blockedSquares[i] || blockedSquares[i] === 'O')) {
-          return { position: i, magic: null };
-        }
+      const result = calculateWinner(testSquares, size, winLength);
+      if (result.winner === 'X') {
+        // その位置に自分の石を置いて阻止
+        return { position: i, magic: null };
+      }
+    }
 
-        // 魔法で防ぐ必要がある場合
-        const availableMagics = cpuHand.filter(
-          (magic) => magic.cost <= cpuMana,
-        );
-        for (const magic of availableMagics) {
-          if (magic.type === 'replace' && squares[i] === 'X') {
+    // 魔法を使って阻止できる場合を探す
+    const availableMagics = cpuHand.filter((magic) => magic.cost <= cpuMana);
+    for (const magic of availableMagics) {
+      if (magic.type === 'replace') {
+        // replace魔法は相手の石を置き換えられる
+        for (let i = 0; i < squares.length; i++) {
+          if (squares[i] !== 'X') continue;
+
+          const testSquares = squares.slice();
+          testSquares[i] = 'O';
+          const result = calculateWinner(testSquares, size, winLength);
+          if (result.winner !== 'X') {
             return { position: i, magic };
           }
         }

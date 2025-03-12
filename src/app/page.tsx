@@ -37,6 +37,9 @@ export default function Home() {
         cpuMana={game.cpuMana}
         squares={game.squares}
         selectedMagic={game.selectedMagic}
+        playerRenCount={game.playerRenCount}
+        cpuRenCount={game.cpuRenCount}
+        requiredRenToWin={game.requiredRenToWin}
       />
 
       {mounted && (

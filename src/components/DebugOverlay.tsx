@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Magic } from '@/types/game';
 
 interface CellEvaluation {
   position: number;

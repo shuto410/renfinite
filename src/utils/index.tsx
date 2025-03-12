@@ -2,74 +2,106 @@ export function calculateWinner(
   squares: ('X' | 'O' | null)[],
   size: number,
   winLength: number,
-): 'X' | 'O' | null {
+): { winner: 'X' | 'O' | null; completedRen: number[] | null } {
+  // Check horizontal
   for (let i = 0; i < size; i++) {
     for (let j = 0; j <= size - winLength; j++) {
       const startIndex = i * size + j;
       let win = true;
-      for (let k = 1; k < winLength; k++) {
+      const positions: number[] = [];
+
+      for (let k = 0; k < winLength; k++) {
+        const currentIndex = startIndex + k;
+        positions.push(currentIndex);
         if (
           !squares[startIndex] ||
-          squares[startIndex] !== squares[startIndex + k]
+          squares[startIndex] !== squares[currentIndex]
         ) {
           win = false;
           break;
         }
       }
-      if (win) return squares[startIndex];
+
+      if (win) {
+        return { winner: null, completedRen: positions };
+      }
     }
   }
 
+  // Check vertical
   for (let i = 0; i <= size - winLength; i++) {
     for (let j = 0; j < size; j++) {
       const startIndex = i * size + j;
       let win = true;
-      for (let k = 1; k < winLength; k++) {
+      const positions: number[] = [];
+
+      for (let k = 0; k < winLength; k++) {
+        const currentIndex = startIndex + k * size;
+        positions.push(currentIndex);
         if (
           !squares[startIndex] ||
-          squares[startIndex] !== squares[startIndex + k * size]
+          squares[startIndex] !== squares[currentIndex]
         ) {
           win = false;
           break;
         }
       }
-      if (win) return squares[startIndex];
+
+      if (win) {
+        return { winner: null, completedRen: positions };
+      }
     }
   }
 
+  // Check diagonal (top-left to bottom-right)
   for (let i = 0; i <= size - winLength; i++) {
     for (let j = 0; j <= size - winLength; j++) {
       const startIndex = i * size + j;
       let win = true;
-      for (let k = 1; k < winLength; k++) {
+      const positions: number[] = [];
+
+      for (let k = 0; k < winLength; k++) {
+        const currentIndex = startIndex + k * (size + 1);
+        positions.push(currentIndex);
         if (
           !squares[startIndex] ||
-          squares[startIndex] !== squares[startIndex + k * (size + 1)]
+          squares[startIndex] !== squares[currentIndex]
         ) {
           win = false;
           break;
         }
       }
-      if (win) return squares[startIndex];
+
+      if (win) {
+        return { winner: null, completedRen: positions };
+      }
     }
   }
 
+  // Check diagonal (top-right to bottom-left)
   for (let i = 0; i <= size - winLength; i++) {
     for (let j = winLength - 1; j < size; j++) {
       const startIndex = i * size + j;
       let win = true;
-      for (let k = 1; k < winLength; k++) {
+      const positions: number[] = [];
+
+      for (let k = 0; k < winLength; k++) {
+        const currentIndex = startIndex + k * (size - 1);
+        positions.push(currentIndex);
         if (
           !squares[startIndex] ||
-          squares[startIndex] !== squares[startIndex + k * (size - 1)]
+          squares[startIndex] !== squares[currentIndex]
         ) {
           win = false;
           break;
         }
       }
-      if (win) return squares[startIndex];
+
+      if (win) {
+        return { winner: null, completedRen: positions };
+      }
     }
   }
 
-  return null;
+  return { winner: null, completedRen: null };
 }

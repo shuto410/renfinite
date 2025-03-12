@@ -13,14 +13,16 @@ export function applyBlockEffect(
       break;
     case 'right':
       blockIndex = position + 1;
-      if (Math.floor(position / size) !== Math.floor(blockIndex / size)) blockIndex = null;
+      if (Math.floor(position / size) !== Math.floor(blockIndex / size))
+        blockIndex = null;
       break;
     case 'down':
       blockIndex = position + size;
       break;
     case 'left':
       blockIndex = position - 1;
-      if (Math.floor(position / size) !== Math.floor(blockIndex / size)) blockIndex = null;
+      if (Math.floor(position / size) !== Math.floor(blockIndex / size))
+        blockIndex = null;
       break;
   }
 
@@ -33,19 +35,15 @@ export function applyBlockEffect(
 export function getValidBlockDirections(
   position: number,
   size: number,
-  squares: ('X' | 'O' | null)[]
 ): BlockDirection[] {
   const directions: BlockDirection[] = ['up', 'right', 'down', 'left'];
-  return directions.filter(dir => {
+  return directions.filter((dir) => {
     const blockIndex = applyBlockEffect(position, dir, size);
     return blockIndex !== null;
   });
 }
 
-export function applyCrossDestroy(
-  position: number,
-  size: number
-): number[] {
+export function applyCrossDestroy(position: number, size: number): number[] {
   const row = Math.floor(position / size);
   const col = position % size;
   const targets: number[] = [];
@@ -53,9 +51,9 @@ export function applyCrossDestroy(
   // 斜め四方向のチェック
   const directions = [
     [-1, -1], // 左上
-    [-1, 1],  // 右上
-    [1, -1],  // 左下
-    [1, 1]    // 右下
+    [-1, 1], // 右上
+    [1, -1], // 左下
+    [1, 1], // 右下
   ];
 
   for (const [dr, dc] of directions) {
@@ -67,4 +65,4 @@ export function applyCrossDestroy(
   }
 
   return targets;
-} 
+}

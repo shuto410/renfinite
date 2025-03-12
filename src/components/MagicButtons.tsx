@@ -1,6 +1,6 @@
 'use client';
-import { BlockDirection, Magic } from "@/types/game";
-import { useEffect, useState } from "react";
+import { Magic } from '@/types/game';
+import { useEffect, useState } from 'react';
 
 // 常に使用可能な汎用魔法カード
 const GENERIC_MAGIC: Magic = {
@@ -8,7 +8,7 @@ const GENERIC_MAGIC: Magic = {
   cost: 1,
   name: 'Basic Stone',
   description: 'Place a stone without any special effect',
-  id: 'generic-stone'
+  id: 'generic-stone',
 };
 
 interface MagicButtonsProps {
@@ -30,11 +30,11 @@ export function MagicButtons({
 }: MagicButtonsProps) {
   // Use client-side only rendering to avoid hydration mismatch
   const [isClient, setIsClient] = useState(false);
-  
+
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
+
   const currentMana = xIsNext ? playerMana : cpuMana;
 
   function renderMagicButton(magic: Magic, isGeneric: boolean = false) {
@@ -45,10 +45,11 @@ export function MagicButtons({
       <button
         key={`${magic.type}-${magic.cost}-${magic.id}`}
         className={`px-4 py-2 rounded-md transition-colors duration-200 
-          ${isSelected
-            ? 'bg-blue-500 text-white' 
-            : canUse
-              ? isGeneric 
+          ${
+            isSelected
+              ? 'bg-blue-500 text-white'
+              : canUse
+              ? isGeneric
                 ? 'bg-green-200 hover:bg-green-300' // 汎用カードは緑色で表示
                 : 'bg-blue-200 hover:bg-blue-300'
               : 'bg-gray-200 cursor-not-allowed'
@@ -83,30 +84,28 @@ export function MagicButtons({
   // Only render the actual buttons on the client side
   if (!isClient) {
     return (
-      <div className="mb-4">
-        <div className="flex gap-2">
-          {/* Empty placeholder during SSR */}
-        </div>
+      <div className='mb-4'>
+        <div className='flex gap-2'>{/* Empty placeholder during SSR */}</div>
       </div>
     );
   }
 
   return (
-    <div className="mb-4 w-full max-w-4xl">
-      <div className="flex flex-col gap-2">
+    <div className='mb-4 w-full max-w-4xl'>
+      <div className='flex flex-col gap-2'>
         {/* 手札のカード */}
-        <div className="flex gap-2 flex-wrap justify-center">
-          {hand.map(magic => renderMagicButton(magic))}
+        <div className='flex gap-2 flex-wrap justify-center'>
+          {hand.map((magic) => renderMagicButton(magic))}
         </div>
-        
+
         {/* 区切り線 */}
-        <div className="border-t border-gray-300 my-2"></div>
-        
+        <div className='border-t border-gray-300 my-2'></div>
+
         {/* 常に使用可能な汎用魔法カード */}
-        <div className="flex justify-center">
+        <div className='flex justify-center'>
           {renderMagicButton(GENERIC_MAGIC, true)}
         </div>
       </div>
     </div>
   );
-} 
+}

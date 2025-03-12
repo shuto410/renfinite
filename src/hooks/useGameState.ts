@@ -1,10 +1,6 @@
 import { useState, useEffect } from 'react';
 import { calculateWinner } from '@/utils';
-import {
-  applyBlockEffect,
-  getValidBlockDirections,
-  applyCrossDestroy,
-} from '../utils/effects';
+import { applyBlockEffect, applyCrossDestroy } from '../utils/effects';
 import type { BlockDirection, Magic, Player } from '@/types/game';
 import { useCPUOpponent } from './useCPUOpponent';
 import {
@@ -26,6 +22,9 @@ const GENERIC_MAGIC: Magic = {
   description: 'Place a stone without any special effect',
   id: 'generic-stone',
 };
+
+// 勝利に必要な連の数
+const REQUIRED_REN_TO_WIN = 3;
 
 // 初期手札を生成する関数
 function generateInitialHand(deck: Magic[]): {
@@ -81,7 +80,53 @@ export function useGameState(
   });
   const [selectedMagic, setSelectedMagic] = useState<Magic | null>(null);
 
-  const winner = calculateWinner(squares, size, winLength);
+  // 各プレイヤーの完成した連の数を追跡
+  const [playerRenCount, setPlayerRenCount] = useState<number>(0);
+  const [cpuRenCount, setCpuRenCount] = useState<number>(0);
+
+  // 勝者の状態（連の数による勝利も含む）
+  const [finalWinner, setFinalWinner] = useState<'X' | 'O' | null>(null);
+
+  const { winner, completedRen } = calculateWinner(squares, size, winLength);
+
+  // 蓮が完成したら石を削除し、プレイヤーのカウントを増やす
+  useEffect(() => {
+    if (completedRen && completedRen.length > 0) {
+      // 完成した連の所有者を確認（最初の石の所有者）
+      const renOwner = squares[completedRen[0]];
+
+      // 少し遅延を入れて、プレイヤーが蓮の完成を確認できるようにする
+      const timer = setTimeout(() => {
+        const newSquares = [...squares];
+        // 蓮を構成する石を削除
+        completedRen.forEach((position) => {
+          newSquares[position] = null;
+        });
+        setSquares(newSquares);
+
+        // 対応するプレイヤーの連カウントを増やす
+        if (renOwner === 'X') {
+          const newCount = playerRenCount + 1;
+          setPlayerRenCount(newCount);
+
+          // 勝利条件を確認
+          if (newCount >= REQUIRED_REN_TO_WIN) {
+            setFinalWinner('X');
+          }
+        } else if (renOwner === 'O') {
+          const newCount = cpuRenCount + 1;
+          setCpuRenCount(newCount);
+
+          // 勝利条件を確認
+          if (newCount >= REQUIRED_REN_TO_WIN) {
+            setFinalWinner('O');
+          }
+        }
+      }, 500); // 500ミリ秒の遅延
+
+      return () => clearTimeout(timer);
+    }
+  }, [completedRen, squares, playerRenCount, cpuRenCount]);
 
   // 共通の石を置くロジック
   function placePiece(
@@ -118,6 +163,7 @@ export function useGameState(
   function handleClick(position: number) {
     const currentPlayer = xIsNext ? 'X' : 'O';
     if (
+      finalWinner ||
       winner ||
       (blockedSquares[position] && blockedSquares[position] !== currentPlayer)
     )
@@ -156,7 +202,7 @@ export function useGameState(
         placePiece(position, currentPlayer, null);
       } else {
         // 通常の魔法カードを使用
-        useMagic(selectedMagic, position);
+        castMagic(selectedMagic, position);
       }
 
       setSelectedMagic(null);
@@ -166,7 +212,7 @@ export function useGameState(
 
   function handleCPUMove(position: number, magic: Magic | null) {
     if (magic) {
-      useMagic(magic, position);
+      castMagic(magic, position);
     } else {
       placePiece(position, 'O', null);
     }
@@ -209,6 +255,9 @@ export function useGameState(
     setBlockedSquares(Array(size * size).fill(null));
     setSelectedMagic(null);
     setXIsNext(true);
+    setPlayerRenCount(0);
+    setCpuRenCount(0);
+    setFinalWinner(null);
 
     // 新しい初期手札とデッキを生成
     const newPlayerInitialDraw = generateInitialHand(PLAYER_INITIAL_DECK);
@@ -228,7 +277,7 @@ export function useGameState(
   }
 
   // 魔法を使用
-  function useMagic(magic: Magic, position: number) {
+  function castMagic(magic: Magic, position: number) {
     const isPlayer = xIsNext;
     const state = isPlayer ? playerState : cpuState;
     const setState = isPlayer ? setPlayerState : setCpuState;
@@ -347,13 +396,16 @@ export function useGameState(
     isCPUMode,
     cpuLevel,
     blockedSquares,
-    winner,
+    winner: finalWinner || winner,
     lastPlacedPosition,
     playerHand: playerState.hand,
     cpuHand: cpuState.hand,
     selectedMagic,
     playerMana: playerState.mana,
     cpuMana: cpuState.mana,
+    playerRenCount,
+    cpuRenCount,
+    requiredRenToWin: REQUIRED_REN_TO_WIN,
 
     // Event handlers
     handleClick,
@@ -363,7 +415,7 @@ export function useGameState(
     toggleCPUMode,
     resetGame,
     drawCard,
-    useMagic,
+    castMagic,
     setSelectedMagic,
   };
 }
