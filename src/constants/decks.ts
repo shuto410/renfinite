@@ -80,6 +80,7 @@ const PLAYER_DECK_TYPES: MagicType[] = [
   'normal',
   'normal',
   'normal',
+  'normal',
 ];
 
 // CPU（O）の初期デッキ定義
@@ -94,6 +95,7 @@ const CPU_DECK_TYPES: MagicType[] = [
   'blockUp',
   'blockRight',
   'blockDown',
+  'normal',
   'normal',
   'normal',
   'normal',
