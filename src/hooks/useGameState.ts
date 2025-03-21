@@ -332,6 +332,7 @@ export function useGameState(
     ) {
       drawCard(xIsNext);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xIsNext, winner]);
 
   // ターン開始時にマナを1補充
