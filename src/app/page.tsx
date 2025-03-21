@@ -70,7 +70,7 @@ export default function Home() {
         Reset Game
       </button>
 
-      {game.isCPUMode && (
+      {/* {game.isCPUMode && (
         <DebugOverlay
           size={game.size}
           squares={game.squares}
@@ -85,7 +85,7 @@ export default function Home() {
             )
           }
         />
-      )}
+      )} */}
     </div>
   );
 }
