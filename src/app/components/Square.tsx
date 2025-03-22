@@ -19,29 +19,35 @@ export default function Square({
 
   return (
     <button
-      className={`w-16 h-16 border border-gray-400 bg-white text-xl font-bold 
+      className={`w-16 h-16 border bg-white text-xl font-bold 
                  hover:bg-gray-100 transition-colors duration-200 relative
                  ${isBlockedSquare ? 'bg-red-50' : ''}
-                 ${isLastPlaced ? 'text-orange-600' : ''}`}
+                 ${value === 'X' ? 'text-blue-600' : ''}
+                 ${value === 'O' ? 'text-red-600' : ''}`}
       onClick={onSquareClick}
       disabled={isBlocked}
     >
       {value}
+      {isLastPlaced && (
+        <div className='absolute inset-0.5 rounded-sm animate-pulse ring-2 ring-orange-400 pointer-events-none'></div>
+      )}
       {isBlockedSquare && (
         <div className='absolute inset-0 flex items-center justify-center'>
           <div
             className={`absolute inset-0 ${
-              isBlocked ? 'bg-red-500' : 'bg-orange-500'
+              blockedBy === 'X' ? 'bg-blue-500' : 'bg-red-500'
             } opacity-10`}
           ></div>
           <div className='absolute top-0 left-0 right-0 flex justify-center'>
             <span
               className={`text-xs px-1 rounded-b-sm
               ${
-                isBlocked ? 'bg-red-500 text-white' : 'bg-orange-500 text-white'
+                blockedBy === 'X'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-red-500 text-white'
               }`}
             >
-              {isBlocked ? `Blocked` : `Block`}
+              Blocked
             </span>
           </div>
           {/* ブロックのパターンを表示 */}
@@ -53,8 +59,16 @@ export default function Square({
                 45deg,
                 transparent,
                 transparent 5px,
-                ${isBlocked ? 'rgba(255,0,0,0.1)' : 'rgba(255,165,0,0.1)'} 5px,
-                ${isBlocked ? 'rgba(255,0,0,0.1)' : 'rgba(255,165,0,0.1)'} 10px
+                ${
+                  blockedBy === 'X'
+                    ? 'rgba(0,165,255,0.1)'
+                    : 'rgba(255,0,0,0.1)'
+                } 5px,
+                ${
+                  blockedBy === 'X'
+                    ? 'rgba(0,165,255,0.1)'
+                    : 'rgba(255,0,0,0.1)'
+                } 10px
               )`,
               }}
             ></div>
