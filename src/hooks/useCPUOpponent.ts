@@ -195,14 +195,28 @@ export function useCPUOpponent({
 
     const timer = setTimeout(() => {
       // 勝利可能な手を探す
-      const winningMove = findWinningMove();
+      const winningMove = findWinningMove(
+        squares,
+        blockedSquares,
+        size,
+        winLength,
+        cpuHand,
+        cpuMana,
+      );
       if (winningMove) {
         onMove(winningMove.position, winningMove.magic);
         return;
       }
 
       // 相手の勝利を阻止する手を探す
-      const blockingMove = findBlockingMove();
+      const blockingMove = findBlockingMove(
+        squares,
+        blockedSquares,
+        size,
+        winLength,
+        cpuHand,
+        cpuMana,
+      );
       if (blockingMove) {
         onMove(blockingMove.position, blockingMove.magic);
         return;
@@ -214,14 +228,26 @@ export function useCPUOpponent({
       if (availableMagics.length > 0) {
         // 魔法を使用
         const magic = chooseBestMagic(availableMagics);
-        const position = findBestPositionForMagic(magic);
+        const position = findBestPositionForMagic(
+          magic,
+          squares,
+          blockedSquares,
+          size,
+          winLength,
+        );
         if (position !== null) {
           onMove(position, magic);
           return;
         }
       } else if (cpuMana >= GENERIC_MAGIC.cost) {
         // 手札に使える魔法がない場合は汎用魔法を使用
-        const position = findBestPositionForMagic(GENERIC_MAGIC);
+        const position = findBestPositionForMagic(
+          GENERIC_MAGIC,
+          squares,
+          blockedSquares,
+          size,
+          winLength,
+        );
         if (position !== null) {
           onMove(position, GENERIC_MAGIC);
           return;
@@ -235,177 +261,217 @@ export function useCPUOpponent({
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [squares, isPlayerTurn, winner, cpuHand, cpuMana]);
+}
 
-  // 勝利可能な手を探す
-  function findWinningMove(): { position: number; magic: Magic | null } | null {
-    // 通常の石を置いて勝てる場合
-    for (let i = 0; i < squares.length; i++) {
-      if (squares[i] || (blockedSquares[i] && blockedSquares[i] !== 'O'))
-        continue;
+// 勝利可能な手を探す
+export function findWinningMove(
+  squares: ('X' | 'O' | null)[],
+  blockedSquares: ('X' | 'O' | null)[],
+  size: number,
+  winLength: number,
+  cpuHand: Magic[],
+  cpuMana: number,
+): {
+  position: number;
+  magic: Magic | null;
+} | null {
+  // 通常の石を置いて勝てる場合
+  for (let i = 0; i < squares.length; i++) {
+    if (squares[i] || (blockedSquares[i] && blockedSquares[i] !== 'O'))
+      continue;
 
+    const testSquares = squares.slice();
+    testSquares[i] = 'O';
+    const result = calculateWinner(testSquares, size, winLength);
+    if (result.winner === 'O') {
+      return { position: i, magic: null };
+    }
+  }
+
+  // 魔法を使って勝てる場合を探す
+  const availableMagics = cpuHand.filter((magic) => magic.cost <= cpuMana);
+  for (const magic of availableMagics) {
+    const validPositions = findValidPositionsForMagic(
+      magic,
+      squares,
+      blockedSquares,
+    );
+    for (const pos of validPositions) {
+      // 魔法を使用した場合の結果をシミュレート
       const testSquares = squares.slice();
-      testSquares[i] = 'O';
+      testSquares[pos] = 'O';
       const result = calculateWinner(testSquares, size, winLength);
       if (result.winner === 'O') {
-        return { position: i, magic: null };
+        return { position: pos, magic };
       }
     }
-
-    // 魔法を使って勝てる場合を探す
-    const availableMagics = cpuHand.filter((magic) => magic.cost <= cpuMana);
-    for (const magic of availableMagics) {
-      const validPositions = findValidPositionsForMagic(magic);
-      for (const pos of validPositions) {
-        // 魔法を使用した場合の結果をシミュレート
-        const testSquares = squares.slice();
-        testSquares[pos] = 'O';
-        const result = calculateWinner(testSquares, size, winLength);
-        if (result.winner === 'O') {
-          return { position: pos, magic };
-        }
-      }
-    }
-
-    return null;
   }
 
-  // 相手の勝利を阻止する手を探す
-  function findBlockingMove(): {
-    position: number;
-    magic: Magic | null;
-  } | null {
-    // 相手が次のターンで勝利できる位置を探す
-    for (let i = 0; i < squares.length; i++) {
-      if (squares[i] || (blockedSquares[i] && blockedSquares[i] !== 'X'))
-        continue;
-
-      const testSquares = squares.slice();
-      testSquares[i] = 'X';
-      const result = calculateWinner(testSquares, size, winLength);
-      if (result.winner === 'X') {
-        // その位置に自分の石を置いて阻止
-        return { position: i, magic: null };
-      }
-    }
-
-    // 魔法を使って阻止できる場合を探す
-    const availableMagics = cpuHand.filter((magic) => magic.cost <= cpuMana);
-    for (const magic of availableMagics) {
-      if (magic.type === 'replace') {
-        // replace魔法は相手の石を置き換えられる
-        for (let i = 0; i < squares.length; i++) {
-          if (squares[i] !== 'X') continue;
-
-          const testSquares = squares.slice();
-          testSquares[i] = 'O';
-          const result = calculateWinner(testSquares, size, winLength);
-          if (result.winner !== 'X') {
-            return { position: i, magic };
-          }
-        }
-      }
-    }
-
-    return null;
-  }
-
-  // 最適な魔法を選択
-  function chooseBestMagic(availableMagics: Magic[]): Magic {
-    // コストの高い順にソートして、最初の魔法を選択
-    return availableMagics.sort((a, b) => b.cost - a.cost)[0];
-  }
-
-  // 魔法に有効な位置を見つける
-  function findValidPositionsForMagic(magic: Magic): number[] {
-    let validPositions: number[] = [];
-
-    switch (magic.type) {
-      case 'replace':
-        validPositions = squares
-          .map((square, i) =>
-            square === 'X' && (!blockedSquares[i] || blockedSquares[i] === 'O')
-              ? i
-              : -1,
-          )
-          .filter((i) => i !== -1);
-        break;
-
-      case 'blockUp':
-      case 'blockRight':
-      case 'blockDown':
-      case 'blockLeft':
-      case 'crossDestroy':
-      case 'normal':
-        validPositions = squares
-          .map((square, i) =>
-            !square && (!blockedSquares[i] || blockedSquares[i] === 'O')
-              ? i
-              : -1,
-          )
-          .filter((i) => i !== -1);
-        break;
-    }
-
-    return validPositions;
-  }
-
-  // 魔法に最適な位置を見つける
-  function findBestPositionForMagic(magic: Magic): number | null {
-    // 魔法の種類に応じて有効な位置を取得
-    const validPositions = findValidPositionsForMagic(magic);
-    if (validPositions.length === 0) return null;
-
-    // 各位置を評価
-    let bestScore = -Infinity;
-    let bestPosition = null;
-
-    for (const position of validPositions) {
-      const row = Math.floor(position / size);
-      const col = position % size;
-
-      // 魔法の種類に応じて評価
-      let score = evaluateCell(
-        squares,
-        blockedSquares,
-        position,
-        size,
-        winLength,
-      ).totalScore;
-
-      // 特定の魔法タイプに対する追加評価
-      if (magic.type.startsWith('block')) {
-        // ブロック魔法は相手の石の近くに置くと効果的
-        for (const { dr, dc } of DIRECTIONS) {
-          const r = row + dr;
-          const c = col + dc;
-          if (isValid(r, c, size) && squares[r * size + c] === 'X') {
-            score += 100; // 相手の石の隣に置くボーナス
-          }
-        }
-      } else if (magic.type === 'replace') {
-        // replace魔法は相手の石を置き換える
-        score += 200; // 直接相手の石を取れるのでボーナス
-      } else if (magic.type === 'crossDestroy') {
-        // crossDestroy魔法は十字方向の石を破壊する
-        let destroyCount = 0;
-        const targets = applyCrossDestroy(position, size);
-        for (const pos of targets) {
-          if (squares[pos] === 'X') {
-            destroyCount++;
-          }
-        }
-        score += destroyCount * 300; // 相手の石を多く破壊できるほど高評価
-      } else if (magic.type === 'normal' || magic.id === 'generic-stone') {
-        // 通常の石は連を作りやすい場所に置く
-        // 既に評価済みなので追加処理なし
-      }
-
-      if (score > bestScore) {
-        bestScore = score;
-        bestPosition = position;
-      }
-    }
-
-    return bestPosition;
-  }
+  return null;
 }
+
+// 相手の勝利を阻止する手を探す
+export function findBlockingMove(
+  squares: ('X' | 'O' | null)[],
+  blockedSquares: ('X' | 'O' | null)[],
+  size: number,
+  winLength: number,
+  cpuHand: Magic[],
+  cpuMana: number,
+): {
+  position: number;
+  magic: Magic | null;
+} | null {
+  // 相手が次のターンで勝利できる位置を探す
+  for (let i = 0; i < squares.length; i++) {
+    if (squares[i] || (blockedSquares[i] && blockedSquares[i] !== 'X'))
+      continue;
+
+    const testSquares = squares.slice();
+    testSquares[i] = 'X';
+    const result = calculateWinner(testSquares, size, winLength);
+    if (result.winner === 'X') {
+      // その位置に自分の石を置いて阻止
+      return { position: i, magic: null };
+    }
+  }
+
+  // 魔法を使って阻止できる場合を探す
+  const availableMagics = cpuHand.filter((magic) => magic.cost <= cpuMana);
+  for (const magic of availableMagics) {
+    if (magic.type === 'replace') {
+      // replace魔法は相手の石を置き換えられる
+      for (let i = 0; i < squares.length; i++) {
+        if (squares[i] !== 'X') continue;
+
+        const testSquares = squares.slice();
+        testSquares[i] = 'O';
+        const result = calculateWinner(testSquares, size, winLength);
+        if (result.winner !== 'X') {
+          return { position: i, magic };
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
+// 最適な魔法を選択
+export function chooseBestMagic(availableMagics: Magic[]): Magic {
+  // コストの高い順にソートして、最初の魔法を選択
+  return availableMagics.sort((a, b) => b.cost - a.cost)[0];
+}
+
+// 魔法に有効な位置を見つける
+export function findValidPositionsForMagic(
+  magic: Magic,
+  squares: ('X' | 'O' | null)[],
+  blockedSquares: ('X' | 'O' | null)[],
+): number[] {
+  let validPositions: number[] = [];
+
+  switch (magic.type) {
+    case 'replace':
+      validPositions = squares
+        .map((square, i) =>
+          square === 'X' && (!blockedSquares[i] || blockedSquares[i] === 'O')
+            ? i
+            : -1,
+        )
+        .filter((i) => i !== -1);
+      break;
+
+    case 'blockUp':
+    case 'blockRight':
+    case 'blockDown':
+    case 'blockLeft':
+    case 'crossDestroy':
+    case 'normal':
+      validPositions = squares
+        .map((square, i) =>
+          !square && (!blockedSquares[i] || blockedSquares[i] === 'O') ? i : -1,
+        )
+        .filter((i) => i !== -1);
+      break;
+  }
+
+  return validPositions;
+}
+
+// 魔法に最適な位置を見つける
+export function findBestPositionForMagic(
+  magic: Magic,
+  squares: ('X' | 'O' | null)[],
+  blockedSquares: ('X' | 'O' | null)[],
+  size: number,
+  winLength: number,
+): number | null {
+  // 魔法の種類に応じて有効な位置を取得
+  const validPositions = findValidPositionsForMagic(
+    magic,
+    squares,
+    blockedSquares,
+  );
+  if (validPositions.length === 0) return null;
+
+  // 各位置を評価
+  let bestScore = -Infinity;
+  let bestPosition = null;
+
+  for (const position of validPositions) {
+    const row = Math.floor(position / size);
+    const col = position % size;
+
+    // 魔法の種類に応じて評価
+    let score = evaluateCell(
+      squares,
+      blockedSquares,
+      position,
+      size,
+      winLength,
+    ).totalScore;
+
+    // 特定の魔法タイプに対する追加評価
+    if (magic.type.startsWith('block')) {
+      // ブロック魔法は相手の石の近くに置くと効果的
+      for (const { dr, dc } of DIRECTIONS) {
+        const r = row + dr;
+        const c = col + dc;
+        if (isValid(r, c, size) && squares[r * size + c] === 'X') {
+          score += 100; // 相手の石の隣に置くボーナス
+        }
+      }
+    } else if (magic.type === 'replace') {
+      // replace魔法は相手の石を置き換える
+      score += 200; // 直接相手の石を取れるのでボーナス
+    } else if (magic.type === 'crossDestroy') {
+      // crossDestroy魔法は十字方向の石を破壊する
+      let destroyCount = 0;
+      const targets = applyCrossDestroy(position, size);
+      for (const pos of targets) {
+        if (squares[pos] === 'X') {
+          destroyCount++;
+        }
+      }
+      score += destroyCount * 300; // 相手の石を多く破壊できるほど高評価
+    } else if (magic.type === 'normal' || magic.id === 'generic-stone') {
+      // 通常の石は連を作りやすい場所に置く
+      // 既に評価済みなので追加処理なし
+    }
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestPosition = position;
+    }
+  }
+
+  return bestPosition;
+}
+
+// テスト用にエクスポート（本番環境では使用しない）
+export const _internalsForTesting = {
+  isValid,
+  DIRECTIONS,
+  GENERIC_MAGIC,
+};

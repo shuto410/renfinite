@@ -9,6 +9,10 @@ interface GameStatusProps {
   playerRenCount?: number;
   cpuRenCount?: number;
   requiredRenToWin?: number;
+  playerDeckCount?: number;
+  cpuDeckCount?: number;
+  playerDiscardCount?: number;
+  cpuDiscardCount?: number;
 }
 
 import { Magic } from '@/types/game';
@@ -24,6 +28,10 @@ export function GameStatus({
   playerRenCount = 0,
   cpuRenCount = 0,
   requiredRenToWin = 3,
+  playerDeckCount = 0,
+  cpuDeckCount = 0,
+  playerDiscardCount = 0,
+  cpuDiscardCount = 0,
 }: GameStatusProps) {
   let status;
 
@@ -41,12 +49,16 @@ export function GameStatus({
 
   const manaStatus = `Mana - X: ${playerMana} | O: ${cpuMana}`;
   const renStatus = `Ren - X: ${playerRenCount}/${requiredRenToWin} | O: ${cpuRenCount}/${requiredRenToWin}`;
+  const deckStatus = `Deck - X: ${playerDeckCount} | O: ${cpuDeckCount}`;
+  const discardStatus = `Discard - X: ${playerDiscardCount} | O: ${cpuDiscardCount}`;
 
   return (
     <>
       <div className='text-xl font-semibold text-gray-700 mb-6'>{status}</div>
       <div className='text-lg text-blue-600 mb-4'>{manaStatus}</div>
       <div className='text-lg text-green-600 mb-4'>{renStatus}</div>
+      <div className='text-lg text-purple-600 mb-4'>{deckStatus}</div>
+      <div className='text-lg text-orange-600 mb-4'>{discardStatus}</div>
     </>
   );
 }

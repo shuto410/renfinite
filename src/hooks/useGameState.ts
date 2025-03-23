@@ -1,18 +1,15 @@
-import { useState, useEffect } from 'react';
-import { calculateWinner } from '@/utils';
-import { applyBlockEffect, applyCrossDestroy } from '../utils/effects';
-import type { BlockDirection, Magic, Player } from '@/types/game';
+import type { BlockDirection, Magic } from '@/types/game';
 import { useCPUOpponent } from './useCPUOpponent';
 import {
   CPU_INITIAL_DECK,
   PLAYER_INITIAL_DECK,
-  MAX_MANA,
-  MANA_REGENERATION_PER_TURN,
   INITIAL_MANA,
   INITIAL_HAND_SIZE,
-  MAX_HAND_SIZE,
 } from '@/constants/decks';
 import { MAGIC_CARDS } from '@/constants/decks';
+import { useGameStore } from '@/store';
+import { useMagicSystem } from './useMagicSystem';
+import { useGameBoard } from './useGameBoard';
 
 // 常に使用可能な汎用魔法カード
 const GENERIC_MAGIC: Magic = {
@@ -46,119 +43,60 @@ function generateInitialHand(deck: Magic[]): {
   return { hand, remainingDeck: deckCopy };
 }
 
-export function useGameState(
-  initialSize: number = 9,
-  initialWinLength: number = 5,
-) {
-  // 初期手札とデッキを生成
-  const playerInitialDraw = generateInitialHand(PLAYER_INITIAL_DECK);
-  const cpuInitialDraw = generateInitialHand(CPU_INITIAL_DECK);
+export function useGameState() {
+  const size = useGameStore.use.size();
+  const setSize = useGameStore.use.setSize();
+  const winLength = useGameStore.use.winLength();
+  const setWinLength = useGameStore.use.setWinLength();
+  const squares = useGameStore.use.squares();
+  const setSquares = useGameStore.use.setSquares();
+  const isCPUMode = useGameStore.use.isCPUMode();
+  const setIsCPUMode = useGameStore.use.setIsCPUMode();
+  const cpuLevel = useGameStore.use.cpuLevel();
+  const setCPULevel = useGameStore.use.setCPULevel();
+  const {
+    winner,
+    xIsNext,
+    playerRenCount,
+    cpuRenCount,
+    finalWinner,
+    lastPlacedPosition,
+    blockedSquares,
+    placePiece,
+    setXIsNext,
+    setFinalWinner,
+    setBlockedSquares,
+    setPlayerRenCount,
+    setCpuRenCount,
+  } = useGameBoard();
 
-  const [size, setSize] = useState(initialSize);
-  const [winLength, setWinLength] = useState(initialWinLength);
-  const [squares, setSquares] = useState<('X' | 'O' | null)[]>(
-    Array(size * size).fill(null),
-  );
-  const [xIsNext, setXIsNext] = useState<boolean>(true);
-  const [isCPUMode, setIsCPUMode] = useState(true);
-  const [cpuLevel, setCPULevel] = useState(1);
-  const [blockedSquares, setBlockedSquares] = useState<('X' | 'O' | null)[]>(
-    Array(size * size).fill(null),
-  );
-  const [lastPlacedPosition, setLastPlacedPosition] = useState<number | null>(
-    null,
-  );
-  const [playerState, setPlayerState] = useState<Player>({
-    deck: playerInitialDraw.remainingDeck,
-    hand: playerInitialDraw.hand,
-    mana: INITIAL_MANA,
+  const {
+    playerState,
+    cpuState,
+    selectedMagic,
+    setPlayerDeck,
+    setCpuDeck,
+    setPlayerHand,
+    setCpuHand,
+    setPlayerMana,
+    setCpuMana,
+    setSelectedMagic,
+    castMagic,
+  } = useMagicSystem(placePiece);
+
+  useCPUOpponent({
+    squares,
+    blockedSquares,
+    size,
+    winLength,
+    isCPUMode,
+    cpuLevel,
+    isPlayerTurn: xIsNext,
+    winner,
+    onMove: handleCPUMove,
+    cpuMana: cpuState.mana,
+    cpuHand: cpuState.hand,
   });
-  const [cpuState, setCpuState] = useState<Player>({
-    deck: cpuInitialDraw.remainingDeck,
-    hand: cpuInitialDraw.hand,
-    mana: INITIAL_MANA,
-  });
-  const [selectedMagic, setSelectedMagic] = useState<Magic | null>(null);
-
-  // 各プレイヤーの完成した連の数を追跡
-  const [playerRenCount, setPlayerRenCount] = useState<number>(0);
-  const [cpuRenCount, setCpuRenCount] = useState<number>(0);
-
-  // 勝者の状態（連の数による勝利も含む）
-  const [finalWinner, setFinalWinner] = useState<'X' | 'O' | null>(null);
-
-  const { winner, completedRen } = calculateWinner(squares, size, winLength);
-
-  // 蓮が完成したら石を削除し、プレイヤーのカウントを増やす
-  useEffect(() => {
-    if (completedRen && completedRen.length > 0) {
-      // 完成した連の所有者を確認（最初の石の所有者）
-      const renOwner = squares[completedRen[0]];
-
-      // 少し遅延を入れて、プレイヤーが蓮の完成を確認できるようにする
-      const timer = setTimeout(() => {
-        const newSquares = [...squares];
-        // 蓮を構成する石を削除
-        completedRen.forEach((position) => {
-          newSquares[position] = null;
-        });
-        setSquares(newSquares);
-
-        // 対応するプレイヤーの連カウントを増やす
-        if (renOwner === 'X') {
-          const newCount = playerRenCount + 1;
-          setPlayerRenCount(newCount);
-
-          // 勝利条件を確認
-          if (newCount >= REQUIRED_REN_TO_WIN) {
-            setFinalWinner('X');
-          }
-        } else if (renOwner === 'O') {
-          const newCount = cpuRenCount + 1;
-          setCpuRenCount(newCount);
-
-          // 勝利条件を確認
-          if (newCount >= REQUIRED_REN_TO_WIN) {
-            setFinalWinner('O');
-          }
-        }
-      }, 500); // 500ミリ秒の遅延
-
-      return () => clearTimeout(timer);
-    }
-  }, [completedRen, squares, playerRenCount, cpuRenCount]);
-
-  // 共通の石を置くロジック
-  function placePiece(
-    position: number,
-    player: 'X' | 'O',
-    spType: 'block' | 'replace' | 'crossDestroy' | null,
-    blockDirection?: BlockDirection,
-  ) {
-    const nextSquares = squares.slice();
-    nextSquares[position] = player;
-    setSquares(nextSquares);
-
-    // 特殊効果の処理
-    if (spType === 'block' && blockDirection) {
-      const blockIndex = applyBlockEffect(position, blockDirection, size);
-      if (blockIndex !== null) {
-        const newBlockedSquares = blockedSquares.slice();
-        newBlockedSquares[blockIndex] = player;
-        setBlockedSquares(newBlockedSquares);
-      }
-    } else if (spType === 'crossDestroy') {
-      const targets = applyCrossDestroy(position, size);
-      const newSquares = nextSquares.slice();
-      targets.forEach((pos) => {
-        newSquares[pos] = null;
-      });
-      setSquares(newSquares);
-    }
-
-    setLastPlacedPosition(position);
-    setXIsNext(!xIsNext);
-  }
 
   function handleClick(position: number) {
     const currentPlayer = xIsNext ? 'X' : 'O';
@@ -192,11 +130,8 @@ export function useGameState(
       // 汎用魔法カードの場合は手札から削除しない
       if (isGenericMagic) {
         // マナだけ消費
-        const setState = xIsNext ? setPlayerState : setCpuState;
-        setState({
-          ...state,
-          mana: state.mana - selectedMagic.cost,
-        });
+        const setMana = xIsNext ? setPlayerMana : setCpuMana;
+        setMana(state.mana - selectedMagic.cost);
 
         // 効果を適用（通常の石を置く）
         placePiece(position, currentPlayer, null);
@@ -246,8 +181,8 @@ export function useGameState(
   }
 
   function resetMana() {
-    setPlayerState((prev) => ({ ...prev, mana: INITIAL_MANA }));
-    setCpuState((prev) => ({ ...prev, mana: INITIAL_MANA }));
+    setPlayerMana(INITIAL_MANA);
+    setCpuMana(INITIAL_MANA);
   }
 
   function resetGame() {
@@ -264,129 +199,13 @@ export function useGameState(
     const newCpuInitialDraw = generateInitialHand(CPU_INITIAL_DECK);
 
     // デッキと手札をリセット
-    setPlayerState({
-      deck: newPlayerInitialDraw.remainingDeck,
-      hand: newPlayerInitialDraw.hand,
-      mana: INITIAL_MANA,
-    });
-    setCpuState({
-      deck: newCpuInitialDraw.remainingDeck,
-      hand: newCpuInitialDraw.hand,
-      mana: INITIAL_MANA,
-    });
+    setPlayerDeck(newPlayerInitialDraw.remainingDeck);
+    setPlayerHand(newPlayerInitialDraw.hand);
+    setCpuDeck(newCpuInitialDraw.remainingDeck);
+    setCpuHand(newCpuInitialDraw.hand);
+    setPlayerMana(INITIAL_MANA);
+    setCpuMana(INITIAL_MANA);
   }
-
-  // 魔法を使用
-  function castMagic(magic: Magic, position: number) {
-    const isPlayer = xIsNext;
-    const state = isPlayer ? playerState : cpuState;
-    const setState = isPlayer ? setPlayerState : setCpuState;
-
-    if (state.mana >= magic.cost && position >= 0) {
-      // 手札から削除
-      const newHand = state.hand.filter((m) => m !== magic);
-      setState({
-        ...state,
-        hand: newHand,
-        mana: state.mana - magic.cost,
-      });
-
-      // 効果を適用
-      const currentPlayer = isPlayer ? 'X' : 'O';
-      switch (magic.type) {
-        case 'blockUp':
-          placePiece(position, currentPlayer, 'block', 'up');
-          break;
-        case 'blockRight':
-          placePiece(position, currentPlayer, 'block', 'right');
-          break;
-        case 'blockDown':
-          placePiece(position, currentPlayer, 'block', 'down');
-          break;
-        case 'blockLeft':
-          placePiece(position, currentPlayer, 'block', 'left');
-          break;
-        case 'replace':
-          placePiece(position, currentPlayer, 'replace');
-          break;
-        case 'crossDestroy':
-          placePiece(position, currentPlayer, 'crossDestroy');
-          break;
-        case 'normal':
-          placePiece(position, currentPlayer, null);
-          break;
-      }
-    }
-  }
-
-  // ターン開始時に手札を補充
-  useEffect(() => {
-    // 勝者がいる場合は手札を補充しない
-    if (winner) return;
-
-    // 現在のプレイヤーの手札が最大数より少ない場合に補充
-    const currentState = xIsNext ? playerState : cpuState;
-    if (
-      currentState.hand.length < MAX_HAND_SIZE &&
-      currentState.deck.length > 0
-    ) {
-      drawCard(xIsNext);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xIsNext, winner]);
-
-  // ターン開始時にマナを1補充
-  useEffect(() => {
-    // 勝者がいる場合はマナを補充しない
-    if (winner) return;
-
-    // 現在のプレイヤーのマナを補充
-    if (xIsNext) {
-      setPlayerState((prev) => ({
-        ...prev,
-        mana: Math.min(MAX_MANA, prev.mana + MANA_REGENERATION_PER_TURN),
-      }));
-    } else {
-      setCpuState((prev) => ({
-        ...prev,
-        mana: Math.min(MAX_MANA, prev.mana + MANA_REGENERATION_PER_TURN),
-      }));
-    }
-  }, [xIsNext, winner]);
-
-  // 手札を補充
-  function drawCard(isPlayer: boolean) {
-    const state = isPlayer ? playerState : cpuState;
-    const setState = isPlayer ? setPlayerState : setCpuState;
-
-    if (state.hand.length < MAX_HAND_SIZE && state.deck.length > 0) {
-      const randomIndex = Math.floor(Math.random() * state.deck.length);
-      const drawnCard = state.deck[randomIndex];
-      const newDeck = [...state.deck];
-      newDeck.splice(randomIndex, 1);
-      const newHand = [...state.hand, drawnCard];
-
-      setState({
-        ...state,
-        deck: newDeck,
-        hand: newHand,
-      });
-    }
-  }
-
-  useCPUOpponent({
-    squares,
-    blockedSquares,
-    size,
-    winLength,
-    isCPUMode,
-    cpuLevel,
-    isPlayerTurn: xIsNext,
-    winner,
-    onMove: handleCPUMove,
-    cpuMana: cpuState.mana,
-    cpuHand: cpuState.hand,
-  });
 
   return {
     // State
@@ -407,6 +226,10 @@ export function useGameState(
     playerRenCount,
     cpuRenCount,
     requiredRenToWin: REQUIRED_REN_TO_WIN,
+    playerDeckCount: playerState.deck.length,
+    cpuDeckCount: cpuState.deck.length,
+    playerDiscardCount: playerState.discardPile.length,
+    cpuDiscardCount: cpuState.discardPile.length,
 
     // Event handlers
     handleClick,
@@ -415,8 +238,6 @@ export function useGameState(
     handleCPULevelChange,
     toggleCPUMode,
     resetGame,
-    drawCard,
-    castMagic,
     setSelectedMagic,
   };
 }

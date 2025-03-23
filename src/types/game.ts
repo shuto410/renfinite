@@ -21,4 +21,5 @@ export interface Player {
   deck: Magic[]; // デッキ
   hand: Magic[]; // 手札
   mana: number; // マナ
+  discardPile: Magic[]; // 捨て札
 }

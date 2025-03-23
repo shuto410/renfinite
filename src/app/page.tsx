@@ -6,7 +6,6 @@ import { MagicButtons } from '@/components/MagicButtons';
 import { GameStatus } from '@/components/GameStatus';
 // import { DebugOverlay } from '@/components/DebugOverlay';
 import { useEffect, useState } from 'react';
-// import { evaluateCell } from '@/hooks/useCPUOpponent';
 
 export default function Home() {
   const game = useGameState();
@@ -40,6 +39,10 @@ export default function Home() {
         playerRenCount={game.playerRenCount}
         cpuRenCount={game.cpuRenCount}
         requiredRenToWin={game.requiredRenToWin}
+        playerDeckCount={game.playerDeckCount}
+        cpuDeckCount={game.cpuDeckCount}
+        playerDiscardCount={game.playerDiscardCount}
+        cpuDiscardCount={game.cpuDiscardCount}
       />
 
       {mounted && (
