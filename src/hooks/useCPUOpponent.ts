@@ -341,16 +341,26 @@ export function findBlockingMove(
   // 魔法を使って阻止できる場合を探す
   const availableMagics = cpuHand.filter((magic) => magic.cost <= cpuMana);
   for (const magic of availableMagics) {
+    // 魔法に有効な位置を取得
+    const validPositions = findValidPositionsForMagic(
+      magic,
+      squares,
+      blockedSquares,
+    );
+
     if (magic.type === 'replace') {
       // replace魔法は相手の石を置き換えられる
-      for (let i = 0; i < squares.length; i++) {
-        if (squares[i] !== 'X') continue;
-
+      // TBD
+      return null;
+    } else {
+      // その他の魔法も有効な位置に配置して阻止できるか確認
+      for (const position of validPositions) {
         const testSquares = squares.slice();
-        testSquares[i] = 'O';
+        testSquares[position] = 'X';
         const result = calculateWinner(testSquares, size, winLength);
-        if (result.winner !== 'X') {
-          return { position: i, magic };
+        if (result.winner === 'X') {
+          // 相手の勝利を阻止できる手を見つけた
+          return { position, magic };
         }
       }
     }
