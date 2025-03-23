@@ -70,6 +70,7 @@ export function useGameBoard() {
 
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [completedRen, squares, playerRenCount, cpuRenCount]);
 
   // 共通の石を置くロジック

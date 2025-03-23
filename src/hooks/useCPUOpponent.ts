@@ -3,7 +3,6 @@ import { calculateWinner } from '@/utils';
 import { Magic } from '@/types/game';
 import { applyCrossDestroy } from '../utils/effects';
 import { MAGIC_CARDS } from '@/constants/decks';
-import { useGameStore } from '@/store';
 
 // 常に使用可能な汎用魔法カード
 const GENERIC_MAGIC: Magic = {

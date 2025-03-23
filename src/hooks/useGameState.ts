@@ -1,4 +1,4 @@
-import type { BlockDirection, Magic } from '@/types/game';
+import type { Magic } from '@/types/game';
 import { useCPUOpponent } from './useCPUOpponent';
 import {
   CPU_INITIAL_DECK,

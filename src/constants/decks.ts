@@ -1,4 +1,4 @@
-import { Magic, MagicCardType, MagicType } from '@/types/game';
+import { Magic, MagicCardType } from '@/types/game';
 
 // 魔法カードの基本定義
 export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
