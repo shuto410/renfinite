@@ -235,6 +235,7 @@ export function useCPUOpponent({
           size,
           winLength,
         );
+        console.log('CPU position:', position);
         if (position !== null) {
           onMove(position, magic);
           return;
@@ -296,6 +297,7 @@ export function findWinningMove(
       squares,
       blockedSquares,
     );
+    console.log('CPU findWinningMove validPositions:', validPositions);
     for (const pos of validPositions) {
       // 魔法を使用した場合の結果をシミュレート
       const testSquares = squares.slice();
@@ -374,12 +376,15 @@ export function findValidPositionsForMagic(
   switch (magic.type) {
     case 'replace':
       validPositions = squares
-        .map((square, i) =>
-          square === 'X' && (!blockedSquares[i] || blockedSquares[i] === 'O')
+        .map((square, i) => {
+          console.log('CPU replace:', square, i, blockedSquares[i]);
+          return square === 'X' &&
+            (!blockedSquares[i] || blockedSquares[i] === 'O')
             ? i
-            : -1,
-        )
+            : -1;
+        })
         .filter((i) => i !== -1);
+      console.log('CPU replace validPositions:', validPositions);
       break;
 
     case 'blockUp':
@@ -413,6 +418,7 @@ export function findBestPositionForMagic(
     squares,
     blockedSquares,
   );
+  console.log('CPU findBestPositionForMagic validPositions:', validPositions);
   if (validPositions.length === 0) return null;
 
   // 各位置を評価

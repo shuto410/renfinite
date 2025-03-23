@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 // 常に使用可能な汎用魔法カード
 const GENERIC_MAGIC: Magic = {
   type: 'normal',
+  cardType: 'normal',
   cost: 1,
   name: 'Basic Stone',
   description: 'Place a stone without any special effect',

@@ -9,8 +9,24 @@ export type MagicType =
   | 'crossDestroy'
   | 'normal';
 
+export type MagicCardType =
+  | 'blockUp'
+  | 'blockRight'
+  | 'blockDown'
+  | 'blockLeft'
+  | 'replace'
+  | 'crossDestroy'
+  | 'blockUpLight'
+  | 'blockRightLight'
+  | 'blockDownLight'
+  | 'blockLeftLight'
+  | 'replaceLight'
+  | 'crossDestroyLight'
+  | 'normal';
+
 export interface Magic {
   type: MagicType;
+  cardType: MagicCardType;
   cost: number;
   name: string;
   description: string;
