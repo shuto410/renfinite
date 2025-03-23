@@ -44,6 +44,7 @@ function generateInitialHand(deck: Magic[]): {
 }
 
 export function useGameState() {
+  const addMoveRecord = useGameStore.use.addMoveRecord();
   const size = useGameStore.use.size();
   const setSize = useGameStore.use.setSize();
   const winLength = useGameStore.use.winLength();
@@ -140,6 +141,7 @@ export function useGameState() {
         castMagic(selectedMagic, position);
       }
 
+      addMoveRecord(currentPlayer, position, selectedMagic);
       setSelectedMagic(null);
     }
     // 魔法が選択されていない場合は何もしない
@@ -151,6 +153,7 @@ export function useGameState() {
     } else {
       placePiece(position, 'O', null);
     }
+    addMoveRecord(xIsNext ? 'X' : 'O', position, magic);
   }
 
   function handleSizeChange(newSize: number) {

@@ -3,14 +3,16 @@ import { createGameBoardSlice, GameBoardState } from './gameBoard';
 import { GameConfigState, createGameConfigSlice } from './gameConfig';
 import { StoreApi, UseBoundStore } from 'zustand';
 import { createMagicSystemSlice, MagicSystemState } from './magicSystem';
+import { MoveHistoryState, createMoveHistorySlice } from './moveHistory';
 
-const gameStore = create<GameConfigState & GameBoardState & MagicSystemState>(
-  (...a) => ({
-    ...createGameConfigSlice(...a),
-    ...createGameBoardSlice(...a),
-    ...createMagicSystemSlice(...a),
-  }),
-);
+const gameStore = create<
+  GameConfigState & GameBoardState & MagicSystemState & MoveHistoryState
+>((...a) => ({
+  ...createGameConfigSlice(...a),
+  ...createGameBoardSlice(...a),
+  ...createMagicSystemSlice(...a),
+  ...createMoveHistorySlice(...a),
+}));
 
 type WithSelectors<S> = S extends { getState: () => infer T }
   ? S & { use: { [K in keyof T]: () => T[K] } }

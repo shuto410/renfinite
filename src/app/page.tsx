@@ -6,6 +6,7 @@ import { MagicButtons } from '@/components/MagicButtons';
 import { GameStatus } from '@/components/GameStatus';
 // import { DebugOverlay } from '@/components/DebugOverlay';
 import { useEffect, useState } from 'react';
+import MoveHistory from '@/components/MoveHistory';
 
 export default function Home() {
   const game = useGameState();
@@ -56,15 +57,19 @@ export default function Home() {
         />
       )}
 
-      <Board
-        size={game.size}
-        squares={game.squares}
-        blockedSquares={game.blockedSquares}
-        currentPlayer={game.xIsNext ? 'X' : 'O'}
-        onSquareClick={game.handleClick}
-        lastPlacedPosition={game.lastPlacedPosition}
-      />
-
+      <div className='flex flex-row'>
+        <Board
+          size={game.size}
+          squares={game.squares}
+          blockedSquares={game.blockedSquares}
+          currentPlayer={game.xIsNext ? 'X' : 'O'}
+          onSquareClick={game.handleClick}
+          lastPlacedPosition={game.lastPlacedPosition}
+        />
+        <div className='pl-8 lg:w-80'>
+          <MoveHistory boardSize={game.size} maxDisplayed={15} />
+        </div>
+      </div>
       <button
         className='mt-6 px-6 py-3 text-lg bg-green-500 text-white rounded-md
                    hover:bg-green-600 transition-colors duration-200'
