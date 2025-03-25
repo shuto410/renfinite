@@ -26,14 +26,14 @@ const MoveHistory: React.FC<MoveHistoryProps> = ({
 
   return (
     <div className='bg-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto'>
-      <h2 className='text-xl font-bold text-black mb-3'>対戦履歴</h2>
+      <h2 className='text-xl font-bold text-black mb-3'>Move History</h2>
       {recentMoves.length === 0 ? (
-        <p className='text-gray-400 italic'>まだ動きはありません</p>
+        <p className='text-gray-400 italic'>No moves yet</p>
       ) : (
         <ul className='space-y-2'>
           {recentMoves.map((move, index) => {
             const isPlayer = move.player === 'X';
-            const playerName = isPlayer ? 'プレイヤー' : 'CPU';
+            const playerName = isPlayer ? 'Player' : 'CPU';
             const coords = positionToCoordinates(move.position, boardSize);
             // const magicName = move.magic ? move.magic.name : '通常の石';
             const magicName = move.magic?.cardType;
@@ -55,9 +55,9 @@ const MoveHistory: React.FC<MoveHistoryProps> = ({
                   </div>
                   <div className='text-white'>
                     <span className='font-bold'>{playerName}</span>
-                    <span> が {coords} に </span>
+                    <span> placed a </span>
                     <span className='italic'>{magicName}</span>
-                    <span> を置きました</span>
+                    <span> at {coords}</span>
                   </div>
                 </div>
               </li>
