@@ -102,7 +102,12 @@ export const createGameBoardSlice: StateCreator<GameBoardState> = (set) => ({
     set((state) => {
       const nextSquares = state.squares.slice();
       nextSquares[position] = null;
-      return { squares: nextSquares };
+      const nextSquaresMetaInfo = state.squaresMetaInfo.slice();
+      nextSquaresMetaInfo[position] = { attackPower: null };
+      return {
+        squares: nextSquares,
+        squaresMetaInfo: nextSquaresMetaInfo,
+      };
     });
   },
   crossDestroyAndPlace: (position: number, magicType?: MagicType) => {
@@ -110,11 +115,12 @@ export const createGameBoardSlice: StateCreator<GameBoardState> = (set) => ({
       const nextSquares = state.squares.slice();
       const size = Math.sqrt(state.squares.length); // should be 9 in the page load
       const crossDestroyTargets = applyCrossDestroy(position, size);
+      const nextSquaresMetaInfo = state.squaresMetaInfo.slice();
       crossDestroyTargets.forEach((pos) => {
         nextSquares[pos] = null;
+        nextSquaresMetaInfo[pos] = { attackPower: null };
       });
       nextSquares[position] = state.xIsNext ? 'X' : 'O';
-      const nextSquaresMetaInfo = state.squaresMetaInfo.slice();
       if (magicType) {
         nextSquaresMetaInfo[position] = {
           attackPower: MAGIC_CARDS[magicType].attackPower ?? null,
@@ -133,11 +139,12 @@ export const createGameBoardSlice: StateCreator<GameBoardState> = (set) => ({
       const nextSquares = state.squares.slice();
       const size = Math.sqrt(state.squares.length); // should be 9 in the page load
       const allDestroyTargets = applyAllDestroy(position, size);
+      const nextSquaresMetaInfo = state.squaresMetaInfo.slice();
       allDestroyTargets.forEach((pos) => {
         nextSquares[pos] = null;
+        nextSquaresMetaInfo[pos] = { attackPower: null };
       });
       nextSquares[position] = state.xIsNext ? 'X' : 'O';
-      const nextSquaresMetaInfo = state.squaresMetaInfo.slice();
       if (magicType) {
         nextSquaresMetaInfo[position] = {
           attackPower: MAGIC_CARDS[magicType].attackPower ?? null,

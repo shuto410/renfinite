@@ -29,7 +29,6 @@ export function applyBlockEffect(
       break;
     case 'all':
       blockIndexes = [
-        position,
         position - size,
         position - size - 1,
         position - size + 1,

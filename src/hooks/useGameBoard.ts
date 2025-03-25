@@ -56,19 +56,21 @@ export function useGameBoard() {
         if (renOwner === 'X') {
           const newCount = playerRenCount + 1;
           setPlayerRenCount(newCount);
-          setCpuHitPoints(cpuHitPoints - totalRenAttackPower);
+          const newCpuHitPoints = cpuHitPoints - totalRenAttackPower;
+          setCpuHitPoints(newCpuHitPoints > 0 ? newCpuHitPoints : 0);
 
           // 勝利条件を確認
-          if (cpuHitPoints <= 0) {
+          if (newCpuHitPoints <= 0) {
             setFinalWinner('X');
           }
         } else if (renOwner === 'O') {
           const newCount = cpuRenCount + 1;
           setCpuRenCount(newCount);
-          setPlayerHitPoints(playerHitPoints - totalRenAttackPower);
+          const newPlayerHitPoints = playerHitPoints - totalRenAttackPower;
+          setPlayerHitPoints(newPlayerHitPoints > 0 ? newPlayerHitPoints : 0);
 
           // 勝利条件を確認
-          if (playerHitPoints <= 0) {
+          if (newPlayerHitPoints <= 0) {
             setFinalWinner('O');
           }
         }
