@@ -5,7 +5,6 @@ interface BoardProps {
   size: number;
   squares: ('X' | 'O' | null)[];
   blockedSquares: ('X' | 'O' | null)[]; // どちらがブロックしたかを記録
-  currentPlayer: 'X' | 'O'; // 現在の手番
   lastPlacedPosition: number | null; // 追加
   onSquareClick: (index: number) => void;
 }
@@ -14,7 +13,6 @@ export default function Board({
   size,
   squares,
   blockedSquares,
-  currentPlayer,
   lastPlacedPosition,
   onSquareClick,
 }: BoardProps): ReactNode {
@@ -29,7 +27,6 @@ export default function Board({
             key={index}
             value={squares[index]}
             blockedBy={blockedSquares[index]}
-            currentPlayer={currentPlayer}
             onSquareClick={() => onSquareClick(index)}
             isLastPlaced={lastPlacedPosition === index}
           />,

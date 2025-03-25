@@ -1,7 +1,6 @@
 interface SquareProps {
   value: 'X' | 'O' | null;
   blockedBy?: 'X' | 'O' | null; // どちらのプレイヤーがブロックしたか
-  currentPlayer: 'X' | 'O'; // 現在の手番
   isLastPlaced: boolean;
   onSquareClick: () => void;
 }
@@ -9,12 +8,10 @@ interface SquareProps {
 export default function Square({
   value,
   blockedBy,
-  currentPlayer,
   isLastPlaced,
   onSquareClick,
 }: SquareProps) {
   // 自分がブロックしたマスは置ける
-  const isBlocked = blockedBy !== null && blockedBy !== currentPlayer;
   const isBlockedSquare = blockedBy !== null;
 
   return (
@@ -25,7 +22,7 @@ export default function Square({
                  ${value === 'X' ? 'text-blue-600' : ''}
                  ${value === 'O' ? 'text-red-600' : ''}`}
       onClick={onSquareClick}
-      disabled={isBlocked}
+      // disabled={isBlocked}
     >
       {value}
       {isLastPlaced && (

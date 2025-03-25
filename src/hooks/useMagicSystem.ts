@@ -4,17 +4,10 @@ import {
   MAX_MANA,
 } from '@/constants/decks';
 import { useGameStore } from '@/store';
-import { BlockDirection, Magic } from '@/types/game';
+import { Magic } from '@/types/game';
 import { useEffect } from 'react';
 
-export function useMagicSystem(
-  placePiece: (
-    position: number,
-    player: 'X' | 'O',
-    spType: 'block' | 'replace' | 'crossDestroy' | null,
-    blockDirection?: BlockDirection,
-  ) => void,
-) {
+export function useMagicSystem() {
   const playerState = useGameStore.use.playerState();
   const cpuState = useGameStore.use.cpuState();
   const selectedMagic = useGameStore.use.selectedMagic();
@@ -31,6 +24,14 @@ export function useMagicSystem(
   const reshuffleCpuDiscard = useGameStore.use.reshuffleCpuDiscard();
   const finalWinner = useGameStore.use.finalWinner();
   const xIsNext = useGameStore.use.xIsNext();
+  const playerRenCount = useGameStore.use.playerRenCount();
+  const cpuRenCount = useGameStore.use.cpuRenCount();
+
+  const placePiece = useGameStore.use.placePiece();
+  const placeBlock = useGameStore.use.placeBlock();
+  const destroyPiece = useGameStore.use.destroyPiece();
+  const crossDestroyAndPlace = useGameStore.use.crossDestroyAndPlace();
+  const allDestroyAndPlace = useGameStore.use.allDestroyAndPlace();
 
   // ターン開始時に手札を補充
   useEffect(() => {
@@ -71,11 +72,17 @@ export function useMagicSystem(
     // 現在のプレイヤーのマナを補充
     if (xIsNext) {
       setPlayerMana(
-        Math.min(MAX_MANA, playerState.mana + MANA_REGENERATION_PER_TURN),
+        Math.min(
+          MAX_MANA,
+          playerState.mana + MANA_REGENERATION_PER_TURN + playerRenCount,
+        ),
       );
     } else {
       setCpuMana(
-        Math.min(MAX_MANA, cpuState.mana + MANA_REGENERATION_PER_TURN),
+        Math.min(
+          MAX_MANA,
+          cpuState.mana + MANA_REGENERATION_PER_TURN + cpuRenCount,
+        ),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,6 +108,7 @@ export function useMagicSystem(
 
   // 魔法を使用
   function castMagic(magic: Magic, position: number) {
+    console.log('castMagic: ', magic, position);
     const isPlayer = xIsNext;
     const state = isPlayer ? playerState : cpuState;
     const setHand = isPlayer ? setPlayerHand : setCpuHand;
@@ -117,28 +125,44 @@ export function useMagicSystem(
       addToDiscard([magic]);
 
       // 効果を適用
-      const currentPlayer = isPlayer ? 'X' : 'O';
       switch (magic.type) {
+        case 'block':
+          placeBlock(position, null);
+          break;
         case 'blockUp':
-          placePiece(position, currentPlayer, 'block', 'up');
+          placeBlock(position, 'up');
+          placePiece(position);
           break;
         case 'blockRight':
-          placePiece(position, currentPlayer, 'block', 'right');
+          placeBlock(position, 'right');
+          placePiece(position);
           break;
         case 'blockDown':
-          placePiece(position, currentPlayer, 'block', 'down');
+          placeBlock(position, 'down');
+          placePiece(position);
           break;
         case 'blockLeft':
-          placePiece(position, currentPlayer, 'block', 'left');
+          placeBlock(position, 'left');
+          placePiece(position);
           break;
         case 'replace':
-          placePiece(position, currentPlayer, 'replace');
+          placePiece(position);
+          break;
+        case 'destroy':
+          destroyPiece(position);
           break;
         case 'crossDestroy':
-          placePiece(position, currentPlayer, 'crossDestroy');
+          crossDestroyAndPlace(position);
           break;
         case 'normal':
-          placePiece(position, currentPlayer, null);
+          placePiece(position);
+          break;
+        case 'allDestroy':
+          allDestroyAndPlace(position);
+          break;
+        case 'allBlock':
+          placeBlock(position, 'all');
+          placePiece(position);
           break;
       }
     }

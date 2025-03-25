@@ -8,6 +8,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '上ブロック',
     description: '上方向にブロックを設置',
     cost: 1,
+    endTurn: true,
   },
   blockRight: {
     type: 'blockRight',
@@ -15,6 +16,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '右ブロック',
     description: '右方向にブロックを設置',
     cost: 1,
+    endTurn: true,
   },
   blockDown: {
     type: 'blockDown',
@@ -22,6 +24,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '下ブロック',
     description: '下方向にブロックを設置',
     cost: 1,
+    endTurn: true,
   },
   blockLeft: {
     type: 'blockLeft',
@@ -29,6 +32,15 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '左ブロック',
     description: '左方向にブロックを設置',
     cost: 1,
+    endTurn: true,
+  },
+  block: {
+    type: 'block',
+    cardType: 'block',
+    name: 'ブロック',
+    description: '指定のマスをブロック',
+    cost: 2,
+    endTurn: false,
   },
   replace: {
     type: 'replace',
@@ -36,6 +48,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '置換',
     description: '相手の石を自分の石に置き換える',
     cost: 2,
+    endTurn: true,
   },
   crossDestroy: {
     type: 'crossDestroy',
@@ -43,6 +56,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '十字破壊',
     description: '十字方向のブロックを破壊',
     cost: 3,
+    endTurn: true,
   },
   normal: {
     type: 'normal',
@@ -50,6 +64,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '通常石',
     description: '通常の石を置く',
     cost: 0,
+    endTurn: true,
   },
   blockUpLight: {
     type: 'blockUp',
@@ -57,6 +72,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '上ブロック',
     description: '上方向にブロックを設置',
     cost: 0,
+    endTurn: true,
   },
   blockRightLight: {
     type: 'blockRight',
@@ -64,6 +80,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '右ブロック',
     description: '右方向にブロックを設置',
     cost: 0,
+    endTurn: true,
   },
   blockDownLight: {
     type: 'blockDown',
@@ -71,6 +88,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '下ブロック',
     description: '下方向にブロックを設置',
     cost: 0,
+    endTurn: true,
   },
   blockLeftLight: {
     type: 'blockLeft',
@@ -78,6 +96,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '左ブロック',
     description: '左方向にブロックを設置',
     cost: 0,
+    endTurn: true,
   },
   replaceLight: {
     type: 'replace',
@@ -85,6 +104,15 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '置換',
     description: '相手の石を自分の石に置き換える',
     cost: 1,
+    endTurn: true,
+  },
+  destroy: {
+    type: 'destroy',
+    cardType: 'destroy',
+    name: '破壊',
+    description: '指定のマスを破壊',
+    cost: 3,
+    endTurn: false,
   },
   crossDestroyLight: {
     type: 'crossDestroy',
@@ -92,6 +120,23 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     name: '十字破壊',
     description: '十字方向のブロックを破壊',
     cost: 2,
+    endTurn: true,
+  },
+  allDestroy: {
+    type: 'allDestroy',
+    cardType: 'allDestroy',
+    name: '全破壊',
+    description: '全ての石を破壊',
+    cost: 3,
+    endTurn: true,
+  },
+  allBlock: {
+    type: 'allBlock',
+    cardType: 'allBlock',
+    name: '全ブロック',
+    description: '全てのマスをブロック',
+    cost: 3,
+    endTurn: true,
   },
 };
 
@@ -117,16 +162,17 @@ function createDeck(prefix: string, cardTypes: MagicCardType[]): Magic[] {
 // プレイヤー（X）の初期デッキ定義
 const PLAYER_DECK_TYPES: MagicCardType[] = [
   'replace',
-  'blockUp',
-  'blockRight',
-  'blockDown',
-  'blockLeft',
-  'crossDestroy',
   'replace',
+  'block',
+  'block',
+  'blockUp',
+  'blockRight',
   'blockUp',
   'blockRight',
   'blockDown',
-  'normal',
+  'crossDestroy',
+  'destroy',
+  'destroy',
   'normal',
   'normal',
   'normal',
@@ -148,6 +194,8 @@ const CPU_DECK_TYPES: MagicCardType[] = [
   'replaceLight',
   'crossDestroyLight',
   'crossDestroyLight',
+  'allDestroy',
+  'allBlock',
 ];
 
 // プレイヤー（X）の初期デッキ

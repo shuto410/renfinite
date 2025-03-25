@@ -46,6 +46,15 @@ export default function Home() {
         cpuDiscardCount={game.cpuDiscardCount}
       />
 
+      <div className='m-4'>
+        <button
+          className='px-4 py-2 rounded-md transition-colors duration-200 bg-red-400 text-white'
+          onClick={game.endTurn}
+        >
+          End Turn
+        </button>
+      </div>
+
       {mounted && (
         <MagicButtons
           hand={game.playerHand}
@@ -62,7 +71,6 @@ export default function Home() {
           size={game.size}
           squares={game.squares}
           blockedSquares={game.blockedSquares}
-          currentPlayer={game.xIsNext ? 'X' : 'O'}
           onSquareClick={game.handleClick}
           lastPlacedPosition={game.lastPlacedPosition}
         />

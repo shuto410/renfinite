@@ -55,6 +55,8 @@ export function useGameState() {
   const setIsCPUMode = useGameStore.use.setIsCPUMode();
   const cpuLevel = useGameStore.use.cpuLevel();
   const setCPULevel = useGameStore.use.setCPULevel();
+  const placePiece = useGameStore.use.placePiece();
+  const endTurn = useGameStore.use.endTurn();
   const {
     winner,
     xIsNext,
@@ -63,7 +65,6 @@ export function useGameState() {
     finalWinner,
     lastPlacedPosition,
     blockedSquares,
-    placePiece,
     setXIsNext,
     setFinalWinner,
     setBlockedSquares,
@@ -83,7 +84,7 @@ export function useGameState() {
     setCpuMana,
     setSelectedMagic,
     castMagic,
-  } = useMagicSystem(placePiece);
+  } = useMagicSystem();
 
   useCPUOpponent({
     squares,
@@ -100,58 +101,61 @@ export function useGameState() {
   });
 
   function handleClick(position: number) {
+    console.log('handleClick: ', position);
     const currentPlayer = xIsNext ? 'X' : 'O';
-    if (
-      finalWinner ||
-      winner ||
-      (blockedSquares[position] && blockedSquares[position] !== currentPlayer)
-    )
-      return;
-    if (isCPUMode && !xIsNext) return;
+    if (finalWinner || winner) return;
+    if ((isCPUMode && !xIsNext) || !selectedMagic) return;
 
-    // 選択された魔法がある場合
-    if (selectedMagic) {
-      const state = xIsNext ? playerState : cpuState;
-      const isGenericMagic = selectedMagic.id === GENERIC_MAGIC.id;
-
-      // マナが足りない場合は処理しない
-      if (state.mana < selectedMagic.cost) return;
-
-      // replace魔法の場合は、相手の石がある場所のみ選択可能
-      if (selectedMagic.type === 'replace') {
-        if (!squares[position] || squares[position] === currentPlayer) return;
-      } else if (selectedMagic.type === 'normal') {
-        // normal魔法は空いているマスのみ選択可能
-        if (squares[position]) return;
-      } else {
-        // その他の魔法は空いているマスのみ選択可能
-        if (squares[position]) return;
+    if (selectedMagic.type !== 'destroy' && selectedMagic.type !== 'block') {
+      if (
+        blockedSquares[position] &&
+        blockedSquares[position] !== currentPlayer
+      ) {
+        return;
       }
-
-      // 汎用魔法カードの場合は手札から削除しない
-      if (isGenericMagic) {
-        // マナだけ消費
-        const setMana = xIsNext ? setPlayerMana : setCpuMana;
-        setMana(state.mana - selectedMagic.cost);
-
-        // 効果を適用（通常の石を置く）
-        placePiece(position, currentPlayer, null);
-      } else {
-        // 通常の魔法カードを使用
-        castMagic(selectedMagic, position);
-      }
-
-      addMoveRecord(currentPlayer, position, selectedMagic);
-      setSelectedMagic(null);
     }
-    // 魔法が選択されていない場合は何もしない
+
+    console.log('handleClick: ', position, selectedMagic);
+
+    const state = xIsNext ? playerState : cpuState;
+    const isGenericMagic = selectedMagic.id === GENERIC_MAGIC.id;
+
+    // マナが足りない場合は処理しない
+    if (state.mana < selectedMagic.cost) return;
+
+    // replace魔法の場合は、相手の石がある場所のみ選択可能
+    if (selectedMagic.type === 'replace') {
+      if (!squares[position] || squares[position] === currentPlayer) return;
+    } else if (
+      selectedMagic.type !== 'destroy' &&
+      selectedMagic.type !== 'block'
+    ) {
+      if (squares[position]) return;
+    }
+
+    // 汎用魔法カードの場合は手札から削除しない
+    if (isGenericMagic) {
+      // マナだけ消費
+      const setMana = xIsNext ? setPlayerMana : setCpuMana;
+      setMana(state.mana - selectedMagic.cost);
+
+      // 効果を適用（通常の石を置く）
+      placePiece(position);
+    } else {
+      // 通常の魔法カードを使用
+      castMagic(selectedMagic, position);
+    }
+
+    addMoveRecord(currentPlayer, position, selectedMagic);
+    setSelectedMagic(null);
   }
 
   function handleCPUMove(position: number, magic: Magic | null) {
+    console.log('handleCPUMove: ', position, magic);
     if (magic) {
       castMagic(magic, position);
     } else {
-      placePiece(position, 'O', null);
+      placePiece(position);
     }
     addMoveRecord(xIsNext ? 'X' : 'O', position, magic);
   }
@@ -241,6 +245,7 @@ export function useGameState() {
     handleCPULevelChange,
     toggleCPUMode,
     resetGame,
+    endTurn,
     setSelectedMagic,
   };
 }

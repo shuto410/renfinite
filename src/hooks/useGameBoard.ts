@@ -1,8 +1,5 @@
 import { useGameStore } from '@/store';
-import { applyCrossDestroy } from '@/utils/effects';
-import { BlockDirection } from '@/types/game';
 import { calculateWinner } from '@/utils';
-import { applyBlockEffect } from '@/utils/effects';
 import { useEffect } from 'react';
 
 const REQUIRED_REN_TO_WIN = 3;
@@ -21,7 +18,6 @@ export function useGameBoard() {
   const setBlockedSquares = useGameStore.use.setBlockedSquares();
 
   const lastPlacedPosition = useGameStore.use.lastPlacedPosition();
-  const setLastPlacedPosition = useGameStore.use.setLastPlacedPosition();
 
   const playerRenCount = useGameStore.use.playerRenCount();
   const cpuRenCount = useGameStore.use.cpuRenCount();
@@ -73,45 +69,12 @@ export function useGameBoard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [completedRen, squares, playerRenCount, cpuRenCount]);
 
-  // 共通の石を置くロジック
-  function placePiece(
-    position: number,
-    player: 'X' | 'O',
-    spType: 'block' | 'replace' | 'crossDestroy' | null,
-    blockDirection?: BlockDirection,
-  ) {
-    const nextSquares = squares.slice();
-    nextSquares[position] = player;
-    setSquares(nextSquares);
-
-    // 特殊効果の処理
-    if (spType === 'block' && blockDirection) {
-      const blockIndex = applyBlockEffect(position, blockDirection, size);
-      if (blockIndex !== null) {
-        const newBlockedSquares = blockedSquares.slice();
-        newBlockedSquares[blockIndex] = player;
-        setBlockedSquares(newBlockedSquares);
-      }
-    } else if (spType === 'crossDestroy') {
-      const targets = applyCrossDestroy(position, size);
-      const newSquares = nextSquares.slice();
-      targets.forEach((pos) => {
-        newSquares[pos] = null;
-      });
-      setSquares(newSquares);
-    }
-
-    setLastPlacedPosition(position);
-    setXIsNext(!xIsNext);
-  }
-
   return {
     xIsNext,
     setXIsNext,
     squares,
     setSquares,
     size,
-    placePiece,
     lastPlacedPosition,
     winner,
     completedRen,

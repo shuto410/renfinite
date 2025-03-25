@@ -1,20 +1,26 @@
-export type BlockDirection = 'up' | 'right' | 'down' | 'left' | null;
+export type BlockDirection = 'up' | 'right' | 'down' | 'left' | 'all' | null;
 
 export type MagicType =
+  | 'block'
   | 'blockUp'
   | 'blockRight'
   | 'blockDown'
   | 'blockLeft'
   | 'replace'
+  | 'destroy'
   | 'crossDestroy'
+  | 'allDestroy'
+  | 'allBlock'
   | 'normal';
 
 export type MagicCardType =
+  | 'block'
   | 'blockUp'
   | 'blockRight'
   | 'blockDown'
   | 'blockLeft'
   | 'replace'
+  | 'destroy'
   | 'crossDestroy'
   | 'blockUpLight'
   | 'blockRightLight'
@@ -22,6 +28,8 @@ export type MagicCardType =
   | 'blockLeftLight'
   | 'replaceLight'
   | 'crossDestroyLight'
+  | 'allDestroy'
+  | 'allBlock'
   | 'normal';
 
 export interface Magic {
@@ -30,12 +38,13 @@ export interface Magic {
   cost: number;
   name: string;
   description: string;
+  endTurn: boolean;
   id: string;
 }
 
 export interface Player {
-  deck: Magic[]; // デッキ
-  hand: Magic[]; // 手札
-  mana: number; // マナ
-  discardPile: Magic[]; // 捨て札
+  deck: Magic[];
+  hand: Magic[];
+  mana: number;
+  discardPile: Magic[];
 }

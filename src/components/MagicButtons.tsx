@@ -1,6 +1,7 @@
 'use client';
 import { Magic } from '@/types/game';
 import { useEffect, useState } from 'react';
+import { Link } from 'lucide-react';
 
 // 常に使用可能な汎用魔法カード
 const GENERIC_MAGIC: Magic = {
@@ -10,6 +11,7 @@ const GENERIC_MAGIC: Magic = {
   name: 'Basic Stone',
   description: 'Place a stone without any special effect',
   id: 'generic-stone',
+  endTurn: true,
 };
 
 interface MagicButtonsProps {
@@ -45,7 +47,7 @@ export function MagicButtons({
     return (
       <button
         key={`${magic.type}-${magic.cost}-${magic.id}`}
-        className={`px-4 py-2 rounded-md transition-colors duration-200 
+        className={`px-4 py-2 rounded-md transition-colors duration-200 flex items-center
           ${
             isSelected
               ? 'bg-blue-500 text-white'
@@ -58,6 +60,7 @@ export function MagicButtons({
         onClick={() => onSelectMagic(isSelected ? null : magic)}
         disabled={!canUse}
       >
+        {!magic.endTurn && <Link className='mr-2' size={16} />}
         {getMagicLabel(magic)}
       </button>
     );
@@ -73,12 +76,20 @@ export function MagicButtons({
         return `Block Down (${magic.cost} Mana)`;
       case 'blockLeft':
         return `Block Left (${magic.cost} Mana)`;
+      case 'block':
+        return `Block (${magic.cost} Mana)`;
       case 'replace':
         return `Replace (${magic.cost} Mana)`;
       case 'crossDestroy':
         return `Cross Destroy (${magic.cost} Mana)`;
       case 'normal':
         return `Normal Stone (${magic.cost} Mana)`;
+      case 'destroy':
+        return `Destroy (${magic.cost} Mana)`;
+      case 'allDestroy':
+        return `All Destroy (${magic.cost} Mana)`;
+      case 'allBlock':
+        return `All Block (${magic.cost} Mana)`;
     }
   }
 
