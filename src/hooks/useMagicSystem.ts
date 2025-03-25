@@ -131,38 +131,38 @@ export function useMagicSystem() {
           break;
         case 'blockUp':
           placeBlock(position, 'up');
-          placePiece(position);
+          placePiece(position, 'blockUp');
           break;
         case 'blockRight':
           placeBlock(position, 'right');
-          placePiece(position);
+          placePiece(position, 'blockRight');
           break;
         case 'blockDown':
           placeBlock(position, 'down');
-          placePiece(position);
+          placePiece(position, 'blockDown');
           break;
         case 'blockLeft':
           placeBlock(position, 'left');
-          placePiece(position);
+          placePiece(position, 'blockLeft');
           break;
         case 'replace':
-          placePiece(position);
+          placePiece(position, 'replace');
           break;
         case 'destroy':
           destroyPiece(position);
           break;
         case 'crossDestroy':
-          crossDestroyAndPlace(position);
+          crossDestroyAndPlace(position, 'crossDestroy');
           break;
         case 'normal':
-          placePiece(position);
+          placePiece(position, 'normal');
           break;
         case 'allDestroy':
-          allDestroyAndPlace(position);
+          allDestroyAndPlace(position, 'allDestroy');
           break;
         case 'allBlock':
           placeBlock(position, 'all');
-          placePiece(position);
+          placePiece(position, 'allBlock');
           break;
       }
     }

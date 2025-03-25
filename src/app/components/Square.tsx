@@ -2,7 +2,7 @@ interface SquareProps {
   value: 'X' | 'O' | null;
   blockedBy?: 'X' | 'O' | null; // どちらのプレイヤーがブロックしたか
   isLastPlaced: boolean;
-  attackPower: number;
+  attackPower: number | null;
   onSquareClick: () => void;
 }
 
@@ -26,21 +26,6 @@ export default function Square({
       onClick={onSquareClick}
       // disabled={isBlocked}
     >
-      {
-        <div
-          className={`absolute inset-2 rounded-full
-                          ${value === 'X' ? 'bg-blue-400' : ''}
-                          ${value === 'O' ? 'bg-red-400' : ''}
-          `}
-        >
-          <div className='absolute inset-2 text-white'>
-            {value && attackPower}
-          </div>
-        </div>
-      }
-      {isLastPlaced && (
-        <div className='absolute inset-0.5 rounded-sm animate-pulse ring-2 ring-orange-400 pointer-events-none'></div>
-      )}
       {isBlockedSquare && (
         <div className='absolute inset-0 flex items-center justify-center'>
           <div
@@ -48,18 +33,7 @@ export default function Square({
               blockedBy === 'X' ? 'bg-blue-500' : 'bg-red-500'
             } opacity-10`}
           ></div>
-          <div className='absolute top-0 left-0 right-0 flex justify-center'>
-            <span
-              className={`text-xs px-1 rounded-b-sm
-              ${
-                blockedBy === 'X'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-red-500 text-white'
-              }`}
-            >
-              Blocked
-            </span>
-          </div>
+
           {/* ブロックのパターンを表示 */}
           <div className='absolute inset-0 pointer-events-none'>
             <div
@@ -83,6 +57,35 @@ export default function Square({
               }}
             ></div>
           </div>
+        </div>
+      )}
+      {
+        <div
+          className={`absolute inset-2 rounded-full
+                          ${value === 'X' ? 'bg-blue-400' : ''}
+                          ${value === 'O' ? 'bg-red-400' : ''}
+          `}
+        >
+          <div className='absolute inset-2 text-white'>
+            {value && attackPower && attackPower > 0 && attackPower}
+          </div>
+        </div>
+      }
+      {isLastPlaced && (
+        <div className='absolute inset-0.5 rounded-sm animate-pulse ring-2 ring-orange-400 pointer-events-none'></div>
+      )}
+      {blockedBy && (
+        <div className='absolute top-0 left-0 right-0 flex justify-center'>
+          <span
+            className={`text-xs px-1 rounded-b-sm
+              ${
+                blockedBy === 'X'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-red-500 text-white'
+              }`}
+          >
+            Blocked
+          </span>
         </div>
       )}
     </button>

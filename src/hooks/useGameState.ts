@@ -51,12 +51,16 @@ export function useGameState() {
   const setWinLength = useGameStore.use.setWinLength();
   const squares = useGameStore.use.squares();
   const setSquares = useGameStore.use.setSquares();
+  const squaresMetaInfo = useGameStore.use.squaresMetaInfo();
   const isCPUMode = useGameStore.use.isCPUMode();
   const setIsCPUMode = useGameStore.use.setIsCPUMode();
   const cpuLevel = useGameStore.use.cpuLevel();
   const setCPULevel = useGameStore.use.setCPULevel();
   const placePiece = useGameStore.use.placePiece();
   const endTurn = useGameStore.use.endTurn();
+  const playerHitPoints = useGameStore.use.playerHitPoints();
+  const cpuHitPoints = useGameStore.use.cpuHitPoints();
+
   const {
     winner,
     xIsNext,
@@ -219,6 +223,7 @@ export function useGameState() {
     size,
     winLength,
     squares,
+    squaresMetaInfo,
     xIsNext,
     isCPUMode,
     cpuLevel,
@@ -237,6 +242,8 @@ export function useGameState() {
     cpuDeckCount: cpuState.deck.length,
     playerDiscardCount: playerState.discardPile.length,
     cpuDiscardCount: cpuState.discardPile.length,
+    playerHitPoints,
+    cpuHitPoints,
 
     // Event handlers
     handleClick,

@@ -2,8 +2,6 @@ import { useGameStore } from '@/store';
 import { calculateWinner } from '@/utils';
 import { useEffect } from 'react';
 
-const REQUIRED_REN_TO_WIN = 3;
-
 export function useGameBoard() {
   const size = useGameStore.use.size();
   const winLength = useGameStore.use.winLength();
@@ -17,6 +15,8 @@ export function useGameBoard() {
   const blockedSquares = useGameStore.use.blockedSquares();
   const setBlockedSquares = useGameStore.use.setBlockedSquares();
 
+  const squaresMetaInfo = useGameStore.use.squaresMetaInfo();
+
   const lastPlacedPosition = useGameStore.use.lastPlacedPosition();
 
   const playerRenCount = useGameStore.use.playerRenCount();
@@ -27,6 +27,11 @@ export function useGameBoard() {
   const finalWinner = useGameStore.use.finalWinner();
   const setFinalWinner = useGameStore.use.setFinalWinner();
 
+  const playerHitPoints = useGameStore.use.playerHitPoints();
+  const cpuHitPoints = useGameStore.use.cpuHitPoints();
+  const setPlayerHitPoints = useGameStore.use.setPlayerHitPoints();
+  const setCpuHitPoints = useGameStore.use.setCpuHitPoints();
+
   const { winner, completedRen } = calculateWinner(squares, size, winLength);
 
   // 蓮が完成したら石を削除し、プレイヤーのカウントを増やす
@@ -34,6 +39,9 @@ export function useGameBoard() {
     if (completedRen && completedRen.length > 0) {
       // 完成した連の所有者を確認（最初の石の所有者）
       const renOwner = squares[completedRen[0]];
+      const totalRenAttackPower = completedRen.reduce((acc, position) => {
+        return acc + (squaresMetaInfo[position].attackPower ?? 0);
+      }, 0);
 
       // 少し遅延を入れて、プレイヤーが蓮の完成を確認できるようにする
       const timer = setTimeout(() => {
@@ -48,17 +56,19 @@ export function useGameBoard() {
         if (renOwner === 'X') {
           const newCount = playerRenCount + 1;
           setPlayerRenCount(newCount);
+          setCpuHitPoints(cpuHitPoints - totalRenAttackPower);
 
           // 勝利条件を確認
-          if (newCount >= REQUIRED_REN_TO_WIN) {
+          if (cpuHitPoints <= 0) {
             setFinalWinner('X');
           }
         } else if (renOwner === 'O') {
           const newCount = cpuRenCount + 1;
           setCpuRenCount(newCount);
+          setPlayerHitPoints(playerHitPoints - totalRenAttackPower);
 
           // 勝利条件を確認
-          if (newCount >= REQUIRED_REN_TO_WIN) {
+          if (playerHitPoints <= 0) {
             setFinalWinner('O');
           }
         }

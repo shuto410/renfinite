@@ -44,6 +44,8 @@ export default function Home() {
         cpuDeckCount={game.cpuDeckCount}
         playerDiscardCount={game.playerDiscardCount}
         cpuDiscardCount={game.cpuDiscardCount}
+        playerHitPoints={game.playerHitPoints}
+        cpuHitPoints={game.cpuHitPoints}
       />
 
       <div className='m-4'>
@@ -71,6 +73,7 @@ export default function Home() {
           size={game.size}
           squares={game.squares}
           blockedSquares={game.blockedSquares}
+          squaresMetaInfo={game.squaresMetaInfo}
           onSquareClick={game.handleClick}
           lastPlacedPosition={game.lastPlacedPosition}
         />

@@ -1,9 +1,11 @@
 import { type ReactNode } from 'react';
 import Square from './components/Square';
+import { SquareMetaInfo } from '@/store/gameBoard';
 
 interface BoardProps {
   size: number;
   squares: ('X' | 'O' | null)[];
+  squaresMetaInfo: SquareMetaInfo[];
   blockedSquares: ('X' | 'O' | null)[]; // どちらがブロックしたかを記録
   lastPlacedPosition: number | null; // 追加
   onSquareClick: (index: number) => void;
@@ -12,6 +14,7 @@ interface BoardProps {
 export default function Board({
   size,
   squares,
+  squaresMetaInfo,
   blockedSquares,
   lastPlacedPosition,
   onSquareClick,
@@ -26,7 +29,7 @@ export default function Board({
           <Square
             key={index}
             value={squares[index]}
-            attackPower={10}
+            attackPower={squaresMetaInfo[index].attackPower}
             blockedBy={blockedSquares[index]}
             onSquareClick={() => onSquareClick(index)}
             isLastPlaced={lastPlacedPosition === index}

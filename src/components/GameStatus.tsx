@@ -13,6 +13,8 @@ interface GameStatusProps {
   cpuDeckCount?: number;
   playerDiscardCount?: number;
   cpuDiscardCount?: number;
+  playerHitPoints?: number;
+  cpuHitPoints?: number;
 }
 
 import { Magic } from '@/types/game';
@@ -32,6 +34,8 @@ export function GameStatus({
   cpuDeckCount = 0,
   playerDiscardCount = 0,
   cpuDiscardCount = 0,
+  playerHitPoints = 100,
+  cpuHitPoints = 100,
 }: GameStatusProps) {
   let status;
 
@@ -51,6 +55,7 @@ export function GameStatus({
   const renStatus = `Ren - X: ${playerRenCount}/${requiredRenToWin} | O: ${cpuRenCount}/${requiredRenToWin}`;
   const deckStatus = `Deck - X: ${playerDeckCount} | O: ${cpuDeckCount}`;
   const discardStatus = `Discard - X: ${playerDiscardCount} | O: ${cpuDiscardCount}`;
+  const hitPointsStatus = `Hit Points - X: ${playerHitPoints} | O: ${cpuHitPoints}`;
 
   return (
     <>
@@ -59,6 +64,7 @@ export function GameStatus({
       <div className='text-lg text-green-600 mb-4'>{renStatus}</div>
       <div className='text-lg text-purple-600 mb-4'>{deckStatus}</div>
       <div className='text-lg text-orange-600 mb-4'>{discardStatus}</div>
+      <div className='text-lg text-red-600 mb-4'>{hitPointsStatus}</div>
     </>
   );
 }
