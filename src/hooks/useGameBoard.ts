@@ -16,6 +16,7 @@ export function useGameBoard() {
   const setBlockedSquares = useGameStore.use.setBlockedSquares();
 
   const squaresMetaInfo = useGameStore.use.squaresMetaInfo();
+  const setSquaresMetaInfo = useGameStore.use.setSquaresMetaInfo();
 
   const lastPlacedPosition = useGameStore.use.lastPlacedPosition();
 
@@ -46,11 +47,14 @@ export function useGameBoard() {
       // 少し遅延を入れて、プレイヤーが蓮の完成を確認できるようにする
       const timer = setTimeout(() => {
         const newSquares = [...squares];
+        const newSquaresMetaInfo = [...squaresMetaInfo];
         // 蓮を構成する石を削除
         completedRen.forEach((position) => {
           newSquares[position] = null;
+          newSquaresMetaInfo[position] = { attackPower: null };
         });
         setSquares(newSquares);
+        setSquaresMetaInfo(newSquaresMetaInfo);
 
         // 対応するプレイヤーの連カウントを増やす
         if (renOwner === 'X') {

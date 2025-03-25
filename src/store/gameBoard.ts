@@ -23,6 +23,7 @@ export interface GameBoardState {
   cpuHitPoints: number;
   finalWinner: 'X' | 'O' | null;
   setSquares: (newSquares: ('X' | 'O' | null)[]) => void;
+  setSquaresMetaInfo: (newSquaresMetaInfo: SquareMetaInfo[]) => void;
   setXIsNext: (newXIsNext: boolean) => void;
   setBlockedSquares: (newBlockedSquares: ('X' | 'O' | null)[]) => void;
   setLastPlacedPosition: (newLastPlacedPosition: number | null) => void;
@@ -51,6 +52,8 @@ export const createGameBoardSlice: StateCreator<GameBoardState> = (set) => ({
   finalWinner: null,
   setSquares: (newSquares: ('X' | 'O' | null)[]) =>
     set(() => ({ squares: newSquares })),
+  setSquaresMetaInfo: (newSquaresMetaInfo: SquareMetaInfo[]) =>
+    set(() => ({ squaresMetaInfo: newSquaresMetaInfo })),
   setXIsNext: (newXIsNext: boolean) => set(() => ({ xIsNext: newXIsNext })),
   setBlockedSquares: (newBlockedSquares: ('X' | 'O' | null)[]) =>
     set(() => ({ blockedSquares: newBlockedSquares })),
