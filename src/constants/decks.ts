@@ -9,6 +9,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '上方向にブロックを設置',
     cost: 1,
     endTurn: true,
+    attackPower: 5,
   },
   blockRight: {
     type: 'blockRight',
@@ -17,6 +18,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '右方向にブロックを設置',
     cost: 1,
     endTurn: true,
+    attackPower: 5,
   },
   blockDown: {
     type: 'blockDown',
@@ -25,6 +27,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '下方向にブロックを設置',
     cost: 1,
     endTurn: true,
+    attackPower: 5,
   },
   blockLeft: {
     type: 'blockLeft',
@@ -33,6 +36,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '左方向にブロックを設置',
     cost: 1,
     endTurn: true,
+    attackPower: 5,
   },
   block: {
     type: 'block',
@@ -49,6 +53,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '相手の石を自分の石に置き換える',
     cost: 2,
     endTurn: true,
+    attackPower: 5,
   },
   crossDestroy: {
     type: 'crossDestroy',
@@ -57,6 +62,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '十字方向のブロックを破壊',
     cost: 3,
     endTurn: true,
+    attackPower: 5,
   },
   normal: {
     type: 'normal',
@@ -65,6 +71,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '通常の石を置く',
     cost: 0,
     endTurn: true,
+    attackPower: 10,
   },
   blockUpLight: {
     type: 'blockUp',
@@ -73,6 +80,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '上方向にブロックを設置',
     cost: 0,
     endTurn: true,
+    attackPower: 5,
   },
   blockRightLight: {
     type: 'blockRight',
@@ -81,6 +89,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '右方向にブロックを設置',
     cost: 0,
     endTurn: true,
+    attackPower: 5,
   },
   blockDownLight: {
     type: 'blockDown',
@@ -89,6 +98,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '下方向にブロックを設置',
     cost: 0,
     endTurn: true,
+    attackPower: 5,
   },
   blockLeftLight: {
     type: 'blockLeft',
@@ -97,6 +107,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '左方向にブロックを設置',
     cost: 0,
     endTurn: true,
+    attackPower: 5,
   },
   replaceLight: {
     type: 'replace',
@@ -105,6 +116,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '相手の石を自分の石に置き換える',
     cost: 1,
     endTurn: true,
+    attackPower: 5,
   },
   destroy: {
     type: 'destroy',
@@ -121,6 +133,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '十字方向のブロックを破壊',
     cost: 2,
     endTurn: true,
+    attackPower: 10,
   },
   allDestroy: {
     type: 'allDestroy',
@@ -129,6 +142,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '全ての石を破壊',
     cost: 3,
     endTurn: true,
+    attackPower: 10,
   },
   allBlock: {
     type: 'allBlock',
@@ -137,6 +151,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '全てのマスをブロック',
     cost: 3,
     endTurn: true,
+    attackPower: 10,
   },
 };
 

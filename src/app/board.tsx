@@ -26,6 +26,7 @@ export default function Board({
           <Square
             key={index}
             value={squares[index]}
+            attackPower={10}
             blockedBy={blockedSquares[index]}
             onSquareClick={() => onSquareClick(index)}
             isLastPlaced={lastPlacedPosition === index}

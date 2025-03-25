@@ -2,6 +2,7 @@ interface SquareProps {
   value: 'X' | 'O' | null;
   blockedBy?: 'X' | 'O' | null; // どちらのプレイヤーがブロックしたか
   isLastPlaced: boolean;
+  attackPower: number;
   onSquareClick: () => void;
 }
 
@@ -9,6 +10,7 @@ export default function Square({
   value,
   blockedBy,
   isLastPlaced,
+  attackPower,
   onSquareClick,
 }: SquareProps) {
   // 自分がブロックしたマスは置ける
@@ -24,7 +26,18 @@ export default function Square({
       onClick={onSquareClick}
       // disabled={isBlocked}
     >
-      {value}
+      {
+        <div
+          className={`absolute inset-2 rounded-full
+                          ${value === 'X' ? 'bg-blue-400' : ''}
+                          ${value === 'O' ? 'bg-red-400' : ''}
+          `}
+        >
+          <div className='absolute inset-2 text-white'>
+            {value && attackPower}
+          </div>
+        </div>
+      }
       {isLastPlaced && (
         <div className='absolute inset-0.5 rounded-sm animate-pulse ring-2 ring-orange-400 pointer-events-none'></div>
       )}

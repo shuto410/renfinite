@@ -39,6 +39,7 @@ export interface Magic {
   name: string;
   description: string;
   endTurn: boolean;
+  attackPower?: number;
   id: string;
 }
 
