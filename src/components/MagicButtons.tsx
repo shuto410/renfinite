@@ -60,7 +60,7 @@ export function MagicButtons({
         onClick={() => onSelectMagic(isSelected ? null : magic)}
         disabled={!canUse}
       >
-        {!magic.endTurn && <Link className='mr-2' size={16} />}
+        {!magic.endTurn && <Link className='mr-2 text-blue-900' size={16} />}
         {getMagicLabel(magic)}
       </button>
     );
