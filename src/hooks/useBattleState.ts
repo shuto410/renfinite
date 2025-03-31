@@ -1,15 +1,11 @@
 import type { Magic } from '@/types/game';
 import { useCPUOpponent } from './useCPUOpponent';
-import {
-  CPU_INITIAL_DECK,
-  PLAYER_INITIAL_DECK,
-  INITIAL_MANA,
-  INITIAL_HAND_SIZE,
-} from '@/constants/decks';
+import { INITIAL_MANA } from '@/constants/decks';
 import { MAGIC_CARDS } from '@/constants/decks';
 import { useGameStore } from '@/store';
 import { useMagicSystem } from './useMagicSystem';
-import { useGameBoard } from './useGameBoard';
+import { useBattleBoard } from './useBattleBoard';
+import { resetBattle } from '@/store/utils';
 
 // 常に使用可能な汎用魔法カード
 const GENERIC_MAGIC: Magic = {
@@ -23,27 +19,7 @@ const GENERIC_MAGIC: Magic = {
 // 勝利に必要な連の数
 const REQUIRED_REN_TO_WIN = 3;
 
-// 初期手札を生成する関数
-function generateInitialHand(deck: Magic[]): {
-  hand: Magic[];
-  remainingDeck: Magic[];
-} {
-  const deckCopy = [...deck];
-  const hand: Magic[] = [];
-
-  for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
-    if (deckCopy.length > 0) {
-      const randomIndex = Math.floor(Math.random() * deckCopy.length);
-      const drawnCard = deckCopy[randomIndex];
-      deckCopy.splice(randomIndex, 1);
-      hand.push(drawnCard);
-    }
-  }
-
-  return { hand, remainingDeck: deckCopy };
-}
-
-export function useGameState() {
+export function useBattleState() {
   const addMoveRecord = useGameStore.use.addMoveRecord();
   const size = useGameStore.use.size();
   const setSize = useGameStore.use.setSize();
@@ -70,20 +46,12 @@ export function useGameState() {
     lastPlacedPosition,
     blockedSquares,
     setXIsNext,
-    setFinalWinner,
-    setBlockedSquares,
-    setPlayerRenCount,
-    setCpuRenCount,
-  } = useGameBoard();
+  } = useBattleBoard();
 
   const {
     playerState,
     cpuState,
     selectedMagic,
-    setPlayerDeck,
-    setCpuDeck,
-    setPlayerHand,
-    setCpuHand,
     setPlayerMana,
     setCpuMana,
     setSelectedMagic,
@@ -183,37 +151,15 @@ export function useGameState() {
 
   function handleCPULevelChange(level: number) {
     setCPULevel(level);
-    resetGame();
+    resetBattle();
   }
 
   function toggleCPUMode() {
     setIsCPUMode(!isCPUMode);
-    resetGame();
+    resetBattle();
   }
 
   function resetMana() {
-    setPlayerMana(INITIAL_MANA);
-    setCpuMana(INITIAL_MANA);
-  }
-
-  function resetGame() {
-    setSquares(Array(size * size).fill(null));
-    setBlockedSquares(Array(size * size).fill(null));
-    setSelectedMagic(null);
-    setXIsNext(true);
-    setPlayerRenCount(0);
-    setCpuRenCount(0);
-    setFinalWinner(null);
-
-    // 新しい初期手札とデッキを生成
-    const newPlayerInitialDraw = generateInitialHand(PLAYER_INITIAL_DECK);
-    const newCpuInitialDraw = generateInitialHand(CPU_INITIAL_DECK);
-
-    // デッキと手札をリセット
-    setPlayerDeck(newPlayerInitialDraw.remainingDeck);
-    setPlayerHand(newPlayerInitialDraw.hand);
-    setCpuDeck(newCpuInitialDraw.remainingDeck);
-    setCpuHand(newCpuInitialDraw.hand);
     setPlayerMana(INITIAL_MANA);
     setCpuMana(INITIAL_MANA);
   }
@@ -251,8 +197,8 @@ export function useGameState() {
     handleWinLengthChange,
     handleCPULevelChange,
     toggleCPUMode,
-    resetGame,
     endTurn,
     setSelectedMagic,
+    resetBattle,
   };
 }

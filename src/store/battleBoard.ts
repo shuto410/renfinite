@@ -11,7 +11,7 @@ export interface SquareMetaInfo {
   attackPower: number | null;
 }
 
-export interface GameBoardState {
+export interface BattleBoardState {
   squares: ('X' | 'O' | null)[];
   squaresMetaInfo: SquareMetaInfo[];
   xIsNext: boolean;
@@ -39,7 +39,9 @@ export interface GameBoardState {
   crossDestroyAndPlace: (position: number, magicType?: MagicType) => void;
   allDestroyAndPlace: (position: number, magicType?: MagicType) => void;
 }
-export const createGameBoardSlice: StateCreator<GameBoardState> = (set) => ({
+export const createBattleBoardSlice: StateCreator<BattleBoardState> = (
+  set,
+) => ({
   squares: Array(9 * 9).fill(null),
   squaresMetaInfo: Array(9 * 9).fill({ attackPower: null }),
   xIsNext: true,

@@ -10,6 +10,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 1,
     endTurn: true,
     attackPower: 5,
+    rarity: 'uncommon',
   },
   blockRight: {
     type: 'blockRight',
@@ -19,6 +20,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 1,
     endTurn: true,
     attackPower: 5,
+    rarity: 'uncommon',
   },
   blockDown: {
     type: 'blockDown',
@@ -28,6 +30,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 1,
     endTurn: true,
     attackPower: 5,
+    rarity: 'uncommon',
   },
   blockLeft: {
     type: 'blockLeft',
@@ -37,6 +40,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 1,
     endTurn: true,
     attackPower: 5,
+    rarity: 'uncommon',
   },
   block: {
     type: 'block',
@@ -45,6 +49,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '指定のマスをブロック',
     cost: 2,
     endTurn: false,
+    rarity: 'common',
   },
   replace: {
     type: 'replace',
@@ -54,6 +59,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 2,
     endTurn: true,
     attackPower: 5,
+    rarity: 'rare',
   },
   crossDestroy: {
     type: 'crossDestroy',
@@ -63,6 +69,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 3,
     endTurn: true,
     attackPower: 5,
+    rarity: 'rare',
   },
   normal: {
     type: 'normal',
@@ -72,6 +79,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 0,
     endTurn: true,
     attackPower: 10,
+    rarity: 'common',
   },
   blockUpLight: {
     type: 'blockUp',
@@ -81,6 +89,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 0,
     endTurn: true,
     attackPower: 5,
+    rarity: 'uncommon',
   },
   blockRightLight: {
     type: 'blockRight',
@@ -90,6 +99,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 0,
     endTurn: true,
     attackPower: 5,
+    rarity: 'uncommon',
   },
   blockDownLight: {
     type: 'blockDown',
@@ -99,6 +109,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 0,
     endTurn: true,
     attackPower: 5,
+    rarity: 'uncommon',
   },
   blockLeftLight: {
     type: 'blockLeft',
@@ -108,6 +119,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 0,
     endTurn: true,
     attackPower: 5,
+    rarity: 'uncommon',
   },
   replaceLight: {
     type: 'replace',
@@ -117,6 +129,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 1,
     endTurn: true,
     attackPower: 5,
+    rarity: 'uncommon',
   },
   destroy: {
     type: 'destroy',
@@ -125,6 +138,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     description: '指定のマスを破壊',
     cost: 3,
     endTurn: false,
+    rarity: 'uncommon',
   },
   crossDestroyLight: {
     type: 'crossDestroy',
@@ -134,6 +148,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 2,
     endTurn: true,
     attackPower: 10,
+    rarity: 'rare',
   },
   allDestroy: {
     type: 'allDestroy',
@@ -143,6 +158,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 3,
     endTurn: true,
     attackPower: 10,
+    rarity: 'superRare',
   },
   allBlock: {
     type: 'allBlock',
@@ -152,6 +168,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
     cost: 3,
     endTurn: true,
     attackPower: 10,
+    rarity: 'superRare',
   },
 };
 
@@ -176,21 +193,16 @@ function createDeck(prefix: string, cardTypes: MagicCardType[]): Magic[] {
 
 // プレイヤー（X）の初期デッキ定義
 const PLAYER_DECK_TYPES: MagicCardType[] = [
-  'replace',
-  'replace',
-  'block',
-  'block',
-  'blockUp',
+  'normal',
+  'normal',
+  'normal',
+  'normal',
+  'normal',
+  'blockRight',
+  'blockRight',
   'blockRight',
   'blockUp',
-  'blockRight',
-  'blockDown',
-  'crossDestroy',
-  'destroy',
-  'destroy',
-  'normal',
-  'normal',
-  'normal',
+  'blockUp',
 ];
 
 // CPU（O）の初期デッキ定義

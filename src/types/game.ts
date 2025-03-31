@@ -40,8 +40,16 @@ export interface Magic {
   description: string;
   endTurn: boolean;
   attackPower?: number;
+  rarity?: MagicRarity;
   id: string;
 }
+
+export type MagicRarity =
+  | 'common'
+  | 'uncommon'
+  | 'rare'
+  | 'superRare'
+  | 'legendary';
 
 export interface Player {
   deck: Magic[];
@@ -49,3 +57,5 @@ export interface Player {
   mana: number;
   discardPile: Magic[];
 }
+
+export type NodeType = 'enemy' | 'event' | 'shop' | 'boss';

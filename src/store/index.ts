@@ -1,17 +1,23 @@
 import { create } from 'zustand';
-import { createGameBoardSlice, GameBoardState } from './gameBoard';
+import { createBattleBoardSlice, BattleBoardState } from './battleBoard';
 import { GameConfigState, createGameConfigSlice } from './gameConfig';
 import { StoreApi, UseBoundStore } from 'zustand';
 import { createMagicSystemSlice, MagicSystemState } from './magicSystem';
 import { MoveHistoryState, createMoveHistorySlice } from './moveHistory';
+import { createPlayerDeckSlice, PlayerDeckState } from './playerDeckSlice';
 
 const gameStore = create<
-  GameConfigState & GameBoardState & MagicSystemState & MoveHistoryState
+  GameConfigState &
+    BattleBoardState &
+    MagicSystemState &
+    MoveHistoryState &
+    PlayerDeckState
 >((...a) => ({
   ...createGameConfigSlice(...a),
-  ...createGameBoardSlice(...a),
+  ...createBattleBoardSlice(...a),
   ...createMagicSystemSlice(...a),
   ...createMoveHistorySlice(...a),
+  ...createPlayerDeckSlice(...a),
 }));
 
 type WithSelectors<S> = S extends { getState: () => infer T }

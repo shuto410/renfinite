@@ -2,7 +2,7 @@ import { useGameStore } from '@/store';
 import { calculateWinner } from '@/utils';
 import { useEffect } from 'react';
 
-export function useGameBoard() {
+export function useBattleBoard() {
   const size = useGameStore.use.size();
   const winLength = useGameStore.use.winLength();
 
@@ -87,20 +87,12 @@ export function useGameBoard() {
 
   return {
     xIsNext,
-    setXIsNext,
-    squares,
-    setSquares,
-    size,
     lastPlacedPosition,
     winner,
-    completedRen,
     playerRenCount,
     cpuRenCount,
     finalWinner,
     blockedSquares,
-    setPlayerRenCount,
-    setCpuRenCount,
-    setBlockedSquares,
-    setFinalWinner,
+    setXIsNext,
   };
 }

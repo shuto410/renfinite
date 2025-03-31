@@ -172,18 +172,9 @@ export function useMagicSystem() {
     playerState,
     cpuState,
     selectedMagic,
-    setPlayerDeck,
-    setCpuDeck,
-    setPlayerHand,
-    setCpuHand,
     setPlayerMana,
     setCpuMana,
     setSelectedMagic,
     castMagic,
-    drawCard,
-    addToPlayerDiscard,
-    addToCpuDiscard,
-    reshufflePlayerDiscard,
-    reshuffleCpuDiscard,
   };
 }

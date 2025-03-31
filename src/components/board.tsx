@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
-import Square from './components/Square';
-import { SquareMetaInfo } from '@/store/gameBoard';
+import Square from './Square';
+import { SquareMetaInfo } from '@/store/battleBoard';
 
 interface BoardProps {
   size: number;
