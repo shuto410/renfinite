@@ -27,7 +27,7 @@ export default function SettingButtons({
   return (
     <div className='mb-6 flex gap-4 items-center flex-wrap justify-center'>
       <div className='flex gap-4 items-center'>
-        <label className='text-gray-700'>Board Size:</label>
+        <label className='text-gray-100'>Board Size:</label>
         <select
           value={size}
           onChange={(e) => onSizeChange(Number(e.target.value))}
@@ -42,7 +42,7 @@ export default function SettingButtons({
       </div>
 
       <div className='flex gap-4 items-center'>
-        <label className='text-gray-700'>Win Length:</label>
+        <label className='text-gray-100'>Win Length:</label>
         <select
           value={winLength}
           onChange={(e) => onWinLengthChange(Number(e.target.value))}
@@ -57,7 +57,7 @@ export default function SettingButtons({
       </div>
 
       <div className='flex gap-4 items-center'>
-        <label className='text-gray-700'>CPU Opponent:</label>
+        <label className='text-gray-100'>CPU Opponent:</label>
         <button
           onClick={onCPUModeToggle}
           className={`px-4 py-2 rounded-md transition-colors duration-200 
@@ -73,7 +73,7 @@ export default function SettingButtons({
 
       {isCPUMode && (
         <div className='flex gap-4 items-center'>
-          <label className='text-gray-700'>CPU Level:</label>
+          <label className='text-gray-100'>CPU Level:</label>
           <select
             value={cpuLevel}
             onChange={(e) => onCPULevelChange(Number(e.target.value))}

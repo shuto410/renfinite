@@ -1,3 +1,5 @@
+import { Magic } from '@/types/game';
+
 interface GameStatusProps {
   winner: 'X' | 'O' | null;
   xIsNext: boolean;
@@ -17,7 +19,24 @@ interface GameStatusProps {
   cpuHitPoints?: number;
 }
 
-import { Magic } from '@/types/game';
+const ManaIcons: React.FC<{ count: number; color: string }> = ({
+  count,
+  color,
+}) => {
+  return (
+    <div className='flex gap-0.5'>
+      {Array.from({ length: count }).map((_, index) => (
+        <div
+          key={index}
+          className={`w-3 h-3 rounded-full ${color} shadow-inner`}
+          style={{
+            background: `radial-gradient(circle at 30% 30%, ${color} 0%, ${color}80 100%)`,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
 
 export function GameStatus({
   winner,
@@ -51,20 +70,81 @@ export function GameStatus({
     }`;
   }
 
-  const manaStatus = `Mana - X: ${playerMana} | O: ${cpuMana}`;
-  const renStatus = `Ren - X: ${playerRenCount}/${requiredRenToWin} | O: ${cpuRenCount}/${requiredRenToWin}`;
-  const deckStatus = `Deck - X: ${playerDeckCount} | O: ${cpuDeckCount}`;
-  const discardStatus = `Discard - X: ${playerDiscardCount} | O: ${cpuDiscardCount}`;
-  const hitPointsStatus = `Hit Points - X: ${playerHitPoints} | O: ${cpuHitPoints}`;
-
   return (
-    <>
-      <div className='text-xl font-semibold text-gray-700 mb-6'>{status}</div>
-      <div className='text-lg text-blue-600 mb-4'>{manaStatus}</div>
-      <div className='text-lg text-green-600 mb-4'>{renStatus}</div>
-      <div className='text-lg text-purple-600 mb-4'>{deckStatus}</div>
-      <div className='text-lg text-orange-600 mb-4'>{discardStatus}</div>
-      <div className='text-lg text-red-600 mb-4'>{hitPointsStatus}</div>
-    </>
+    <div className='w-full max-w-2xl mb-4'>
+      {/* ゲーム状態 */}
+      <div className='bg-gray-800 rounded-lg p-2 mb-2 shadow-lg'>
+        <p className='text-sm text-gray-300'>{status}</p>
+      </div>
+
+      {/* プレイヤー情報 */}
+      <div className='grid grid-cols-2 gap-2'>
+        {/* プレイヤー */}
+        <div className='bg-blue-900/50 rounded-lg p-2 shadow-lg border border-blue-500'>
+          <h3 className='text-sm font-bold text-blue-300 mb-1'>プレイヤー</h3>
+          <div className='space-y-1'>
+            <div className='flex justify-between items-center'>
+              <span className='text-xs text-blue-200'>HP</span>
+              <div className='w-20 bg-gray-700 rounded-full h-1'>
+                <div
+                  className='bg-red-500 h-1 rounded-full'
+                  style={{ width: `${(playerHitPoints / 80) * 100}%` }}
+                />
+              </div>
+              <span className='text-xs text-blue-200'>{playerHitPoints}</span>
+            </div>
+            <div className='flex justify-between items-center'>
+              <span className='text-xs text-blue-200'>マナ</span>
+              <div className='flex items-center gap-1'>
+                <ManaIcons count={playerMana} color='bg-blue-500' />
+              </div>
+              <span className='text-xs text-blue-200'>{playerMana}</span>
+            </div>
+            <div className='flex justify-between items-center'>
+              <span className='text-xs text-blue-200'>デッキ</span>
+              <span className='text-xs text-blue-200'>{playerDeckCount}枚</span>
+            </div>
+            <div className='flex justify-between items-center'>
+              <span className='text-xs text-blue-200'>捨て札</span>
+              <span className='text-xs text-blue-200'>
+                {playerDiscardCount}枚
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* CPU */}
+        <div className='bg-red-900/50 rounded-lg p-2 shadow-lg border border-red-500'>
+          <h3 className='text-sm font-bold text-red-300 mb-1'>CPU</h3>
+          <div className='space-y-1'>
+            <div className='flex justify-between items-center'>
+              <span className='text-xs text-red-200'>HP</span>
+              <div className='w-20 bg-gray-700 rounded-full h-1'>
+                <div
+                  className='bg-red-500 h-1 rounded-full'
+                  style={{ width: `${(cpuHitPoints / 80) * 100}%` }}
+                />
+              </div>
+              <span className='text-xs text-red-200'>{cpuHitPoints}</span>
+            </div>
+            <div className='flex justify-between items-center'>
+              <span className='text-xs text-red-200'>マナ</span>
+              <div className='flex items-center gap-1'>
+                <ManaIcons count={cpuMana} color='bg-blue-500' />
+              </div>
+              <span className='text-xs text-red-200'>{cpuMana}</span>
+            </div>
+            <div className='flex justify-between items-center'>
+              <span className='text-xs text-red-200'>デッキ</span>
+              <span className='text-xs text-red-200'>{cpuDeckCount}枚</span>
+            </div>
+            <div className='flex justify-between items-center'>
+              <span className='text-xs text-red-200'>捨て札</span>
+              <span className='text-xs text-red-200'>{cpuDiscardCount}枚</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
