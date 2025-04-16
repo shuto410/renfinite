@@ -1,12 +1,12 @@
 import React from 'react';
 import { positionToCoordinates } from '@/utils/boardUtils';
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 import { useGameStore } from '@/store';
 
 export interface MoveRecord {
   player: 'X' | 'O';
   position: number;
-  magic: Magic | null;
+  magic: Card | null;
   timestamp: number;
 }
 

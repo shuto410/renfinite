@@ -4,7 +4,7 @@ import {
   MAX_MANA,
 } from '@/constants/decks';
 import { useGameStore } from '@/store';
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 import { useEffect } from 'react';
 
 export function useMagicSystem() {
@@ -107,7 +107,7 @@ export function useMagicSystem() {
   }
 
   // 魔法を使用
-  function castMagic(magic: Magic, position: number) {
+  function castMagic(magic: Card, position: number) {
     console.log('castMagic: ', magic, position);
     const isPlayer = xIsNext;
     const state = isPlayer ? playerState : cpuState;

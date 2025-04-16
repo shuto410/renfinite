@@ -1,10 +1,10 @@
 import React from 'react';
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 import { useGameStore } from '@/store';
 
 export const DeckView: React.FC = () => {
   const { deck, getDeckSize } = useGameStore();
-  const [selectedCard, setSelectedCard] = React.useState<Magic | null>(null);
+  const [selectedCard, setSelectedCard] = React.useState<Card | null>(null);
 
   return (
     <div className='p-4'>

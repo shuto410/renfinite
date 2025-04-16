@@ -25,7 +25,17 @@ export default function Home() {
   const handleRouteSelect = (routeIndex: number) => {
     const selectedRoute = sampleRoutes[routeIndex];
     console.log('Selected route:', selectedRoute);
-    router.push(`/battle`);
+    switch (selectedRoute.type) {
+      case 'enemy':
+        router.push(`/battle`);
+        break;
+      case 'shop':
+        router.push(`/shop`);
+        break;
+      case 'event':
+        router.push(`/event`);
+        break;
+    }
   };
 
   return (

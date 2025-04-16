@@ -1,10 +1,10 @@
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 import { StateCreator } from 'zustand';
 
 export interface MoveRecord {
   player: 'X' | 'O';
   position: number;
-  magic: Magic | null;
+  magic: Card | null;
   timestamp: number;
 }
 
@@ -13,7 +13,7 @@ export interface MoveHistoryState {
   addMoveRecord: (
     player: 'X' | 'O',
     position: number,
-    magic: Magic | null,
+    magic: Card | null,
   ) => void;
   clearMoveRecords: () => void;
 }

@@ -1,4 +1,4 @@
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 import { Player } from '@/types/game';
 import { StateCreator } from 'zustand';
 import {
@@ -11,28 +11,28 @@ import {
 export interface MagicSystemState {
   playerState: Player;
   cpuState: Player;
-  selectedMagic: Magic | null;
-  setPlayerDeck: (newPlayerDeck: Magic[]) => void;
-  setCpuDeck: (newCpuDeck: Magic[]) => void;
-  setPlayerHand: (newPlayerHand: Magic[]) => void;
-  setCpuHand: (newCpuHand: Magic[]) => void;
+  selectedMagic: Card | null;
+  setPlayerDeck: (newPlayerDeck: Card[]) => void;
+  setCpuDeck: (newCpuDeck: Card[]) => void;
+  setPlayerHand: (newPlayerHand: Card[]) => void;
+  setCpuHand: (newCpuHand: Card[]) => void;
   setPlayerMana: (newPlayerMana: number) => void;
   setCpuMana: (newCpuMana: number) => void;
-  setSelectedMagic: (newSelectedMagic: Magic | null) => void;
-  addToPlayerDiscard: (cards: Magic[]) => void;
-  addToCpuDiscard: (cards: Magic[]) => void;
-  setPlayerDiscard: (newPlayerDiscard: Magic[]) => void;
-  setCpuDiscard: (newCpuDiscard: Magic[]) => void;
+  setSelectedMagic: (newSelectedMagic: Card | null) => void;
+  addToPlayerDiscard: (cards: Card[]) => void;
+  addToCpuDiscard: (cards: Card[]) => void;
+  setPlayerDiscard: (newPlayerDiscard: Card[]) => void;
+  setCpuDiscard: (newCpuDiscard: Card[]) => void;
   reshufflePlayerDiscard: () => void;
   reshuffleCpuDiscard: () => void;
 }
 
-function generateInitialHand(deck: Magic[]): {
-  hand: Magic[];
-  remainingDeck: Magic[];
+function generateInitialHand(deck: Card[]): {
+  hand: Card[];
+  remainingDeck: Card[];
 } {
   const deckCopy = [...deck];
-  const hand: Magic[] = [];
+  const hand: Card[] = [];
 
   for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
     if (deckCopy.length > 0) {
@@ -65,19 +65,19 @@ export const createMagicSystemSlice: StateCreator<MagicSystemState> = (
     discardPile: [],
   },
   selectedMagic: null,
-  setSelectedMagic: (newSelectedMagic: Magic | null) =>
+  setSelectedMagic: (newSelectedMagic: Card | null) =>
     set(() => ({ selectedMagic: newSelectedMagic })),
-  setPlayerDeck: (newPlayerDeck: Magic[]) =>
+  setPlayerDeck: (newPlayerDeck: Card[]) =>
     set((state) => ({
       playerState: { ...state.playerState, deck: newPlayerDeck },
     })),
-  setCpuDeck: (newCpuDeck: Magic[]) =>
+  setCpuDeck: (newCpuDeck: Card[]) =>
     set((state) => ({ cpuState: { ...state.cpuState, deck: newCpuDeck } })),
-  setPlayerHand: (newPlayerHand: Magic[]) =>
+  setPlayerHand: (newPlayerHand: Card[]) =>
     set((state) => ({
       playerState: { ...state.playerState, hand: newPlayerHand },
     })),
-  setCpuHand: (newCpuHand: Magic[]) =>
+  setCpuHand: (newCpuHand: Card[]) =>
     set((state) => ({ cpuState: { ...state.cpuState, hand: newCpuHand } })),
   setPlayerMana: (newPlayerMana: number) =>
     set((state) => ({
@@ -85,25 +85,25 @@ export const createMagicSystemSlice: StateCreator<MagicSystemState> = (
     })),
   setCpuMana: (newCpuMana: number) =>
     set((state) => ({ cpuState: { ...state.cpuState, mana: newCpuMana } })),
-  addToPlayerDiscard: (cards: Magic[]) =>
+  addToPlayerDiscard: (cards: Card[]) =>
     set((state) => ({
       playerState: {
         ...state.playerState,
         discardPile: [...state.playerState.discardPile, ...cards],
       },
     })),
-  addToCpuDiscard: (cards: Magic[]) =>
+  addToCpuDiscard: (cards: Card[]) =>
     set((state) => ({
       cpuState: {
         ...state.cpuState,
         discardPile: [...state.cpuState.discardPile, ...cards],
       },
     })),
-  setPlayerDiscard: (newPlayerDiscard: Magic[]) =>
+  setPlayerDiscard: (newPlayerDiscard: Card[]) =>
     set((state) => ({
       playerState: { ...state.playerState, discardPile: newPlayerDiscard },
     })),
-  setCpuDiscard: (newCpuDiscard: Magic[]) =>
+  setCpuDiscard: (newCpuDiscard: Card[]) =>
     set((state) => ({
       cpuState: { ...state.cpuState, discardPile: newCpuDiscard },
     })),

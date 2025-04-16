@@ -18,8 +18,8 @@ export default function Square({
 
   return (
     <button
-      className={`w-16 h-16 border bg-white text-xl font-bold 
-                 hover:bg-gray-100 transition-colors duration-200 relative
+      className={`w-16 h-16 border bg-slate-900 text-xl font-bold border-slate-700 
+                 hover:bg-gray-700 transition-colors duration-200 relative
                  ${isBlockedSquare ? 'bg-red-50' : ''}
                  ${value === 'X' ? 'text-blue-600' : ''}
                  ${value === 'O' ? 'text-red-600' : ''}`}

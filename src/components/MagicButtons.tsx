@@ -1,10 +1,10 @@
 'use client';
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 import { useEffect, useState } from 'react';
 import { Link } from 'lucide-react';
 
 // 常に使用可能な汎用魔法カード
-const GENERIC_MAGIC: Magic = {
+const GENERIC_MAGIC: Card = {
   type: 'normal',
   cardType: 'normal',
   cost: 1,
@@ -15,12 +15,12 @@ const GENERIC_MAGIC: Magic = {
 };
 
 interface MagicButtonsProps {
-  hand: Magic[];
-  selectedMagic: Magic | null;
+  hand: Card[];
+  selectedMagic: Card | null;
   xIsNext: boolean;
   playerMana: number;
   cpuMana: number;
-  onSelectMagic: (magic: Magic | null) => void;
+  onSelectMagic: (magic: Card | null) => void;
 }
 
 export function MagicButtons({
@@ -40,7 +40,7 @@ export function MagicButtons({
 
   const currentMana = xIsNext ? playerMana : cpuMana;
 
-  function renderMagicButton(magic: Magic, isGeneric: boolean = false) {
+  function renderMagicButton(magic: Card, isGeneric: boolean = false) {
     const isSelected = selectedMagic && selectedMagic.id === magic.id;
     const canUse = currentMana >= magic.cost;
 
@@ -66,7 +66,7 @@ export function MagicButtons({
     );
   }
 
-  function getMagicLabel(magic: Magic): string {
+  function getMagicLabel(magic: Card): string {
     switch (magic.type) {
       case 'blockUp':
         return `Block Up (${magic.cost} Mana)`;

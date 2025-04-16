@@ -4,7 +4,7 @@ import {
   INITIAL_MANA,
 } from '@/constants/decks';
 import { useGameStore } from '.';
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 
 export function resetBattle() {
   const setSquares = useGameStore.use.setSquares();
@@ -49,12 +49,12 @@ export function resetBattle() {
 }
 
 // 初期手札を生成する関数
-function generateInitialHand(deck: Magic[]): {
-  hand: Magic[];
-  remainingDeck: Magic[];
+function generateInitialHand(deck: Card[]): {
+  hand: Card[];
+  remainingDeck: Card[];
 } {
   const deckCopy = [...deck];
-  const hand: Magic[] = [];
+  const hand: Card[] = [];
 
   for (let i = 0; i < INITIAL_HAND_SIZE; i++) {
     if (deckCopy.length > 0) {

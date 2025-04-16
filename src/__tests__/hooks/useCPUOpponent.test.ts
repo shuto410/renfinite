@@ -4,7 +4,7 @@ import {
   useCPUOpponent,
 } from '../../hooks/useCPUOpponent';
 import { calculateWinner } from '@/utils';
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 import { MAGIC_CARDS } from '@/constants/decks';
 import { renderHook } from '@testing-library/react';
 
@@ -792,7 +792,7 @@ describe('useCPUOpponent hook', () => {
         cost: 2,
         type: 'normal' as const,
       };
-      const cpuHand: Magic[] = [testMagic];
+      const cpuHand: Card[] = [testMagic];
       const cpuMana = 3; // 十分なマナ
 
       const props = {
@@ -835,7 +835,7 @@ describe('useCPUOpponent hook', () => {
       });
 
       // 空の手札でテスト
-      const cpuHand: Magic[] = [];
+      const cpuHand: Card[] = [];
       const cpuMana = 3; // 十分なマナ
 
       const props = {
@@ -879,7 +879,7 @@ describe('useCPUOpponent hook', () => {
         cost: 5,
         type: 'normal' as const,
       };
-      const cpuHand: Magic[] = [expensiveMagic];
+      const cpuHand: Card[] = [expensiveMagic];
       const cpuMana = 0; // マナ不足
 
       // プレイヤーとCPUどちらも勝利できないようにモック
@@ -940,7 +940,7 @@ describe('useCPUOpponent hook', () => {
         cost: 3,
         type: 'normal' as const,
       };
-      const cpuHand: Magic[] = [lowCostMagic, highCostMagic];
+      const cpuHand: Card[] = [lowCostMagic, highCostMagic];
       const cpuMana = 4; // 両方使用可能なマナ
 
       // プレイヤーとCPUどちらも勝利できないようにモック
@@ -1002,7 +1002,7 @@ describe('useCPUOpponent hook', () => {
         id: 'test-replace',
         type: 'replace' as const,
       };
-      const cpuHand: Magic[] = [replaceMagic];
+      const cpuHand: Card[] = [replaceMagic];
       const cpuMana = 3;
 
       // 勝利条件なし
@@ -1055,7 +1055,7 @@ describe('useCPUOpponent hook', () => {
         id: 'test-crossDestroy',
         type: 'crossDestroy' as const,
       };
-      const cpuHand: Magic[] = [crossDestroyMagic];
+      const cpuHand: Card[] = [crossDestroyMagic];
       const cpuMana = 3;
 
       // 勝利条件なし

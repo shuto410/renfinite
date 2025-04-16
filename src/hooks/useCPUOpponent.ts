@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { calculateWinner } from '@/utils';
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 import { applyAllDestroy, applyCrossDestroy } from '../utils/effects';
 import { MAGIC_CARDS } from '@/constants/decks';
 
 // 常に使用可能な汎用魔法カード
-const GENERIC_MAGIC: Magic = {
+const GENERIC_MAGIC: Card = {
   ...MAGIC_CARDS.normal,
   cost: 1, // 通常の石より少し高いコスト
   name: 'Basic Stone',
@@ -22,9 +22,9 @@ interface UseCPUOpponentProps {
   cpuLevel: number;
   isPlayerTurn: boolean;
   winner: 'X' | 'O' | null;
-  cpuHand: Magic[];
+  cpuHand: Card[];
   cpuMana: number;
-  onMove: (position: number, magic: Magic) => void;
+  onMove: (position: number, magic: Card) => void;
 }
 
 // 盤面内かどうかチェック
@@ -284,11 +284,11 @@ export function findWinningMove(
   blockedSquares: ('X' | 'O' | null)[],
   size: number,
   winLength: number,
-  cpuHand: Magic[],
+  cpuHand: Card[],
   cpuMana: number,
 ): {
   position: number;
-  magic: Magic;
+  magic: Card;
 } | null {
   // 通常の石を置いて勝てる場合
   for (let i = 0; i < squares.length; i++) {
@@ -332,11 +332,11 @@ export function findBlockingMove(
   blockedSquares: ('X' | 'O' | null)[],
   size: number,
   winLength: number,
-  cpuHand: Magic[],
+  cpuHand: Card[],
   cpuMana: number,
 ): {
   position: number;
-  magic: Magic;
+  magic: Card;
 } | null {
   // 相手が次のターンで勝利できる位置を探す
   for (let i = 0; i < squares.length; i++) {
@@ -384,14 +384,14 @@ export function findBlockingMove(
 }
 
 // 最適な魔法を選択
-export function sortBestMagics(availableMagics: Magic[]): Magic[] {
+export function sortBestMagics(availableMagics: Card[]): Card[] {
   // コストの高い順にソートして、最初の魔法を選択
   return availableMagics.sort((a, b) => b.cost - a.cost);
 }
 
 // 魔法に有効な位置を見つける
 export function findValidPositionsForMagic(
-  magic: Magic,
+  magic: Card,
   squares: ('X' | 'O' | null)[],
   blockedSquares: ('X' | 'O' | null)[],
 ): number[] {
@@ -432,7 +432,7 @@ export function findValidPositionsForMagic(
 
 // 魔法に最適な位置を見つける
 export function findBestPositionForMagic(
-  magic: Magic,
+  magic: Card,
   squares: ('X' | 'O' | null)[],
   blockedSquares: ('X' | 'O' | null)[],
   size: number,

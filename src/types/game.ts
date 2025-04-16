@@ -13,7 +13,7 @@ export type MagicType =
   | 'allBlock'
   | 'normal';
 
-export type MagicCardType =
+export type CardType =
   | 'block'
   | 'blockUp'
   | 'blockRight'
@@ -32,19 +32,19 @@ export type MagicCardType =
   | 'allBlock'
   | 'normal';
 
-export interface Magic {
+export interface Card {
   type: MagicType;
-  cardType: MagicCardType;
+  cardType: CardType;
   cost: number;
   name: string;
   description: string;
   endTurn: boolean;
   attackPower?: number;
-  rarity?: MagicRarity;
+  rarity?: CardRarity;
   id: string;
 }
 
-export type MagicRarity =
+export type CardRarity =
   | 'common'
   | 'uncommon'
   | 'rare'
@@ -52,10 +52,10 @@ export type MagicRarity =
   | 'legendary';
 
 export interface Player {
-  deck: Magic[];
-  hand: Magic[];
+  deck: Card[];
+  hand: Card[];
   mana: number;
-  discardPile: Magic[];
+  discardPile: Card[];
 }
 
 export type NodeType = 'enemy' | 'event' | 'shop' | 'boss';

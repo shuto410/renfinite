@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import LetterGlitch from '@/blocks/Backgrounds/LetterGlitch/LetterGlitch';
+import Squares from '@/blocks/Backgrounds/Squares/Squares';
 
 // const geistSans = Geist({
 //   variable: '--font-geist-sans',
@@ -23,7 +25,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={`antialiased`}>{children}</body>
+      <body className='antialiased bg-black'>
+        <Squares
+          speed={0.5}
+          squareSize={40}
+          direction='diagonal'
+          hoverFillColor='#222'
+        />
+        <div className='relative'>{children}</div>
+      </body>
     </html>
   );
 }

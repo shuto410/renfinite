@@ -1,7 +1,7 @@
-import { Magic, MagicCardType } from '@/types/game';
+import { Card, CardType } from '@/types/game';
 
 // 魔法カードの基本定義
-export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
+export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   blockUp: {
     type: 'blockUp',
     cardType: 'blockUp',
@@ -173,11 +173,7 @@ export const MAGIC_CARDS: Record<MagicCardType, Omit<Magic, 'id'>> = {
 };
 
 // IDを自動で割り振る関数
-function createMagicCard(
-  type: MagicCardType,
-  prefix: string,
-  index: number,
-): Magic {
+function createMagicCard(type: CardType, prefix: string, index: number): Card {
   return {
     ...MAGIC_CARDS[type],
     id: `${prefix}${index}`,
@@ -185,14 +181,14 @@ function createMagicCard(
 }
 
 // デッキを生成する関数
-function createDeck(prefix: string, cardTypes: MagicCardType[]): Magic[] {
+function createDeck(prefix: string, cardTypes: CardType[]): Card[] {
   return cardTypes.map((type, index) =>
     createMagicCard(type, prefix, index + 1),
   );
 }
 
 // プレイヤー（X）の初期デッキ定義
-const PLAYER_DECK_TYPES: MagicCardType[] = [
+const PLAYER_DECK_TYPES: CardType[] = [
   'normal',
   'normal',
   'normal',
@@ -206,7 +202,7 @@ const PLAYER_DECK_TYPES: MagicCardType[] = [
 ];
 
 // CPU（O）の初期デッキ定義
-const CPU_DECK_TYPES: MagicCardType[] = [
+const CPU_DECK_TYPES: CardType[] = [
   'blockUp',
   'blockRight',
   'blockDown',
@@ -226,10 +222,10 @@ const CPU_DECK_TYPES: MagicCardType[] = [
 ];
 
 // プレイヤー（X）の初期デッキ
-export const PLAYER_INITIAL_DECK: Magic[] = createDeck('p', PLAYER_DECK_TYPES);
+export const PLAYER_INITIAL_DECK: Card[] = createDeck('p', PLAYER_DECK_TYPES);
 
 // CPU（O）の初期デッキ
-export const CPU_INITIAL_DECK: Magic[] = createDeck('c', CPU_DECK_TYPES);
+export const CPU_INITIAL_DECK: Card[] = createDeck('c', CPU_DECK_TYPES);
 
 // 初期手札の枚数
 export const INITIAL_HAND_SIZE = 2;

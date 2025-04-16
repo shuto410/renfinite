@@ -1,9 +1,9 @@
 import React from 'react';
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 import { MAGIC_CARDS } from '@/constants/decks';
 
 interface CardSelectionViewProps {
-  onSelect: (card: Magic) => void;
+  onSelect: (card: Card) => void;
 }
 
 export const CardSelectionView: React.FC<CardSelectionViewProps> = ({

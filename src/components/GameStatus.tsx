@@ -1,4 +1,4 @@
-import { Magic } from '@/types/game';
+import { Card } from '@/types/game';
 
 interface GameStatusProps {
   winner: 'X' | 'O' | null;
@@ -7,7 +7,7 @@ interface GameStatusProps {
   playerMana: number;
   cpuMana: number;
   squares: ('X' | 'O' | null)[];
-  selectedMagic: Magic | null;
+  selectedMagic: Card | null;
   playerRenCount?: number;
   cpuRenCount?: number;
   requiredRenToWin?: number;

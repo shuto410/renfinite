@@ -1,4 +1,4 @@
-import type { Magic } from '@/types/game';
+import type { Card } from '@/types/game';
 import { useCPUOpponent } from './useCPUOpponent';
 import { INITIAL_MANA } from '@/constants/decks';
 import { MAGIC_CARDS } from '@/constants/decks';
@@ -8,7 +8,7 @@ import { useBattleBoard } from './useBattleBoard';
 import { resetBattle } from '@/store/utils';
 
 // 常に使用可能な汎用魔法カード
-const GENERIC_MAGIC: Magic = {
+const GENERIC_MAGIC: Card = {
   ...MAGIC_CARDS.normal,
   cost: 1, // 通常の石より少し高いコスト
   name: 'Basic Stone',
@@ -122,7 +122,7 @@ export function useBattleState() {
     setSelectedMagic(null);
   }
 
-  function handleCPUMove(position: number, magic: Magic | null) {
+  function handleCPUMove(position: number, magic: Card | null) {
     console.log('handleCPUMove: ', position, magic);
     if (magic) {
       castMagic(magic, position);

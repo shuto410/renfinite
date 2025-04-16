@@ -57,7 +57,7 @@ export default function Battle() {
         />
       )}
 
-      <div className='flex flex-row'>
+      <div className='flex flex-row '>
         <Board
           size={game.size}
           squares={game.squares}
