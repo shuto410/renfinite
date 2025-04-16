@@ -15,7 +15,7 @@ export const CardSelectionView: React.FC<CardSelectionViewProps> = ({
     .slice(0, 3)
     .map(([type, card], index) => ({
       ...card,
-      id: `selection-${index + 1}`,
+      id: `selection-${type}${index + 1}`,
     }));
 
   return (

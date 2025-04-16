@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardType, CardRarity, MagicType } from '@/types/game';
+import { Card, CardRarity, MagicType } from '@/types/game';
 
 // モックデータ
 interface ShopCard extends Card {

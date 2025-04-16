@@ -13,7 +13,6 @@ export function useBattleBoard() {
   const setXIsNext = useGameStore.use.setXIsNext();
 
   const blockedSquares = useGameStore.use.blockedSquares();
-  const setBlockedSquares = useGameStore.use.setBlockedSquares();
 
   const squaresMetaInfo = useGameStore.use.squaresMetaInfo();
   const setSquaresMetaInfo = useGameStore.use.setSquaresMetaInfo();

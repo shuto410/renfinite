@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import LetterGlitch from '@/blocks/Backgrounds/LetterGlitch/LetterGlitch';
 import Squares from '@/blocks/Backgrounds/Squares/Squares';
 
 // const geistSans = Geist({

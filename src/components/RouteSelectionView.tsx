@@ -1,6 +1,5 @@
 import ForceGraph2D from 'react-force-graph-2d';
 import React from 'react';
-import { link } from 'fs';
 
 export const RouteSelectionView = () => {
   const graphData = genRandomTree(50);
