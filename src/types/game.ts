@@ -41,6 +41,7 @@ export interface Card {
   endTurn: boolean;
   attackPower?: number;
   rarity?: CardRarity;
+  imageSrc?: string;
   id: string;
 }
 

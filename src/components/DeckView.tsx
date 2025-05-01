@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from '@/types/game';
 import { useGameStore } from '@/store';
+import { MagicCard } from './MagicCard';
 
 export const DeckView: React.FC = () => {
   const { deck, getDeckSize } = useGameStore();
@@ -13,27 +14,14 @@ export const DeckView: React.FC = () => {
         <p className='text-gray-400'>デッキ枚数: {getDeckSize()}枚</p>
       </div>
 
-      <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+      <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
         {deck.map((card) => (
           <div
             key={card.id}
-            className='bg-gray-800 rounded-lg p-4 cursor-pointer hover:bg-gray-700 transition-colors'
+            className='cursor-pointer'
             onClick={() => setSelectedCard(card)}
           >
-            <div className='flex justify-between items-start mb-2'>
-              <h3 className='text-lg font-semibold text-white'>{card.name}</h3>
-              <span className='bg-blue-600 text-white px-2 py-1 rounded text-sm'>
-                {card.cost}
-              </span>
-            </div>
-            <p className='text-gray-300 text-sm'>{card.description}</p>
-            {card.attackPower && (
-              <div className='mt-2'>
-                <span className='text-red-400 text-sm'>
-                  攻撃力: {card.attackPower}
-                </span>
-              </div>
-            )}
+            <MagicCard {...card} size='small' />
           </div>
         ))}
       </div>

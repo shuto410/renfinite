@@ -11,6 +11,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     endTurn: true,
     attackPower: 5,
     rarity: 'uncommon',
+    imageSrc: '/images/block_stone.jpg',
   },
   blockRight: {
     type: 'blockRight',
@@ -21,6 +22,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     endTurn: true,
     attackPower: 5,
     rarity: 'uncommon',
+    imageSrc: '/images/block_stone.jpg',
   },
   blockDown: {
     type: 'blockDown',
@@ -31,6 +33,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     endTurn: true,
     attackPower: 5,
     rarity: 'uncommon',
+    imageSrc: '/images/block_stone.jpg',
   },
   blockLeft: {
     type: 'blockLeft',
@@ -41,6 +44,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     endTurn: true,
     attackPower: 5,
     rarity: 'uncommon',
+    imageSrc: '/images/block_stone.jpg',
   },
   block: {
     type: 'block',
@@ -50,6 +54,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     cost: 2,
     endTurn: false,
     rarity: 'common',
+    imageSrc: '/images/block_stone.jpg',
   },
   replace: {
     type: 'replace',
@@ -60,6 +65,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     endTurn: true,
     attackPower: 5,
     rarity: 'rare',
+    imageSrc: '/images/replace.jpg',
   },
   crossDestroy: {
     type: 'crossDestroy',
@@ -70,6 +76,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     endTurn: true,
     attackPower: 5,
     rarity: 'rare',
+    imageSrc: '/images/cross_destroy.jpg',
   },
   normal: {
     type: 'normal',
@@ -80,6 +87,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     endTurn: true,
     attackPower: 10,
     rarity: 'common',
+    imageSrc: '/images/attack_stone.jpg',
   },
   blockUpLight: {
     type: 'blockUp',
@@ -139,6 +147,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     cost: 3,
     endTurn: false,
     rarity: 'uncommon',
+    imageSrc: '/images/destroy.jpg',
   },
   crossDestroyLight: {
     type: 'crossDestroy',
@@ -159,6 +168,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     endTurn: true,
     attackPower: 10,
     rarity: 'superRare',
+    imageSrc: '/images/all_destroy.jpg',
   },
   allBlock: {
     type: 'allBlock',
@@ -169,6 +179,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
     endTurn: true,
     attackPower: 10,
     rarity: 'superRare',
+    imageSrc: '/images/all_block_stone.jpg',
   },
 };
 

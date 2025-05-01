@@ -5,19 +5,22 @@ import { StoreApi, UseBoundStore } from 'zustand';
 import { createMagicSystemSlice, MagicSystemState } from './magicSystem';
 import { MoveHistoryState, createMoveHistorySlice } from './moveHistory';
 import { createPlayerDeckSlice, PlayerDeckState } from './playerDeckSlice';
+import { createItemsSlice, ItemsState } from './items';
 
 const gameStore = create<
   GameConfigState &
     BattleBoardState &
     MagicSystemState &
     MoveHistoryState &
-    PlayerDeckState
+    PlayerDeckState &
+    ItemsState
 >((...a) => ({
   ...createGameConfigSlice(...a),
   ...createBattleBoardSlice(...a),
   ...createMagicSystemSlice(...a),
   ...createMoveHistorySlice(...a),
   ...createPlayerDeckSlice(...a),
+  ...createItemsSlice(...a),
 }));
 
 type WithSelectors<S> = S extends { getState: () => infer T }

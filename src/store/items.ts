@@ -1,21 +1,21 @@
 import { StateCreator } from 'zustand';
 
 export interface ItemsState {
-  money: number;
-  addMoney: (amount: number) => void;
-  removeMoney: (amount: number) => void;
+  gold: number;
+  addGold: (amount: number) => void;
+  removeGold: (amount: number) => void;
 }
 
-export const createMoveHistorySlice: StateCreator<ItemsState> = (set) => ({
-  money: 0,
-  addMoney: (amount: number) => {
+export const createItemsSlice: StateCreator<ItemsState> = (set) => ({
+  gold: 100,
+  addGold: (amount: number) => {
     set((state) => ({
-      money: state.money + amount,
+      gold: state.gold + amount,
     }));
   },
-  removeMoney: (amount: number) => {
+  removeGold: (amount: number) => {
     set((state) => ({
-      money: state.money - amount,
+      gold: state.gold - amount,
     }));
   },
 });

@@ -1,167 +1,70 @@
 'use client';
-
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardRarity, MagicType } from '@/types/game';
+import { useGameStore } from '@/store';
+import { MAGIC_CARDS } from '@/constants/decks';
+import { MagicCard } from '@/components/MagicCard';
 
 // モックデータ
 interface ShopCard extends Card {
   price: number;
-  image: string; // 表示用の画像アイコン
 }
-
-// モックカードデータ
-const mockCards: Omit<ShopCard, 'price'>[] = [
-  {
-    id: 'card1',
-    name: 'ストライク',
-    type: 'normal',
-    cardType: 'normal',
-    rarity: 'common',
-    description: '6ダメージを与える',
-    cost: 1,
-    endTurn: false,
-    attackPower: 6,
-    image: '⚔️',
-  },
-  {
-    id: 'card2',
-    name: '防御',
-    type: 'block',
-    cardType: 'block',
-    rarity: 'common',
-    description: '5ブロックを得る',
-    cost: 1,
-    endTurn: false,
-    image: '🛡️',
-  },
-  {
-    id: 'card3',
-    name: '強打',
-    type: 'normal',
-    cardType: 'normal',
-    rarity: 'uncommon',
-    description: '12ダメージを与える',
-    cost: 2,
-    endTurn: false,
-    attackPower: 12,
-    image: '⚡',
-  },
-  {
-    id: 'card4',
-    name: '毒の刃',
-    type: 'normal',
-    cardType: 'normal',
-    rarity: 'uncommon',
-    description: '4ダメージを与え、2毒を与える',
-    cost: 1,
-    endTurn: false,
-    attackPower: 4,
-    image: '🗡️',
-  },
-  {
-    id: 'card5',
-    name: '炎の壁',
-    type: 'block',
-    cardType: 'block',
-    rarity: 'rare',
-    description: '8ブロックを得る。次のターン、敵に3ダメージを与える',
-    cost: 2,
-    endTurn: false,
-    image: '🔥',
-  },
-  {
-    id: 'card6',
-    name: '癒しの風',
-    type: 'normal',
-    cardType: 'normal',
-    rarity: 'rare',
-    description: '3回復する',
-    cost: 1,
-    endTurn: false,
-    image: '💨',
-  },
-];
-
-// モックプレイヤーデッキ
-const mockPlayerDeck: Card[] = [
-  {
-    id: 'deck1',
-    name: 'ストライク',
-    type: 'normal',
-    cardType: 'normal',
-    rarity: 'common',
-    description: '6ダメージを与える',
-    cost: 1,
-    endTurn: false,
-    attackPower: 6,
-  },
-  {
-    id: 'deck2',
-    name: '防御',
-    type: 'block',
-    cardType: 'block',
-    rarity: 'common',
-    description: '5ブロックを得る',
-    cost: 1,
-    endTurn: false,
-  },
-  {
-    id: 'deck3',
-    name: '防御',
-    type: 'block',
-    cardType: 'block',
-    rarity: 'common',
-    description: '5ブロックを得る',
-    cost: 1,
-    endTurn: false,
-  },
-  {
-    id: 'deck4',
-    name: '強打',
-    type: 'normal',
-    cardType: 'normal',
-    rarity: 'uncommon',
-    description: '12ダメージを与える',
-    cost: 2,
-    endTurn: false,
-    attackPower: 12,
-  },
-];
 
 export default function Shop() {
   const router = useRouter();
-  const [playerGold, setPlayerGold] = useState(250);
-  const [playerDeck, setPlayerDeck] = useState<Card[]>(mockPlayerDeck);
-  const [selectedCard, setSelectedCard] = useState<ShopCard | null>(null);
+  const gold = useGameStore.use.gold();
+  const addGold = useGameStore.use.addGold();
+  const removeGold = useGameStore.use.removeGold();
+  const playerDeck = useGameStore.use.deck();
+  const addCard = useGameStore.use.addCard();
+  const removeCard = useGameStore.use.removeCard();
   const [selectedDeckCard, setSelectedDeckCard] = useState<Card | null>(null);
   const [purchasedCards, setPurchasedCards] = useState<string[]>([]);
   const [removedCards, setRemovedCards] = useState<string[]>([]);
 
-  // ショップのカードをランダムに選択（3枚）
-  const shopCards: ShopCard[] = React.useMemo(() => {
-    const shuffled = [...mockCards].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 3).map((card) => ({
-      ...card,
-      price:
-        card.rarity === 'common' ? 50 : card.rarity === 'uncommon' ? 75 : 100,
-    }));
-  }, []);
+  const priceByRarity: Record<CardRarity, number> = {
+    common: 50,
+    uncommon: 75,
+    rare: 100,
+    superRare: 150,
+    legendary: 200,
+  };
+
+  const cards = [
+    MAGIC_CARDS['block'],
+    MAGIC_CARDS['replace'],
+    MAGIC_CARDS['normal'],
+    MAGIC_CARDS['destroy'],
+    MAGIC_CARDS['crossDestroy'],
+    MAGIC_CARDS['allBlock'],
+    MAGIC_CARDS['allDestroy'],
+  ];
+
+  const shopCards: ShopCard[] = useMemo(
+    () =>
+      cards.map((card, idx) => ({
+        ...card,
+        id: `shop-card-${idx}`,
+        price: priceByRarity[card.rarity || 'common'],
+      })),
+    [cards],
+  );
 
   // カード購入処理
   const handlePurchase = (card: ShopCard) => {
-    if (playerGold >= card.price && !purchasedCards.includes(card.id)) {
-      setPlayerGold(playerGold - card.price);
+    if (gold >= card.price && !purchasedCards.includes(card.id)) {
+      removeGold(card.price);
+      addCard(card);
       setPurchasedCards([...purchasedCards, card.id]);
-      setSelectedCard(null);
     }
   };
 
   // デッキからカード削除処理
   const handleRemoveCard = (card: Card) => {
     if (!removedCards.includes(card.id)) {
-      setPlayerGold(playerGold + 25); // 削除報酬
-      setPlayerDeck(playerDeck.filter((c) => c.id !== card.id));
+      addGold(25); // 削除報酬
+      removeCard(card.id);
       setRemovedCards([...removedCards, card.id]);
       setSelectedDeckCard(null);
     }
@@ -185,33 +88,15 @@ export default function Shop() {
     }
   };
 
-  // カードのタイプに応じた色を取得
-  const getTypeColor = (type: MagicType) => {
-    switch (type) {
-      case 'normal':
-        return 'bg-red-500';
-      case 'block':
-        return 'bg-blue-500';
-      case 'destroy':
-      case 'crossDestroy':
-      case 'allDestroy':
-        return 'bg-purple-500';
-      case 'replace':
-        return 'bg-yellow-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
-
   return (
-    <div className='min-h-screen bg-gray-900 text-white p-4'>
+    <div className='min-h-screen text-white p-4'>
       <div className='max-w-6xl mx-auto'>
         {/* ヘッダー */}
         <div className='flex justify-between items-center mb-6'>
           <h1 className='text-2xl font-bold'>ショップ</h1>
           <div className='flex items-center'>
             <span className='text-yellow-400 mr-2'>💰</span>
-            <span className='text-xl font-bold'>{playerGold}</span>
+            <span className='text-xl font-bold'>{gold}</span>
             <button
               onClick={() => router.back()}
               className='ml-6 px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors'
@@ -227,66 +112,32 @@ export default function Shop() {
             <h2 className='text-xl font-bold mb-4'>購入可能なカード</h2>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
               {shopCards.map((card) => (
-                <div
-                  key={card.id}
-                  className={`relative bg-gray-800 rounded-lg overflow-hidden shadow-lg cursor-pointer transition-transform ${
-                    selectedCard?.id === card.id
-                      ? 'scale-105 ring-2 ring-yellow-400'
-                      : ''
-                  } ${purchasedCards.includes(card.id) ? 'opacity-50' : ''}`}
-                  onClick={() =>
-                    !purchasedCards.includes(card.id) && setSelectedCard(card)
-                  }
-                >
-                  {/* カードタイプの色帯 */}
-                  <div className={`h-2 ${getTypeColor(card.type)}`}></div>
-
-                  <div className='p-4'>
-                    <div className='flex justify-between items-start mb-2'>
-                      <h3 className='font-bold text-lg'>{card.name}</h3>
-                      <div className='flex items-center'>
-                        <span className='text-yellow-400 mr-1'>💰</span>
-                        <span className='font-bold'>{card.price}</span>
-                      </div>
+                <div key={card.id} className='space-y-2'>
+                  <MagicCard
+                    {...card}
+                    size='normal'
+                    isPurchased={purchasedCards.includes(card.id)}
+                  />
+                  <div className='flex justify-between items-center'>
+                    <div className='flex items-center'>
+                      <span className='text-yellow-400 mr-1'>💰</span>
+                      <span className='font-bold'>{card.price}</span>
                     </div>
-
-                    <div
-                      className={`text-sm mb-2 ${getRarityColor(
-                        card.rarity || 'common',
-                      )}`}
-                    >
-                      {card.rarity?.toUpperCase() || 'COMMON'}
-                    </div>
-
-                    <div className='text-4xl mb-2'>{card.image}</div>
-
-                    <p className='text-gray-300 text-sm mb-2'>
-                      {card.description}
-                    </p>
-
-                    <div className='flex justify-between items-center mt-2'>
-                      <div className='text-sm text-gray-400'>
-                        コスト: {card.cost}
-                      </div>
-                      {purchasedCards.includes(card.id) ? (
-                        <span className='text-green-400 text-sm'>購入済み</span>
-                      ) : (
-                        <button
-                          className={`px-3 py-1 rounded text-sm font-bold ${
-                            playerGold >= card.price
-                              ? 'bg-yellow-500 text-black hover:bg-yellow-400'
-                              : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                          }`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handlePurchase(card);
-                          }}
-                          disabled={playerGold < card.price}
-                        >
-                          購入
-                        </button>
-                      )}
-                    </div>
+                    {purchasedCards.includes(card.id) ? (
+                      <span className='text-green-400 text-sm'>購入済み</span>
+                    ) : (
+                      <button
+                        className={`px-3 py-1 rounded text-sm font-bold ${
+                          gold >= card.price
+                            ? 'bg-yellow-500 text-black hover:bg-yellow-400'
+                            : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                        }`}
+                        onClick={() => handlePurchase(card)}
+                        disabled={gold < card.price}
+                      >
+                        購入
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
