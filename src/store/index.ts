@@ -6,6 +6,7 @@ import { createMagicSystemSlice, MagicSystemState } from './magicSystem';
 import { MoveHistoryState, createMoveHistorySlice } from './moveHistory';
 import { createPlayerDeckSlice, PlayerDeckState } from './playerDeckSlice';
 import { createItemsSlice, ItemsState } from './items';
+import { createStageRouteSlice, StageRouteState } from './stageRoute';
 
 const gameStore = create<
   GameConfigState &
@@ -13,7 +14,8 @@ const gameStore = create<
     MagicSystemState &
     MoveHistoryState &
     PlayerDeckState &
-    ItemsState
+    ItemsState &
+    StageRouteState
 >((...a) => ({
   ...createGameConfigSlice(...a),
   ...createBattleBoardSlice(...a),
@@ -21,6 +23,7 @@ const gameStore = create<
   ...createMoveHistorySlice(...a),
   ...createPlayerDeckSlice(...a),
   ...createItemsSlice(...a),
+  ...createStageRouteSlice(...a),
 }));
 
 type WithSelectors<S> = S extends { getState: () => infer T }

@@ -16,9 +16,6 @@ const GENERIC_MAGIC: Card = {
   id: 'generic-stone',
 };
 
-// 勝利に必要な連の数
-const REQUIRED_REN_TO_WIN = 3;
-
 export function useBattleState() {
   const addMoveRecord = useGameStore.use.addMoveRecord();
   const size = useGameStore.use.size();
@@ -183,7 +180,6 @@ export function useBattleState() {
     cpuMana: cpuState.mana,
     playerRenCount,
     cpuRenCount,
-    requiredRenToWin: REQUIRED_REN_TO_WIN,
     playerDeckCount: playerState.deck.length,
     cpuDeckCount: cpuState.deck.length,
     playerDiscardCount: playerState.discardPile.length,

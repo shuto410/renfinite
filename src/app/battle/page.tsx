@@ -1,12 +1,12 @@
 'use client';
 import { useBattleState } from '@/hooks/useBattleState';
 import Board from '../../components/board';
-import { MagicButtons } from '@/components/MagicButtons';
-import { GameStatus } from '@/components/GameStatus';
+import { HandCards } from '@/components/HandCards';
+import { GameStatusMessage } from '@/components/GameStatusMessage';
 import { useEffect, useState } from 'react';
-import MoveHistory from '@/components/MoveHistory';
 import { DeckButton } from '@/components/DeckButton';
 import { SettingButton } from '@/components/SettingButton';
+import { PlayerInfo } from '@/components/PlayerInfo';
 
 export default function Battle() {
   const game = useBattleState();
@@ -18,46 +18,22 @@ export default function Battle() {
 
   return (
     <div className='flex flex-col items-center p-5 font-sans min-h-screen'>
-      <GameStatus
+      <GameStatusMessage
         winner={game.winner}
         xIsNext={game.xIsNext}
         isCPUMode={game.isCPUMode}
-        playerMana={game.playerMana}
-        cpuMana={game.cpuMana}
         squares={game.squares}
         selectedMagic={game.selectedMagic}
-        playerRenCount={game.playerRenCount}
-        cpuRenCount={game.cpuRenCount}
-        requiredRenToWin={game.requiredRenToWin}
-        playerDeckCount={game.playerDeckCount}
-        cpuDeckCount={game.cpuDeckCount}
-        playerDiscardCount={game.playerDiscardCount}
-        cpuDiscardCount={game.cpuDiscardCount}
-        playerHitPoints={game.playerHitPoints}
-        cpuHitPoints={game.cpuHitPoints}
       />
-
-      <div className='m-4'>
-        <button
-          className='px-4 py-2 rounded-md transition-colors duration-200 bg-red-400 text-white'
-          onClick={game.endTurn}
-        >
-          End Turn
-        </button>
-      </div>
-
-      {mounted && (
-        <MagicButtons
-          hand={game.playerHand}
-          selectedMagic={game.selectedMagic}
-          xIsNext={game.xIsNext}
-          playerMana={game.playerMana}
-          cpuMana={game.cpuMana}
-          onSelectMagic={game.setSelectedMagic}
+      <div className='flex flex-row gap-4'>
+        <PlayerInfo
+          name='You'
+          imageSrc='/images/player.jpg'
+          hp={game.playerHitPoints}
+          mana={game.playerMana}
+          maxMana={6}
+          isActive={game.xIsNext}
         />
-      )}
-
-      <div className='flex flex-row '>
         <Board
           size={game.size}
           squares={game.squares}
@@ -66,17 +42,58 @@ export default function Battle() {
           onSquareClick={game.handleClick}
           lastPlacedPosition={game.lastPlacedPosition}
         />
-        <div className='pl-8 lg:w-80'>
-          <MoveHistory boardSize={game.size} maxDisplayed={15} />
+        <PlayerInfo
+          name='Enemy'
+          imageSrc='/images/enemy.jpg'
+          hp={game.cpuHitPoints}
+          mana={game.cpuMana}
+          maxMana={6}
+          isActive={!game.xIsNext}
+        />
+      </div>
+
+      <div className='flex flex-row gap-2 mt-2'>
+        {mounted && (
+          <HandCards
+            hand={game.playerHand}
+            selectedMagic={game.selectedMagic}
+            xIsNext={game.xIsNext}
+            playerMana={game.playerMana}
+            cpuMana={game.cpuMana}
+            onSelectMagic={game.setSelectedMagic}
+          />
+        )}
+        {/* <button
+          className='p-1 text-lg bg-green-500 text-white rounded-md
+                   hover:bg-green-600 transition-colors duration-200'
+          onClick={game.resetBattle}
+        >
+          Reset Game
+        </button> */}
+        <div className='m-10'>
+          <button
+            className='p-1 rounded-md bg-cyan-800 hover:bg-cyan-900 active:bg-cyan-600 text-white'
+            onClick={game.endTurn}
+          >
+            <span className='flex items-center gap-1'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-8 w-8'
+                fill='none'
+                viewBox='0 0 24 24'
+                stroke='currentColor'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M13 5l7 7-7 7M5 5l7 7-7 7'
+                />
+              </svg>
+            </span>
+          </button>
         </div>
       </div>
-      <button
-        className='mt-6 px-6 py-3 text-lg bg-green-500 text-white rounded-md
-                   hover:bg-green-600 transition-colors duration-200'
-        onClick={game.resetBattle}
-      >
-        Reset Game
-      </button>
       <DeckButton />
       <SettingButton />
     </div>

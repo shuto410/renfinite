@@ -1,17 +1,14 @@
 import React from 'react';
-import { NodeType } from '@/types/game';
+import { RouteType, Stage, StageType } from '@/store/stageRoute';
 
 interface RouteSelectionProps {
-  routes: {
-    type: NodeType;
-    position: { x: number; y: number };
-  }[];
-  onSelect: (routeIndex: number) => void;
+  stages: { [k in RouteType]?: Stage };
+  onSelect: (routeType: RouteType) => void;
 }
 
-const getRouteButtonStyle = (type: NodeType) => {
+const getRouteButtonStyle = (type: StageType) => {
   switch (type) {
-    case 'enemy':
+    case 'battle':
       return 'bg-red-600 hover:bg-red-700';
     case 'shop':
       return 'bg-yellow-600 hover:bg-yellow-700';
@@ -24,9 +21,9 @@ const getRouteButtonStyle = (type: NodeType) => {
   }
 };
 
-const getRouteLabel = (type: NodeType) => {
+const getRouteLabel = (type: StageType) => {
   switch (type) {
-    case 'enemy':
+    case 'battle':
       return '敵との戦闘';
     case 'shop':
       return 'ショップ';
@@ -40,7 +37,7 @@ const getRouteLabel = (type: NodeType) => {
 };
 
 export const RouteSelection: React.FC<RouteSelectionProps> = ({
-  routes,
+  stages,
   onSelect,
 }) => {
   return (
@@ -49,16 +46,16 @@ export const RouteSelection: React.FC<RouteSelectionProps> = ({
         <h2 className='text-xl font-bold text-white mb-4'>
           進むルートを選択してください
         </h2>
-        <div className='flex gap-4'>
-          {routes.map((route, index) => (
+        <div className='flex gap-4 justify-center'>
+          {Object.keys(stages).map((routeType) => (
             <button
-              key={index}
-              onClick={() => onSelect(index)}
+              key={routeType}
+              onClick={() => onSelect(routeType as RouteType)}
               className={`px-6 py-3 rounded-lg font-semibold transition-colors text-white ${getRouteButtonStyle(
-                route.type,
+                stages[routeType as RouteType]!.type,
               )}`}
             >
-              {getRouteLabel(route.type)}
+              {getRouteLabel(stages[routeType as RouteType]!.type)}
             </button>
           ))}
         </div>

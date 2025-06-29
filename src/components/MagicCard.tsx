@@ -25,7 +25,6 @@ const rarityColors: Record<CardRarity, string> = {
 export function MagicCard({
   name,
   description,
-  rarity,
   cost,
   imageSrc,
   isPurchased,
@@ -38,7 +37,7 @@ export function MagicCard({
       header: 'pl-3',
       title: 'text-lg',
       cost: 'text-lg',
-      description: 'text-sm min-h-[3em]',
+      description: 'font-bold text-sm min-h-[3em]',
       padding: 'p-2',
     },
     normal: {
@@ -46,7 +45,7 @@ export function MagicCard({
       header: 'pl-2',
       title: 'text-base',
       cost: 'text-base',
-      description: 'text-sm min-h-[2.5em]',
+      description: 'font-bold text-sm min-h-[2.5em]',
       padding: 'p-1.5',
     },
     small: {
@@ -54,7 +53,7 @@ export function MagicCard({
       header: 'pl-1',
       title: 'text-xs',
       cost: 'text-xs',
-      description: 'text-[10px] min-h-[2em] px-1',
+      description: 'font-bold text-[10px] min-h-[3em]',
       padding: 'p-1',
     },
   };
@@ -93,7 +92,7 @@ export function MagicCard({
         {/* カード画像 */}
         <div className='relative w-full aspect-square'>
           <Image
-            src={imageSrc || ''}
+            src={imageSrc || '/images/block_stone.jpg'}
             alt={name}
             fill
             className='object-contain'
