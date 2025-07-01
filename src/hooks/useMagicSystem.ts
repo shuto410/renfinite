@@ -5,7 +5,7 @@ import {
 } from '@/constants/decks';
 import { useGameStore } from '@/store';
 import { Card } from '@/types/game';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 
 export function useMagicSystem() {
   const playerState = useGameStore.use.playerState();
@@ -32,6 +32,24 @@ export function useMagicSystem() {
   const destroyPiece = useGameStore.use.destroyPiece();
   const crossDestroyAndPlace = useGameStore.use.crossDestroyAndPlace();
   const allDestroyAndPlace = useGameStore.use.allDestroyAndPlace();
+
+  // 手札を補充
+  const drawCard = useCallback((isPlayer: boolean) => {
+    const state = isPlayer ? playerState : cpuState;
+    const setHand = isPlayer ? setPlayerHand : setCpuHand;
+    const setDeck = isPlayer ? setPlayerDeck : setCpuDeck;
+
+    if (state.hand.length < MAX_HAND_SIZE && state.deck.length > 0) {
+      const randomIndex = Math.floor(Math.random() * state.deck.length);
+      const drawnCard = state.deck[randomIndex];
+      const newDeck = [...state.deck];
+      newDeck.splice(randomIndex, 1);
+      const newHand = [...state.hand, drawnCard];
+
+      setHand(newHand);
+      setDeck(newDeck);
+    }
+  }, [playerState, cpuState, setPlayerHand, setCpuHand, setPlayerDeck, setCpuDeck]);
 
   // ターン開始時に手札を補充
   useEffect(() => {
@@ -61,8 +79,7 @@ export function useMagicSystem() {
         setTimeout(() => drawCard(false), 0);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xIsNext, finalWinner]);
+  }, [xIsNext, finalWinner, playerState, cpuState, drawCard, reshufflePlayerDiscard, reshuffleCpuDiscard]);
 
   // ターン開始時にマナを1補充
   useEffect(() => {
@@ -85,26 +102,7 @@ export function useMagicSystem() {
         ),
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [xIsNext, finalWinner]);
-
-  // 手札を補充
-  function drawCard(isPlayer: boolean) {
-    const state = isPlayer ? playerState : cpuState;
-    const setHand = isPlayer ? setPlayerHand : setCpuHand;
-    const setDeck = isPlayer ? setPlayerDeck : setCpuDeck;
-
-    if (state.hand.length < MAX_HAND_SIZE && state.deck.length > 0) {
-      const randomIndex = Math.floor(Math.random() * state.deck.length);
-      const drawnCard = state.deck[randomIndex];
-      const newDeck = [...state.deck];
-      newDeck.splice(randomIndex, 1);
-      const newHand = [...state.hand, drawnCard];
-
-      setHand(newHand);
-      setDeck(newDeck);
-    }
-  }
+  }, [xIsNext, finalWinner, playerState.mana, cpuState.mana, playerRenCount, cpuRenCount, setPlayerMana, setCpuMana]);
 
   // 魔法を使用
   function castMagic(magic: Card, position: number) {

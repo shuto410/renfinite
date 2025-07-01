@@ -13,32 +13,25 @@ export default function Home() {
   const currentRouteType = useGameStore.use.currentRouteType();
   const currentStageIndex = useGameStore.use.currentStageIndex();
   const currentStage = routes[currentRouteType].stages[currentStageIndex];
-  const [nextStages] = useState<{ [k in RouteType]?: Stage }>(
-    currentStage.canMoveOtherRoute
-      ? {
-          A: routes['A'].stages[currentStageIndex + 1],
-          B: routes['B'].stages[currentStageIndex + 1],
-          C: routes['C'].stages[currentStageIndex + 1],
-        }
-      : {
-          [currentRouteType]:
-            routes[currentRouteType].stages[currentStageIndex + 1],
-        },
-  );
-  // React.useEffect(() => {
-  //   setNextStages(
-  //     currentStage.canMoveOtherRoute
-  //       ? {
-  //           A: routes['A'].stages[currentStageIndex + 1],
-  //           B: routes['B'].stages[currentStageIndex + 1],
-  //           C: routes['C'].stages[currentStageIndex + 1],
-  //         }
-  //       : {
-  //           [currentRouteType]:
-  //             routes[currentRouteType].stages[currentStageIndex + 1],
-  //         },
-  //   );
-  // }, []);
+  
+  // Calculate next stages dynamically with bounds checking
+  const nextStages = React.useMemo<{ [k in RouteType]?: Stage }>(() => {
+    if (!currentStage) return {};
+    
+    const nextIndex = currentStageIndex + 1;
+    
+    if (currentStage.canMoveOtherRoute) {
+      return {
+        A: routes['A']?.stages?.[nextIndex],
+        B: routes['B']?.stages?.[nextIndex],
+        C: routes['C']?.stages?.[nextIndex],
+      };
+    } else {
+      return {
+        [currentRouteType]: routes[currentRouteType]?.stages?.[nextIndex],
+      };
+    }
+  }, [currentStage, currentStageIndex, currentRouteType, routes]);
   const moveToNextStage = useGameStore.use.moveToNextStage();
 
   const handleRouteSelect = (routeType: RouteType) => {
