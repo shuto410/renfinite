@@ -15,17 +15,25 @@ export function applyBlockEffect(
       blockIndexes = [position - size];
       break;
     case 'right':
-      blockIndexes = [position + 1];
-      if (Math.floor(position / size) !== Math.floor(blockIndexes[0] / size))
+      const rightPos = position + 1;
+      // Check bounds first, then row boundary
+      if (rightPos < size * size && Math.floor(position / size) === Math.floor(rightPos / size)) {
+        blockIndexes = [rightPos];
+      } else {
         blockIndexes = [];
+      }
       break;
     case 'down':
       blockIndexes = [position + size];
       break;
     case 'left':
-      blockIndexes = [position - 1];
-      if (Math.floor(position / size) !== Math.floor(blockIndexes[0] / size))
+      const leftPos = position - 1;
+      // Check bounds first, then row boundary
+      if (leftPos >= 0 && Math.floor(position / size) === Math.floor(leftPos / size)) {
+        blockIndexes = [leftPos];
+      } else {
         blockIndexes = [];
+      }
       break;
     case 'all':
       blockIndexes = [
