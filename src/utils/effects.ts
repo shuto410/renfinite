@@ -1,4 +1,4 @@
-import type { BlockDirection } from '@/types/game';
+import type { BlockDirection } from '@/types';
 
 export function applyBlockEffect(
   position: number,

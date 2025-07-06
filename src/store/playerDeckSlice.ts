@@ -1,4 +1,4 @@
-import { Card } from '@/types/game';
+import { Card } from '@/types';
 import { StateCreator } from 'zustand';
 import { PLAYER_INITIAL_DECK } from '@/constants/decks';
 

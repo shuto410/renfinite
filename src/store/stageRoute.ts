@@ -1,4 +1,3 @@
-import next from 'next';
 import { StateCreator } from 'zustand';
 
 export type StageType = 'start' | 'shop' | 'battle' | 'event' | 'boss';

@@ -36,9 +36,8 @@ export function useBattleBoard() {
 
   // 蓮が完成したら石を削除し、プレイヤーのカウントを増やす
   useEffect(() => {
-    if (completedRen && completedRen.length > 0) {
-      // 完成した連の所有者を確認（最初の石の所有者）
-      const renOwner = squares[completedRen[0]];
+    if (completedRen && completedRen.length > 0 && winner) {
+      // winnerは'X'または'O'で確定
       const totalRenAttackPower = completedRen.reduce((acc, position) => {
         return acc + (squaresMetaInfo[position].attackPower ?? 0);
       }, 0);
@@ -56,7 +55,7 @@ export function useBattleBoard() {
         setSquaresMetaInfo(newSquaresMetaInfo);
 
         // 対応するプレイヤーの連カウントを増やす
-        if (renOwner === 'X') {
+        if (winner === 'X') {
           const newCount = playerRenCount + 1;
           setPlayerRenCount(newCount);
           const newCpuHitPoints = cpuHitPoints - totalRenAttackPower;
@@ -66,7 +65,7 @@ export function useBattleBoard() {
           if (newCpuHitPoints <= 0) {
             setFinalWinner('X');
           }
-        } else if (renOwner === 'O') {
+        } else if (winner === 'O') {
           const newCount = cpuRenCount + 1;
           setCpuRenCount(newCount);
           const newPlayerHitPoints = playerHitPoints - totalRenAttackPower;
@@ -82,7 +81,7 @@ export function useBattleBoard() {
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [completedRen, squares, playerRenCount, cpuRenCount]);
+  }, [completedRen, winner, squares, playerRenCount, cpuRenCount]);
 
   return {
     xIsNext,

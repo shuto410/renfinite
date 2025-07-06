@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from '@/types/game';
+import { Card } from '@/types';
 import { useGameStore } from '@/store';
 import { MagicCard } from './MagicCard';
 

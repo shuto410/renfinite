@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Card, CardRarity } from '@/types/game';
+import { Card } from '@/types';
 import {
   Tooltip,
   TooltipContent,
@@ -13,14 +13,6 @@ interface MagicCardProps extends Card {
   onClick?: () => void;
   size?: 'large' | 'normal' | 'small';
 }
-
-const rarityColors: Record<CardRarity, string> = {
-  common: 'text-gray-300',
-  uncommon: 'text-green-400',
-  rare: 'text-blue-400',
-  superRare: 'text-purple-400',
-  legendary: 'text-yellow-400',
-};
 
 export function MagicCard({
   name,

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { calculateWinner } from '@/utils';
-import { Card } from '@/types/game';
+import { Card } from '@/types';
 import { applyAllDestroy, applyCrossDestroy } from '../utils/effects';
 import { MAGIC_CARDS } from '@/constants/decks';
 

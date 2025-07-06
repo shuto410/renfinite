@@ -1,5 +1,5 @@
 'use client';
-import { Card } from '@/types/game';
+import { Card } from '@/types';
 import { useEffect, useState } from 'react';
 import { MagicCard } from './MagicCard';
 
@@ -29,7 +29,7 @@ export function HandCards({
 
   const currentMana = xIsNext ? playerMana : cpuMana;
 
-  function renderMagicCard(magic: Card, isGeneric: boolean = false) {
+  function renderMagicCard(magic: Card) {
     const isSelected = selectedMagic && selectedMagic.id === magic.id;
     const canUse = currentMana >= magic.cost;
 

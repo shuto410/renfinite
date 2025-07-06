@@ -23,7 +23,7 @@ export function calculateWinner(
       }
 
       if (win) {
-        return { winner: null, completedRen: positions };
+        return { winner: squares[startIndex], completedRen: positions };
       }
     }
   }
@@ -48,7 +48,7 @@ export function calculateWinner(
       }
 
       if (win) {
-        return { winner: null, completedRen: positions };
+        return { winner: squares[startIndex], completedRen: positions };
       }
     }
   }
@@ -73,7 +73,7 @@ export function calculateWinner(
       }
 
       if (win) {
-        return { winner: null, completedRen: positions };
+        return { winner: squares[startIndex], completedRen: positions };
       }
     }
   }
@@ -98,7 +98,7 @@ export function calculateWinner(
       }
 
       if (win) {
-        return { winner: null, completedRen: positions };
+        return { winner: squares[startIndex], completedRen: positions };
       }
     }
   }

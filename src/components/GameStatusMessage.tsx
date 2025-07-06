@@ -1,4 +1,4 @@
-import { Card } from '@/types/game';
+import { Card } from '@/types';
 
 interface GameStatusProps {
   winner: 'X' | 'O' | null;
