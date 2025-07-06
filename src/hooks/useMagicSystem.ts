@@ -4,7 +4,7 @@ import {
   MAX_MANA,
 } from '@/constants/decks';
 import { useGameStore } from '@/store';
-import { Card } from '@/types/game';
+import { Card } from '@/types';
 import { useEffect } from 'react';
 
 export function useMagicSystem() {

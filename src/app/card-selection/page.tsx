@@ -3,7 +3,7 @@
 import { CardSelectionPopup } from '@/components/CardSelectionPopup';
 import { DeckButton } from '@/components/DeckButton';
 import { useGameStore } from '@/store';
-import { Card } from '@/types/game';
+import { Card } from '@/types';
 import { useRouter } from 'next/navigation';
 
 export default function CardSelection() {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card } from '@/types/game';
+import { Card } from '@/types';
 import { MAGIC_CARDS } from '@/constants/decks';
 import { MagicCard } from './MagicCard';
 

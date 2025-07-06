@@ -4,7 +4,7 @@ import {
   INITIAL_MANA,
 } from '@/constants/decks';
 import { useGameStore } from '.';
-import { Card } from '@/types/game';
+import { Card } from '@/types';
 
 export function resetBattle() {
   const setSquares = useGameStore.use.setSquares();

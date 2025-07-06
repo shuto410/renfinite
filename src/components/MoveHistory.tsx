@@ -1,6 +1,6 @@
 import React from 'react';
 import { positionToCoordinates } from '@/utils/boardUtils';
-import { Card } from '@/types/game';
+import { Card } from '@/types';
 import { useGameStore } from '@/store';
 
 export interface MoveRecord {

@@ -1,4 +1,4 @@
-import type { Card } from '@/types/game';
+import type { Card } from '@/types';
 import { useCPUOpponent } from './useCPUOpponent';
 import { INITIAL_MANA } from '@/constants/decks';
 import { MAGIC_CARDS } from '@/constants/decks';

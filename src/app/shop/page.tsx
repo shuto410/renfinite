@@ -1,7 +1,7 @@
 'use client';
 import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardRarity, MagicType } from '@/types/game';
+import { Card, CardRarity } from '@/types';
 import { useGameStore } from '@/store';
 import { MAGIC_CARDS } from '@/constants/decks';
 import { MagicCard } from '@/components/MagicCard';
@@ -23,33 +23,31 @@ export default function Shop() {
   const [purchasedCards, setPurchasedCards] = useState<string[]>([]);
   const [removedCards, setRemovedCards] = useState<string[]>([]);
 
-  const priceByRarity: Record<CardRarity, number> = {
-    common: 50,
-    uncommon: 75,
-    rare: 100,
-    superRare: 150,
-    legendary: 200,
-  };
+  const shopCards: ShopCard[] = useMemo(() => {
+    const priceByRarity: Record<CardRarity, number> = {
+      common: 50,
+      uncommon: 75,
+      rare: 100,
+      superRare: 150,
+      legendary: 200,
+    };
 
-  const cards = [
-    MAGIC_CARDS['block'],
-    MAGIC_CARDS['replace'],
-    MAGIC_CARDS['normal'],
-    MAGIC_CARDS['destroy'],
-    MAGIC_CARDS['crossDestroy'],
-    MAGIC_CARDS['allBlock'],
-    MAGIC_CARDS['allDestroy'],
-  ];
+    const cards = [
+      MAGIC_CARDS['block'],
+      MAGIC_CARDS['replace'],
+      MAGIC_CARDS['normal'],
+      MAGIC_CARDS['destroy'],
+      MAGIC_CARDS['crossDestroy'],
+      MAGIC_CARDS['allBlock'],
+      MAGIC_CARDS['allDestroy'],
+    ];
 
-  const shopCards: ShopCard[] = useMemo(
-    () =>
-      cards.map((card, idx) => ({
-        ...card,
-        id: `shop-card-${idx}`,
-        price: priceByRarity[card.rarity || 'common'],
-      })),
-    [cards],
-  );
+    return cards.map((card, idx) => ({
+      ...card,
+      id: `shop-card-${idx}`,
+      price: priceByRarity[card.rarity || 'common'],
+    }));
+  }, []);
 
   // カード購入処理
   const handlePurchase = (card: ShopCard) => {

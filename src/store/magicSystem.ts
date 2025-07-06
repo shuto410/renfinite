@@ -1,5 +1,5 @@
-import { Card } from '@/types/game';
-import { Player } from '@/types/game';
+import { Card } from '@/types';
+import { Player } from '@/types';
 import { StateCreator } from 'zustand';
 import {
   PLAYER_INITIAL_DECK,

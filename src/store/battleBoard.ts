@@ -1,5 +1,5 @@
 import { MAGIC_CARDS } from '@/constants/decks';
-import { BlockDirection, MagicType } from '@/types/game';
+import { BlockDirection, MagicType } from '@/types';
 import {
   applyAllDestroy,
   applyBlockEffect,
