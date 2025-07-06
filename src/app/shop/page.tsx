@@ -1,12 +1,12 @@
 'use client';
 import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardRarity } from '@/types';
+import { Card, CardRarity } from '@/types/battle';
 import { useGameStore } from '@/store';
 import { MAGIC_CARDS } from '@/constants/decks';
 import { MagicCard } from '@/components/MagicCard';
 
-// モックデータ
+// Mock data
 interface ShopCard extends Card {
   price: number;
 }
@@ -49,7 +49,7 @@ export default function Shop() {
     }));
   }, []);
 
-  // カード購入処理
+  // Card purchase processing
   const handlePurchase = (card: ShopCard) => {
     if (gold >= card.price && !purchasedCards.includes(card.id)) {
       removeGold(card.price);
@@ -58,17 +58,17 @@ export default function Shop() {
     }
   };
 
-  // デッキからカード削除処理
+  // Remove card from deck processing
   const handleRemoveCard = (card: Card) => {
     if (!removedCards.includes(card.id)) {
-      addGold(25); // 削除報酬
+      addGold(25); // Removal reward
       removeCard(card.id);
       setRemovedCards([...removedCards, card.id]);
       setSelectedDeckCard(null);
     }
   };
 
-  // カードのレアリティに応じた色を取得
+  // Get color based on card rarity
   const getRarityColor = (rarity: CardRarity) => {
     switch (rarity) {
       case 'common':
@@ -89,9 +89,9 @@ export default function Shop() {
   return (
     <div className='min-h-screen text-white p-4'>
       <div className='max-w-6xl mx-auto'>
-        {/* ヘッダー */}
+        {/* Header */}
         <div className='flex justify-between items-center mb-6'>
-          <h1 className='text-2xl font-bold'>ショップ</h1>
+          <h1 className='text-2xl font-bold'>Shop</h1>
           <div className='flex items-center'>
             <span className='text-yellow-400 mr-2'>💰</span>
             <span className='text-xl font-bold'>{gold}</span>
@@ -99,15 +99,15 @@ export default function Shop() {
               onClick={() => router.back()}
               className='ml-6 px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors'
             >
-              戻る
+              Back
             </button>
           </div>
         </div>
 
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-          {/* 購入可能なカード */}
+          {/* Purchasable cards */}
           <div className='md:col-span-2'>
-            <h2 className='text-xl font-bold mb-4'>購入可能なカード</h2>
+            <h2 className='text-xl font-bold mb-4'>Available Cards</h2>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
               {shopCards.map((card) => (
                 <div key={card.id} className='space-y-2'>
@@ -122,7 +122,7 @@ export default function Shop() {
                       <span className='font-bold'>{card.price}</span>
                     </div>
                     {purchasedCards.includes(card.id) ? (
-                      <span className='text-green-400 text-sm'>購入済み</span>
+                      <span className='text-green-400 text-sm'>Purchased</span>
                     ) : (
                       <button
                         className={`px-3 py-1 rounded text-sm font-bold ${
@@ -133,7 +133,7 @@ export default function Shop() {
                         onClick={() => handlePurchase(card)}
                         disabled={gold < card.price}
                       >
-                        購入
+                        Purchase
                       </button>
                     )}
                   </div>
@@ -142,17 +142,17 @@ export default function Shop() {
             </div>
           </div>
 
-          {/* デッキ管理 */}
+          {/* Deck management */}
           <div>
-            <h2 className='text-xl font-bold mb-4'>デッキ管理</h2>
+            <h2 className='text-xl font-bold mb-4'>Deck Management</h2>
             <div className='bg-gray-800 rounded-lg p-4'>
               <p className='text-gray-300 mb-4'>
-                カードを削除すると <span className='text-yellow-400'>25💰</span>{' '}
-                獲得できます
+                Removing cards gives you{' '}
+                <span className='text-yellow-400'>25💰</span> as reward
               </p>
 
               <div className='space-y-3'>
-                {playerDeck.map((card) => (
+                {playerDeck.map((card: Card) => (
                   <div
                     key={card.id}
                     className={`relative bg-gray-700 rounded-lg p-3 cursor-pointer transition-transform ${
@@ -189,13 +189,13 @@ export default function Shop() {
                           handleRemoveCard(card);
                         }}
                       >
-                        削除
+                        Remove
                       </button>
                     )}
 
                     {removedCards.includes(card.id) && (
                       <div className='mt-2 text-center text-sm text-gray-400'>
-                        削除済み
+                        Removed
                       </div>
                     )}
                   </div>

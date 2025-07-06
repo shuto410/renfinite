@@ -1,4 +1,4 @@
-import type { Card } from '@/types';
+import type { Card } from '@/types/battle';
 import { useCPUOpponent } from './useCPUOpponent';
 import { INITIAL_MANA } from '@/constants/decks';
 import { MAGIC_CARDS } from '@/constants/decks';
@@ -7,10 +7,10 @@ import { useMagicSystem } from './useMagicSystem';
 import { useBattleBoard } from './useBattleBoard';
 import { resetBattle } from '@/store/utils';
 
-// 常に使用可能な汎用魔法カード
+// Generic magic card that is always available
 const GENERIC_MAGIC: Card = {
   ...MAGIC_CARDS.normal,
-  cost: 1, // 通常の石より少し高いコスト
+  cost: 1, // Slightly higher cost than normal stones
   name: 'Basic Stone',
   description: 'Place a stone without any special effect',
   id: 'generic-stone',
@@ -70,7 +70,6 @@ export function useBattleState() {
   });
 
   function handleClick(position: number) {
-    console.log('handleClick: ', position);
     const currentPlayer = xIsNext ? 'X' : 'O';
     if (finalWinner || winner) return;
     if ((isCPUMode && !xIsNext) || !selectedMagic) return;
@@ -84,15 +83,13 @@ export function useBattleState() {
       }
     }
 
-    console.log('handleClick: ', position, selectedMagic);
-
     const state = xIsNext ? playerState : cpuState;
     const isGenericMagic = selectedMagic.id === GENERIC_MAGIC.id;
 
-    // マナが足りない場合は処理しない
+    // Skip if not enough mana
     if (state.mana < selectedMagic.cost) return;
 
-    // replace魔法の場合は、相手の石がある場所のみ選択可能
+    // For replace magic, only opponent's stone positions are selectable
     if (selectedMagic.type === 'replace') {
       if (!squares[position] || squares[position] === currentPlayer) return;
     } else if (
@@ -102,16 +99,16 @@ export function useBattleState() {
       if (squares[position]) return;
     }
 
-    // 汎用魔法カードの場合は手札から削除しない
+    // For generic magic cards, don't remove from hand
     if (isGenericMagic) {
-      // マナだけ消費
+      // Only consume mana
       const setMana = xIsNext ? setPlayerMana : setCpuMana;
       setMana(state.mana - selectedMagic.cost);
 
-      // 効果を適用（通常の石を置く）
+      // Apply effect (place normal stone)
       placePiece(position);
     } else {
-      // 通常の魔法カードを使用
+      // Use normal magic card
       castMagic(selectedMagic, position);
     }
 
@@ -120,7 +117,6 @@ export function useBattleState() {
   }
 
   function handleCPUMove(position: number, magic: Card | null) {
-    console.log('handleCPUMove: ', position, magic);
     if (magic) {
       castMagic(magic, position);
     } else {

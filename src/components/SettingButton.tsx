@@ -21,7 +21,7 @@ export const SettingButton: React.FC = () => {
         onClick={() => setIsOpen(true)}
         className='fixed bottom-4 left-4 bg-gray-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition-colors flex items-center gap-2'
       >
-        <span>設定</span>
+        <span>Settings</span>
       </button>
 
       <BattleSettingPopup

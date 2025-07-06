@@ -1,5 +1,5 @@
-import { Card } from '@/types';
-import { Player } from '@/types';
+import { Card } from '@/types/battle';
+import { MagicSystemState } from '@/types/store';
 import { StateCreator } from 'zustand';
 import {
   PLAYER_INITIAL_DECK,
@@ -7,25 +7,6 @@ import {
   INITIAL_HAND_SIZE,
   INITIAL_MANA,
 } from '@/constants/decks';
-
-export interface MagicSystemState {
-  playerState: Player;
-  cpuState: Player;
-  selectedMagic: Card | null;
-  setPlayerDeck: (newPlayerDeck: Card[]) => void;
-  setCpuDeck: (newCpuDeck: Card[]) => void;
-  setPlayerHand: (newPlayerHand: Card[]) => void;
-  setCpuHand: (newCpuHand: Card[]) => void;
-  setPlayerMana: (newPlayerMana: number) => void;
-  setCpuMana: (newCpuMana: number) => void;
-  setSelectedMagic: (newSelectedMagic: Card | null) => void;
-  addToPlayerDiscard: (cards: Card[]) => void;
-  addToCpuDiscard: (cards: Card[]) => void;
-  setPlayerDiscard: (newPlayerDiscard: Card[]) => void;
-  setCpuDiscard: (newCpuDiscard: Card[]) => void;
-  reshufflePlayerDiscard: () => void;
-  reshuffleCpuDiscard: () => void;
-}
 
 function generateInitialHand(deck: Card[]): {
   hand: Card[];

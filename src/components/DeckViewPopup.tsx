@@ -16,7 +16,7 @@ export const DeckViewPopup: React.FC<DeckViewPopupProps> = ({
     <div className='fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50'>
       <div className='bg-gray-900 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto'>
         <div className='sticky top-0 bg-gray-900 p-4 border-b border-gray-800 flex justify-between items-center'>
-          <h2 className='text-xl font-bold text-white'>デッキ管理</h2>
+          <h2 className='text-xl font-bold text-white'>Deck Management</h2>
           <button
             onClick={onClose}
             className='text-gray-400 hover:text-white transition-colors'

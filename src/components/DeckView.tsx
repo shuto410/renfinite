@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 import { useGameStore } from '@/store';
 import { MagicCard } from './MagicCard';
 
@@ -10,12 +10,12 @@ export const DeckView: React.FC = () => {
   return (
     <div className='p-4'>
       <div className='mb-4'>
-        <h2 className='text-xl font-bold text-white'>デッキ一覧</h2>
-        <p className='text-gray-400'>デッキ枚数: {getDeckSize()}枚</p>
+        <h2 className='text-xl font-bold text-white'>Deck List</h2>
+        <p className='text-gray-400'>Deck size: {getDeckSize()} cards</p>
       </div>
 
       <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
-        {deck.map((card) => (
+        {deck.map((card: Card) => (
           <div
             key={card.id}
             className='cursor-pointer'
@@ -42,22 +42,22 @@ export const DeckView: React.FC = () => {
             </div>
             <div className='space-y-4'>
               <div>
-                <span className='text-gray-400'>コスト: </span>
+                <span className='text-gray-400'>Cost: </span>
                 <span className='text-white'>{selectedCard.cost}</span>
               </div>
               <div>
-                <span className='text-gray-400'>説明: </span>
+                <span className='text-gray-400'>Description: </span>
                 <p className='text-white'>{selectedCard.description}</p>
               </div>
               {selectedCard.attackPower && (
                 <div>
-                  <span className='text-gray-400'>攻撃力: </span>
+                  <span className='text-gray-400'>Attack Power: </span>
                   <span className='text-white'>{selectedCard.attackPower}</span>
                 </div>
               )}
               {selectedCard.rarity && (
                 <div>
-                  <span className='text-gray-400'>レアリティ: </span>
+                  <span className='text-gray-400'>Rarity: </span>
                   <span className='text-white'>{selectedCard.rarity}</span>
                 </div>
               )}

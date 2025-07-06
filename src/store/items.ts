@@ -1,10 +1,5 @@
 import { StateCreator } from 'zustand';
-
-export interface ItemsState {
-  gold: number;
-  addGold: (amount: number) => void;
-  removeGold: (amount: number) => void;
-}
+import { ItemsState } from '@/types/store';
 
 export const createItemsSlice: StateCreator<ItemsState> = (set) => ({
   gold: 100,

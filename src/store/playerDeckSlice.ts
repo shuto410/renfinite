@@ -1,16 +1,6 @@
-import { Card } from '@/types';
+import { PlayerDeckState } from '@/types/store';
 import { StateCreator } from 'zustand';
 import { PLAYER_INITIAL_DECK } from '@/constants/decks';
-
-export interface PlayerDeckState {
-  deck: Card[]; // 現在のデッキ構成
-  addCard: (card: Card) => void; // デッキにカードを追加
-  removeCard: (cardId: string) => void; // デッキからカードを削除
-  updateCard: (cardId: string, updatedCard: Partial<Card>) => void; // カードの情報を更新
-  resetDeck: () => void; // デッキを初期状態に戻す
-  getDeckSize: () => number; // デッキの枚数を取得
-  getCardById: (cardId: string) => Card | undefined; // IDでカードを検索
-}
 
 export const createPlayerDeckSlice: StateCreator<PlayerDeckState> = (
   set,

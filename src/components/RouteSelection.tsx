@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteType, Stage, StageType } from '@/store/stageRoute';
+import { RouteType, Stage, StageType } from '@/types/stage';
 
 interface RouteSelectionProps {
   stages: { [k in RouteType]?: Stage };
@@ -24,15 +24,15 @@ const getRouteButtonStyle = (type: StageType) => {
 const getRouteLabel = (type: StageType) => {
   switch (type) {
     case 'battle':
-      return '敵との戦闘';
+      return 'Battle with Enemy';
     case 'shop':
-      return 'ショップ';
+      return 'Shop';
     case 'event':
-      return 'イベント';
+      return 'Event';
     case 'boss':
-      return 'ボス戦';
+      return 'Boss Battle';
     default:
-      return '不明';
+      return 'Unknown';
   }
 };
 
@@ -44,7 +44,7 @@ export const RouteSelection: React.FC<RouteSelectionProps> = ({
     <div className='fixed inset-0 flex items-center justify-center'>
       <div className='bg-gray-800 p-6 rounded-lg shadow-xl'>
         <h2 className='text-xl font-bold text-white mb-4'>
-          進むルートを選択してください
+          Please select a route to proceed
         </h2>
         <div className='flex gap-4 justify-center'>
           {Object.keys(stages).map((routeType) => (

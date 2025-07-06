@@ -1,13 +1,13 @@
 import { type ReactNode } from 'react';
 import Square from './Square';
-import { SquareMetaInfo } from '@/store/battleBoard';
+import { SquareMetaInfo } from '@/types/battle';
 
 interface BoardProps {
   size: number;
   squares: ('X' | 'O' | null)[];
   squaresMetaInfo: SquareMetaInfo[];
-  blockedSquares: ('X' | 'O' | null)[]; // どちらがブロックしたかを記録
-  lastPlacedPosition: number | null; // 追加
+  blockedSquares: ('X' | 'O' | null)[]; // Record which player blocked
+  lastPlacedPosition: number | null; // Added
   onSquareClick: (index: number) => void;
 }
 

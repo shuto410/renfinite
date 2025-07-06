@@ -24,15 +24,15 @@ export function PlayerInfo({
         isActive ? 'border-blue-600' : 'border-gray-700'
       } bg-gray-800`}
     >
-      {/* プレイヤー名 */}
+      {/* Player name */}
       <h2 className='text-xl font-bold text-white mb-2'>{name}</h2>
 
-      {/* プレイヤー画像 */}
+      {/* Player image */}
       <div className='relative w-32 h-32 mb-4 rounded-full overflow-hidden border-2 border-gray-600'>
         <Image src={imageSrc} alt={name} fill className='object-cover' />
       </div>
 
-      {/* HP表示 */}
+      {/* HP display */}
       <div className='w-full mb-2'>
         <div className='flex justify-between items-center mb-1'>
           <span className='text-red-400 font-bold'>HP</span>
@@ -46,7 +46,7 @@ export function PlayerInfo({
         </div>
       </div>
 
-      {/* マナ表示 */}
+      {/* Mana display */}
       <div className='w-full'>
         <div className='flex justify-between items-center mb-1'>
           <span className='text-blue-400 font-bold'>Mana</span>

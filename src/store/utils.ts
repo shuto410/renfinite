@@ -4,7 +4,7 @@ import {
   INITIAL_MANA,
 } from '@/constants/decks';
 import { useGameStore } from '.';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 
 export function resetBattle() {
   const setSquares = useGameStore.use.setSquares();
@@ -35,11 +35,11 @@ export function resetBattle() {
   setPlayerHitPoints(80);
   setCpuHitPoints(80);
 
-  // 新しい初期手札とデッキを生成
+  // Generate new initial hand and deck
   const newPlayerInitialDraw = generateInitialHand(playerDeck);
   const newCpuInitialDraw = generateInitialHand(CPU_INITIAL_DECK);
 
-  // デッキと手札をリセット
+  // Reset deck and hand
   setPlayerDeck(newPlayerInitialDraw.remainingDeck);
   setPlayerHand(newPlayerInitialDraw.hand);
   setCpuDeck(newCpuInitialDraw.remainingDeck);
@@ -48,7 +48,7 @@ export function resetBattle() {
   setCpuMana(INITIAL_MANA);
 }
 
-// 初期手札を生成する関数
+// Function to generate initial hand
 function generateInitialHand(deck: Card[]): {
   hand: Card[];
   remainingDeck: Card[];

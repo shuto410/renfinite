@@ -322,24 +322,24 @@ describe('useBattleState', () => {
     it('should update when store state changes', () => {
       const { result, rerender } = renderHook(() => useBattleState());
 
-      // 初期状態
+      // Initial state
       expect(result.current.size).toBe(3);
 
-      // 状態を変更
+      // Change state
       mockStore.use.size.mockReturnValue(5);
       rerender();
 
-      // 更新された状態を確認
+      // Verify updated state
       expect(result.current.size).toBe(5);
     });
 
     it('should update when magic system state changes', () => {
       const { result, rerender } = renderHook(() => useBattleState());
 
-      // 初期状態
+      // Initial state
       expect(result.current.selectedMagic).toBe(null);
 
-      // 状態を変更
+      // Change state
       const newMagic = {
         id: 'test',
         cost: 1,
@@ -352,21 +352,21 @@ describe('useBattleState', () => {
       mockMagicSystem.selectedMagic = newMagic;
       rerender();
 
-      // 更新された状態を確認
+      // Verify updated state
       expect(result.current.selectedMagic).toBe(newMagic);
     });
 
     it('should update when battle board state changes', () => {
       const { result, rerender } = renderHook(() => useBattleState());
 
-      // 初期状態
+      // Initial state
       expect(result.current.winner).toBe(null);
 
-      // 状態を変更
+      // Change state
       mockBattleBoard.finalWinner = 'X';
       rerender();
 
-      // 更新された状態を確認
+      // Verify updated state
       expect(result.current.winner).toBe('X');
     });
   });

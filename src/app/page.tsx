@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { DeckButton } from '@/components/DeckButton';
 import { useGameStore } from '@/store';
-import { RouteType, Stage } from '@/store/stageRoute';
+import { RouteType, Stage } from '@/types/stage';
 import { useState } from 'react';
 
 export default function Home() {
@@ -25,25 +25,10 @@ export default function Home() {
             routes[currentRouteType].stages[currentStageIndex + 1],
         },
   );
-  // React.useEffect(() => {
-  //   setNextStages(
-  //     currentStage.canMoveOtherRoute
-  //       ? {
-  //           A: routes['A'].stages[currentStageIndex + 1],
-  //           B: routes['B'].stages[currentStageIndex + 1],
-  //           C: routes['C'].stages[currentStageIndex + 1],
-  //         }
-  //       : {
-  //           [currentRouteType]:
-  //             routes[currentRouteType].stages[currentStageIndex + 1],
-  //         },
-  //   );
-  // }, []);
   const moveToNextStage = useGameStore.use.moveToNextStage();
 
   const handleRouteSelect = (routeType: RouteType) => {
     const selectedRoute = nextStages[routeType];
-    console.log('Selected route:', selectedRoute);
     switch (selectedRoute?.type) {
       case 'battle':
         router.push(`/battle`);

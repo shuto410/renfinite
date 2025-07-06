@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { calculateWinner } from '@/utils';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 import { applyAllDestroy, applyCrossDestroy } from '../utils/effects';
 import { MAGIC_CARDS } from '@/constants/decks';
 
-// 常に使用可能な汎用魔法カード
+// Generic magic card that is always available
 const GENERIC_MAGIC: Card = {
   ...MAGIC_CARDS.normal,
-  cost: 1, // 通常の石より少し高いコスト
+  cost: 1, // Slightly higher cost than normal stones
   name: 'Basic Stone',
   description: 'Place a stone without any special effect',
   id: 'generic-stone',
@@ -27,20 +27,20 @@ interface UseCPUOpponentProps {
   onMove: (position: number, magic: Card) => void;
 }
 
-// 盤面内かどうかチェック
+// Check if position is within board boundaries
 function isValid(row: number, col: number, size: number): boolean {
   return row >= 0 && row < size && col >= 0 && col < size;
 }
 
-// 方向を定義
+// Define directions
 const DIRECTIONS = [
-  { dr: 0, dc: 1 }, // 横方向
-  { dr: 1, dc: 0 }, // 縦方向
-  { dr: 1, dc: 1 }, // 右下斜め
-  { dr: 1, dc: -1 }, // 左下斜め
+  { dr: 0, dc: 1 }, // Horizontal
+  { dr: 1, dc: 0 }, // Vertical
+  { dr: 1, dc: 1 }, // Diagonal bottom-right
+  { dr: 1, dc: -1 }, // Diagonal bottom-left
 ];
 
-// セルの評価
+// Cell evaluation
 export function evaluateCell(
   squares: ('X' | 'O' | null)[],
   blockedSquares: ('X' | 'O' | null)[],
@@ -57,9 +57,9 @@ export function evaluateCell(
   const col = position % size;
 
   if (squares[position] !== null)
-    return { totalScore: -1, myScore: 0, oppScore: 0, centerBonus: 0 }; // 既に埋まっているセルは無視
+    return { totalScore: -1, myScore: 0, oppScore: 0, centerBonus: 0 }; // Ignore already occupied cells
   if (blockedSquares[position] && blockedSquares[position] !== 'O')
-    return { totalScore: -1, myScore: 0, oppScore: 0, centerBonus: 0 }; // 置けないセルは無視
+    return { totalScore: -1, myScore: 0, oppScore: 0, centerBonus: 0 }; // Ignore cells that cannot be placed
 
   const player = 'O';
   const opponent = 'X';
@@ -67,7 +67,7 @@ export function evaluateCell(
   let oppScore = 0;
 
   function scoreForPattern(count: number, openEnds: number): number {
-    if (count >= winLength) return 1000000; // 勝ち
+    if (count >= winLength) return 1000000; // Win
 
     let score = 0;
     if (count === winLength - 1) {
@@ -164,11 +164,11 @@ export function evaluateCell(
     );
   }
 
-  // 相手のラインはブロックの重要度が高いので、やや重視する
+  // Opponent's lines are more important for blocking, so weight them slightly higher
   const DEFENSE_WEIGHT = 1.5;
   const weightedOppScore = DEFENSE_WEIGHT * oppScore;
 
-  // 中央寄りのボーナス：中心からのマンハッタン距離が短いほど高得点
+  // Center proximity bonus: higher score for positions closer to center
   const CENTER = Math.floor(size / 2);
   const centerDistance = Math.abs(row - CENTER) + Math.abs(col - CENTER);
   const centerBonus = Math.max(0, (size - centerDistance) * 5);
@@ -191,13 +191,10 @@ export function useCPUOpponent({
   onMove,
 }: UseCPUOpponentProps) {
   useEffect(() => {
-    console.log('CPU useEffect:', cpuHand);
     if (!isCPUMode || isPlayerTurn || winner) return;
-    console.log('CPU useEffect2:', cpuHand);
 
     const timer = setTimeout(() => {
-      console.log('CPU useEffect Timer:', cpuHand);
-      // 勝利可能な手を探す
+      // Look for winning moves
       const winningMove = findWinningMove(
         squares,
         blockedSquares,
@@ -211,8 +208,7 @@ export function useCPUOpponent({
         return;
       }
 
-      console.log('CPU useEffect After findWinningMove:', cpuHand);
-      // 相手の勝利を阻止する手を探す
+      // Look for moves to block opponent's winning
       const blockingMove = findBlockingMove(
         squares,
         blockedSquares,
@@ -226,15 +222,12 @@ export function useCPUOpponent({
         return;
       }
 
-      console.log('CPU useEffect After findBlockingMove:', cpuHand);
-
-      // 使用可能な魔法をチェック
+      // Check available magics
       const availableMagics = cpuHand.filter((magic) => magic.cost <= cpuMana);
 
       if (availableMagics.length > 0) {
-        // 魔法を使用
+        // Use magic
         const magics = sortBestMagics(availableMagics);
-        console.log('CPU useEffect After chooseBestMagic:', magics);
         for (const magic of magics) {
           const position = findBestPositionForMagic(
             magic,
@@ -243,18 +236,17 @@ export function useCPUOpponent({
             size,
             winLength,
           );
-          console.log('CPU position:', position);
           if (position !== null) {
             onMove(position, magic);
             return;
           }
         }
         console.log(
-          'CPUは使用可能な魔法がないためスキップします after findBestPositionForMagic',
+          'CPU skips as no available magic after findBestPositionForMagic',
         );
       }
       if (cpuMana >= GENERIC_MAGIC.cost) {
-        // 手札に使える魔法がない場合は汎用魔法を使用
+        // Use generic magic if no usable magic in hand
         const position = findBestPositionForMagic(
           GENERIC_MAGIC,
           squares,
@@ -266,10 +258,9 @@ export function useCPUOpponent({
           onMove(position, GENERIC_MAGIC);
           return;
         }
-        console.log('CPUは使用可能な魔法がないためスキップします 1');
       } else {
-        // 使用可能な魔法がない場合は何もしない
-        console.log('CPUは使用可能な魔法がないためスキップします 2');
+        // Skip if no available magic
+        console.log('CPU skips as no available magic 2');
       }
     }, 1000);
 
@@ -278,7 +269,7 @@ export function useCPUOpponent({
   }, [squares, isPlayerTurn, winner, cpuHand, cpuMana]);
 }
 
-// 勝利可能な手を探す
+// Look for winning moves
 export function findWinningMove(
   squares: ('X' | 'O' | null)[],
   blockedSquares: ('X' | 'O' | null)[],
@@ -290,7 +281,7 @@ export function findWinningMove(
   position: number;
   magic: Card;
 } | null {
-  // 通常の石を置いて勝てる場合
+  // Place normal stone to win
   for (let i = 0; i < squares.length; i++) {
     if (squares[i] || (blockedSquares[i] && blockedSquares[i] !== 'O'))
       continue;
@@ -303,7 +294,7 @@ export function findWinningMove(
     }
   }
 
-  // 魔法を使って勝てる場合を探す
+  // Look for winning moves using magic
   const availableMagics = cpuHand.filter((magic) => magic.cost <= cpuMana);
   for (const magic of availableMagics) {
     const validPositions = findValidPositionsForMagic(
@@ -311,9 +302,8 @@ export function findWinningMove(
       squares,
       blockedSquares,
     );
-    console.log('CPU findWinningMove validPositions:', validPositions);
     for (const pos of validPositions) {
-      // 魔法を使用した場合の結果をシミュレート
+      // Simulate result of using magic
       const testSquares = squares.slice();
       testSquares[pos] = 'O';
       const result = calculateWinner(testSquares, size, winLength);
@@ -326,7 +316,7 @@ export function findWinningMove(
   return null;
 }
 
-// 相手の勝利を阻止する手を探す
+// Look for moves to block opponent's winning
 export function findBlockingMove(
   squares: ('X' | 'O' | null)[],
   blockedSquares: ('X' | 'O' | null)[],
@@ -338,7 +328,7 @@ export function findBlockingMove(
   position: number;
   magic: Card;
 } | null {
-  // 相手が次のターンで勝利できる位置を探す
+  // Look for positions where opponent can win next turn
   for (let i = 0; i < squares.length; i++) {
     if (squares[i] || (blockedSquares[i] && blockedSquares[i] !== 'X'))
       continue;
@@ -347,15 +337,15 @@ export function findBlockingMove(
     testSquares[i] = 'X';
     const result = calculateWinner(testSquares, size, winLength);
     if (result.winner === 'X') {
-      // その位置に自分の石を置いて阻止
+      // Place your stone to block
       return { position: i, magic: GENERIC_MAGIC };
     }
   }
 
-  // 魔法を使って阻止できる場合を探す
+  // Look for blocking moves using magic
   const availableMagics = cpuHand.filter((magic) => magic.cost <= cpuMana);
   for (const magic of availableMagics) {
-    // 魔法に有効な位置を取得
+    // Get effective positions for magic
     const validPositions = findValidPositionsForMagic(
       magic,
       squares,
@@ -363,17 +353,17 @@ export function findBlockingMove(
     );
 
     if (magic.type === 'replace') {
-      // replace魔法は相手の石を置き換えられる
+      // replace magic can be replaced by opponent
       // TBD
       return null;
     } else {
-      // その他の魔法も有効な位置に配置して阻止できるか確認
+      // Check if other magics can be placed to block
       for (const position of validPositions) {
         const testSquares = squares.slice();
         testSquares[position] = 'X';
         const result = calculateWinner(testSquares, size, winLength);
         if (result.winner === 'X') {
-          // 相手の勝利を阻止できる手を見つけた
+          // Found blocking move
           return { position, magic };
         }
       }
@@ -383,13 +373,13 @@ export function findBlockingMove(
   return null;
 }
 
-// 最適な魔法を選択
+// Select best magic
 export function sortBestMagics(availableMagics: Card[]): Card[] {
-  // コストの高い順にソートして、最初の魔法を選択
+  // Sort by cost, select first magic
   return availableMagics.sort((a, b) => b.cost - a.cost);
 }
 
-// 魔法に有効な位置を見つける
+// Get effective positions for magic
 export function findValidPositionsForMagic(
   magic: Card,
   squares: ('X' | 'O' | null)[],
@@ -401,14 +391,12 @@ export function findValidPositionsForMagic(
     case 'replace':
       validPositions = squares
         .map((square, i) => {
-          console.log('CPU replace:', square, i, blockedSquares[i]);
           return square === 'X' &&
             (!blockedSquares[i] || blockedSquares[i] === 'O')
             ? i
             : -1;
         })
         .filter((i) => i !== -1);
-      console.log('CPU replace validPositions:', validPositions);
       break;
 
     case 'blockUp':
@@ -430,7 +418,7 @@ export function findValidPositionsForMagic(
   return validPositions;
 }
 
-// 魔法に最適な位置を見つける
+// Find best position for magic
 export function findBestPositionForMagic(
   magic: Card,
   squares: ('X' | 'O' | null)[],
@@ -438,16 +426,15 @@ export function findBestPositionForMagic(
   size: number,
   winLength: number,
 ): number | null {
-  // 魔法の種類に応じて有効な位置を取得
+  // Get effective positions based on magic type
   const validPositions = findValidPositionsForMagic(
     magic,
     squares,
     blockedSquares,
   );
-  console.log('CPU findBestPositionForMagic validPositions:', validPositions);
   if (validPositions.length === 0) return null;
 
-  // 各位置を評価
+  // Evaluate each position
   let bestScore = -Infinity;
   let bestPosition = null;
 
@@ -455,7 +442,7 @@ export function findBestPositionForMagic(
     const row = Math.floor(position / size);
     const col = position % size;
 
-    // 魔法の種類に応じて評価
+    // Evaluate based on magic type
     let score = evaluateCell(
       squares,
       blockedSquares,
@@ -464,21 +451,21 @@ export function findBestPositionForMagic(
       winLength,
     ).totalScore;
 
-    // 特定の魔法タイプに対する追加評価
+    // Additional evaluation for specific magic type
     if (magic.type.startsWith('block')) {
-      // ブロック魔法は相手の石の近くに置くと効果的
+      // Block magics are effective when placed near opponent's stones
       for (const { dr, dc } of DIRECTIONS) {
         const r = row + dr;
         const c = col + dc;
         if (isValid(r, c, size) && squares[r * size + c] === 'X') {
-          score += 100; // 相手の石の隣に置くボーナス
+          score += 100; // Bonus for placing near opponent's stone
         }
       }
     } else if (magic.type === 'replace') {
-      // replace魔法は相手の石を置き換える
-      score += 200; // 直接相手の石を取れるのでボーナス
+      // replace magic can directly replace opponent's stone
+      score += 200; // Bonus for directly replacing opponent's stone
     } else if (magic.type === 'crossDestroy') {
-      // crossDestroy魔法は十字方向の石を破壊する
+      // crossDestroy magic destroys stones in cross direction
       let destroyCount = 0;
       const targets = applyCrossDestroy(position, size);
       for (const pos of targets) {
@@ -486,7 +473,7 @@ export function findBestPositionForMagic(
           destroyCount++;
         }
       }
-      score += destroyCount * 300; // 相手の石を多く破壊できるほど高評価
+      score += destroyCount * 300; // Higher score for destroying more opponent's stones
     } else if (magic.type === 'allDestroy') {
       let destroyCount = 0;
       const targets = applyAllDestroy(position, size);
@@ -495,7 +482,7 @@ export function findBestPositionForMagic(
           destroyCount++;
         }
       }
-      score += destroyCount * 300; // 相手の石を多く破壊できるほど高評価
+      score += destroyCount * 300; // Higher score for destroying more opponent's stones
     } else if (magic.type === 'allBlock') {
       let blockCount = 0;
       const targets = applyAllDestroy(position, size);
@@ -504,10 +491,10 @@ export function findBestPositionForMagic(
           blockCount++;
         }
       }
-      score += blockCount * 300; // 相手の石を多くブロックできるほど高評価
+      score += blockCount * 300; // Higher score for blocking more opponent's stones
     } else if (magic.type === 'normal' || magic.id === 'generic-stone') {
-      // 通常の石は連を作りやすい場所に置く
-      // 既に評価済みなので追加処理なし
+      // Normal stone is placed in easy-to-connect locations
+      // Already evaluated, no additional processing
     }
 
     if (score > bestScore) {
@@ -519,7 +506,7 @@ export function findBestPositionForMagic(
   return bestPosition;
 }
 
-// テスト用にエクスポート（本番環境では使用しない）
+// Export for testing (do not use in production)
 export const _internalsForTesting = {
   isValid,
   DIRECTIONS,

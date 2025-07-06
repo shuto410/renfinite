@@ -1,3 +1,20 @@
+/**
+ * Square meta information
+ */
+export interface SquareMetaInfo {
+  attackPower: number | null;
+}
+
+/**
+ * Move record
+ */
+export interface MoveRecord {
+  player: 'X' | 'O';
+  position: number;
+  magic: Card | null;
+  timestamp: number;
+}
+
 export type BlockDirection = 'up' | 'right' | 'down' | 'left' | 'all' | null;
 
 export type MagicType =
@@ -52,11 +69,9 @@ export type CardRarity =
   | 'superRare'
   | 'legendary';
 
-export interface Player {
+export interface PlayerMagicStatus {
   deck: Card[];
   hand: Card[];
   mana: number;
   discardPile: Card[];
 }
-
-export type NodeType = 'enemy' | 'event' | 'shop' | 'boss';

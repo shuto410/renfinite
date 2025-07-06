@@ -1,44 +1,13 @@
 import { MAGIC_CARDS } from '@/constants/decks';
-import { BlockDirection, MagicType } from '@/types';
+import { BlockDirection, MagicType } from '@/types/battle';
+import { SquareMetaInfo } from '@/types/battle';
+import { BattleBoardState } from '@/types/store';
 import {
   applyAllDestroy,
   applyBlockEffect,
   applyCrossDestroy,
 } from '@/utils/effects';
 import { StateCreator } from 'zustand';
-
-export interface SquareMetaInfo {
-  attackPower: number | null;
-}
-
-export interface BattleBoardState {
-  squares: ('X' | 'O' | null)[];
-  squaresMetaInfo: SquareMetaInfo[];
-  xIsNext: boolean;
-  blockedSquares: ('X' | 'O' | null)[];
-  lastPlacedPosition: number | null;
-  playerRenCount: number;
-  cpuRenCount: number;
-  playerHitPoints: number;
-  cpuHitPoints: number;
-  finalWinner: 'X' | 'O' | null;
-  setSquares: (newSquares: ('X' | 'O' | null)[]) => void;
-  setSquaresMetaInfo: (newSquaresMetaInfo: SquareMetaInfo[]) => void;
-  setXIsNext: (newXIsNext: boolean) => void;
-  setBlockedSquares: (newBlockedSquares: ('X' | 'O' | null)[]) => void;
-  setLastPlacedPosition: (newLastPlacedPosition: number | null) => void;
-  setPlayerRenCount: (newPlayerRenCount: number) => void;
-  setCpuRenCount: (newCpuRenCount: number) => void;
-  setFinalWinner: (newFinalWinner: 'X' | 'O' | null) => void;
-  endTurn: () => void;
-  setPlayerHitPoints: (newPlayerHitPoints: number) => void;
-  setCpuHitPoints: (newCpuHitPoints: number) => void;
-  placePiece: (position: number, magicType?: MagicType) => void;
-  placeBlock: (position: number, blockDirection: BlockDirection) => void;
-  destroyPiece: (position: number) => void;
-  crossDestroyAndPlace: (position: number, magicType?: MagicType) => void;
-  allDestroyAndPlace: (position: number, magicType?: MagicType) => void;
-}
 export const createBattleBoardSlice: StateCreator<BattleBoardState> = (
   set,
 ) => ({

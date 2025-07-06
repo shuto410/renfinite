@@ -1,22 +1,6 @@
-import { Card } from '@/types';
+import { MoveRecord } from '@/types/battle';
+import { MoveHistoryState } from '@/types/store';
 import { StateCreator } from 'zustand';
-
-export interface MoveRecord {
-  player: 'X' | 'O';
-  position: number;
-  magic: Card | null;
-  timestamp: number;
-}
-
-export interface MoveHistoryState {
-  moveRecords: MoveRecord[];
-  addMoveRecord: (
-    player: 'X' | 'O',
-    position: number,
-    magic: Card | null,
-  ) => void;
-  clearMoveRecords: () => void;
-}
 
 export const createMoveHistorySlice: StateCreator<MoveHistoryState> = (
   set,

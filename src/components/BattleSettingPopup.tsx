@@ -32,7 +32,7 @@ export const BattleSettingPopup: React.FC<BattleSettingPopupProps> = ({
     <div className='fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 rounded-lg'>
       <div className='bg-gray-900 rounded-lg w-full max-w-2xl '>
         <div className='sticky top-0 bg-gray-900 p-4 border-b border-gray-800 flex justify-between items-center rounded-lg'>
-          <h2 className='text-xl font-bold text-white'>戦闘設定</h2>
+          <h2 className='text-xl font-bold text-white'>Battle Settings</h2>
           <button
             onClick={onClose}
             className='text-gray-400 hover:text-white transition-colors'

@@ -1,56 +1,6 @@
 import { StateCreator } from 'zustand';
-
-export type StageType = 'start' | 'shop' | 'battle' | 'event' | 'boss';
-
-type BaseStage = {
-  canMoveOtherRoute?: boolean;
-};
-
-type StartStage = {
-  type: 'start';
-  canMoveOtherRoute: true;
-};
-
-type BattleStage = {
-  type: 'battle';
-  enemyLevel: 'test' | 'easy' | 'medium' | 'hard';
-};
-
-type ShopStage = {
-  type: 'shop';
-  // shopItems: ShopItem[];
-};
-
-type EventStage = {
-  type: 'event';
-  // eventType: '' | 'special';
-};
-
-type BossStage = {
-  type: 'boss';
-};
-
-export type Stage =
-  | BaseStage & (StartStage | BattleStage | ShopStage | EventStage | BossStage);
-
-export type RouteType = 'A' | 'B' | 'C';
-
-export type Route = {
-  stages: Stage[];
-};
-
-export type Routes = {
-  [key in RouteType]: Route;
-};
-
-export interface StageRouteState {
-  routes: Routes;
-  currentRouteType: RouteType;
-  currentStageIndex: number;
-  setCurrentRouteType: (route: RouteType) => void;
-  setCurrentStageIndex: (stage: number) => void;
-  moveToNextStage: (routeType?: RouteType) => void;
-}
+import { Routes, RouteType } from '@/types/stage';
+import { StageRouteState } from '@/types/store';
 
 const ROUTES: Routes = {
   A: {

@@ -1,12 +1,12 @@
-import { Card, CardType } from '@/types';
+import { Card, CardType } from '@/types/battle';
 
-// 魔法カードの基本定義
+// Basic definition of magic cards
 export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   blockUp: {
     type: 'blockUp',
     cardType: 'blockUp',
-    name: '上ブロック',
-    description: '上方向にブロックを設置',
+    name: 'Up Block',
+    description: 'Place a block in the upward direction',
     cost: 1,
     endTurn: true,
     attackPower: 5,
@@ -16,8 +16,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   blockRight: {
     type: 'blockRight',
     cardType: 'blockRight',
-    name: '右ブロック',
-    description: '右方向にブロックを設置',
+    name: 'Right Block',
+    description: 'Place a block in the right direction',
     cost: 1,
     endTurn: true,
     attackPower: 5,
@@ -27,8 +27,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   blockDown: {
     type: 'blockDown',
     cardType: 'blockDown',
-    name: '下ブロック',
-    description: '下方向にブロックを設置',
+    name: 'Down Block',
+    description: 'Place a block in the downward direction',
     cost: 1,
     endTurn: true,
     attackPower: 5,
@@ -38,8 +38,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   blockLeft: {
     type: 'blockLeft',
     cardType: 'blockLeft',
-    name: '左ブロック',
-    description: '左方向にブロックを設置',
+    name: 'Left Block',
+    description: 'Place a block in the left direction',
     cost: 1,
     endTurn: true,
     attackPower: 5,
@@ -49,8 +49,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   block: {
     type: 'block',
     cardType: 'block',
-    name: 'ブロック',
-    description: '指定のマスをブロック',
+    name: 'Block',
+    description: 'Block the specified square',
     cost: 2,
     endTurn: false,
     rarity: 'common',
@@ -59,8 +59,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   replace: {
     type: 'replace',
     cardType: 'replace',
-    name: '置換',
-    description: '相手の石を自分の石に置き換える',
+    name: 'Replace',
+    description: "Replace opponent's stone with your own",
     cost: 2,
     endTurn: true,
     attackPower: 5,
@@ -70,8 +70,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   crossDestroy: {
     type: 'crossDestroy',
     cardType: 'crossDestroy',
-    name: '十字破壊',
-    description: '十字方向のブロックを破壊',
+    name: 'Cross Destroy',
+    description: 'Destroy blocks in cross directions',
     cost: 3,
     endTurn: true,
     attackPower: 5,
@@ -81,8 +81,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   normal: {
     type: 'normal',
     cardType: 'normal',
-    name: '通常石',
-    description: '通常の石を置く',
+    name: 'Normal Stone',
+    description: 'Place a normal stone',
     cost: 0,
     endTurn: true,
     attackPower: 10,
@@ -92,8 +92,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   blockUpLight: {
     type: 'blockUp',
     cardType: 'blockUpLight',
-    name: '上ブロック',
-    description: '上方向にブロックを設置',
+    name: 'Up Block',
+    description: 'Place a block in the upward direction',
     cost: 0,
     endTurn: true,
     attackPower: 5,
@@ -102,8 +102,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   blockRightLight: {
     type: 'blockRight',
     cardType: 'blockRightLight',
-    name: '右ブロック',
-    description: '右方向にブロックを設置',
+    name: 'Right Block',
+    description: 'Place a block in the right direction',
     cost: 0,
     endTurn: true,
     attackPower: 5,
@@ -112,8 +112,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   blockDownLight: {
     type: 'blockDown',
     cardType: 'blockDownLight',
-    name: '下ブロック',
-    description: '下方向にブロックを設置',
+    name: 'Down Block',
+    description: 'Place a block in the downward direction',
     cost: 0,
     endTurn: true,
     attackPower: 5,
@@ -122,8 +122,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   blockLeftLight: {
     type: 'blockLeft',
     cardType: 'blockLeftLight',
-    name: '左ブロック',
-    description: '左方向にブロックを設置',
+    name: 'Left Block',
+    description: 'Place a block in the left direction',
     cost: 0,
     endTurn: true,
     attackPower: 5,
@@ -132,8 +132,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   replaceLight: {
     type: 'replace',
     cardType: 'replaceLight',
-    name: '置換',
-    description: '相手の石を自分の石に置き換える',
+    name: 'Replace',
+    description: "Replace opponent's stone with your own",
     cost: 1,
     endTurn: true,
     attackPower: 5,
@@ -142,8 +142,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   destroy: {
     type: 'destroy',
     cardType: 'destroy',
-    name: '破壊',
-    description: '指定のマスを破壊',
+    name: 'Destroy',
+    description: 'Destroy the specified square',
     cost: 3,
     endTurn: false,
     rarity: 'uncommon',
@@ -152,8 +152,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   crossDestroyLight: {
     type: 'crossDestroy',
     cardType: 'crossDestroyLight',
-    name: '十字破壊',
-    description: '十字方向のブロックを破壊',
+    name: 'Cross Destroy',
+    description: 'Destroy blocks in cross directions',
     cost: 2,
     endTurn: true,
     attackPower: 10,
@@ -162,8 +162,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   allDestroy: {
     type: 'allDestroy',
     cardType: 'allDestroy',
-    name: '全破壊',
-    description: '全ての石を破壊',
+    name: 'All Destroy',
+    description: 'Destroy all stones',
     cost: 3,
     endTurn: true,
     attackPower: 10,
@@ -173,8 +173,8 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   allBlock: {
     type: 'allBlock',
     cardType: 'allBlock',
-    name: '全ブロック',
-    description: '全てのマスをブロック',
+    name: 'All Block',
+    description: 'Block all squares',
     cost: 3,
     endTurn: true,
     attackPower: 10,
@@ -183,7 +183,7 @@ export const MAGIC_CARDS: Record<CardType, Omit<Card, 'id'>> = {
   },
 };
 
-// IDを自動で割り振る関数
+// Function to automatically assign IDs
 function createMagicCard(type: CardType, prefix: string, index: number): Card {
   return {
     ...MAGIC_CARDS[type],
@@ -191,14 +191,14 @@ function createMagicCard(type: CardType, prefix: string, index: number): Card {
   };
 }
 
-// デッキを生成する関数
+// Function to generate deck
 function createDeck(prefix: string, cardTypes: CardType[]): Card[] {
   return cardTypes.map((type, index) =>
     createMagicCard(type, prefix, index + 1),
   );
 }
 
-// プレイヤー（X）の初期デッキ定義
+// Initial deck definition for Player (X)
 const PLAYER_DECK_TYPES: CardType[] = [
   'normal',
   'normal',
@@ -212,7 +212,7 @@ const PLAYER_DECK_TYPES: CardType[] = [
   'blockUp',
 ];
 
-// CPU（O）の初期デッキ定義
+// Initial deck definition for CPU (O)
 const CPU_DECK_TYPES: CardType[] = [
   'blockUp',
   'blockRight',
@@ -232,23 +232,23 @@ const CPU_DECK_TYPES: CardType[] = [
   'allBlock',
 ];
 
-// プレイヤー（X）の初期デッキ
+// Initial deck for Player (X)
 export const PLAYER_INITIAL_DECK: Card[] = createDeck('p', PLAYER_DECK_TYPES);
 
-// CPU（O）の初期デッキ
+// Initial deck for CPU (O)
 export const CPU_INITIAL_DECK: Card[] = createDeck('c', CPU_DECK_TYPES);
 
-// 初期手札の枚数
+// Initial hand size
 export const INITIAL_HAND_SIZE = 2;
 
-// 最大手札枚数
+// Maximum hand size
 export const MAX_HAND_SIZE = 5;
 
-// 各ターンのマナ回復量
+// Mana regeneration per turn
 export const MANA_REGENERATION_PER_TURN = 1;
 
-// 最大マナ
+// Maximum mana
 export const MAX_MANA = 10;
 
-// 初期マナ
+// Initial mana
 export const INITIAL_MANA = 0;

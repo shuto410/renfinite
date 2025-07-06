@@ -1,5 +1,5 @@
 'use client';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 import { useEffect, useState } from 'react';
 import { MagicCard } from './MagicCard';
 
@@ -58,15 +58,15 @@ export function HandCards({
   return (
     <div className='mb-4 w-full max-w-4xl'>
       <div className='flex flex-col gap-4'>
-        {/* 手札のカード */}
+        {/* Hand cards */}
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2'>
           {hand.map((magic) => renderMagicCard(magic))}
         </div>
 
-        {/* 区切り線 */}
+        {/* Divider line */}
         {/* <div className='border-t border-gray-300 my-2'></div> */}
 
-        {/* 常に使用可能な汎用魔法カード */}
+        {/* Generic magic card that is always available */}
         {/* <div className='flex justify-center'>
           {renderMagicCard(GENERIC_MAGIC, true)}
         </div> */}

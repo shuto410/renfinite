@@ -3,16 +3,16 @@ import {
   useCPUOpponent,
 } from '../../hooks/useCPUOpponent';
 import { calculateWinner } from '@/utils';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 import { MAGIC_CARDS } from '@/constants/decks';
 import { renderHook } from '@testing-library/react';
 
-// テスト用のモック
+// Mock for testing
 jest.mock('@/utils', () => ({
   calculateWinner: jest.fn(),
 }));
 
-// 内部関数をテスト用に取得
+// Get internal functions for testing
 const { isValid, DIRECTIONS, GENERIC_MAGIC } = _internalsForTesting;
 
 describe('useCPUOpponent utility functions', () => {
@@ -35,13 +35,13 @@ describe('useCPUOpponent utility functions', () => {
     test('should define 4 cardinal directions', () => {
       expect(DIRECTIONS.length).toBe(4);
 
-      // 横方向
+      // Horizontal
       expect(DIRECTIONS).toContainEqual({ dr: 0, dc: 1 });
-      // 縦方向
+      // Vertical
       expect(DIRECTIONS).toContainEqual({ dr: 1, dc: 0 });
-      // 右下斜め
+      // Diagonal bottom-right
       expect(DIRECTIONS).toContainEqual({ dr: 1, dc: 1 });
-      // 左下斜め
+      // Diagonal bottom-left
       expect(DIRECTIONS).toContainEqual({ dr: 1, dc: -1 });
     });
   });
@@ -55,15 +55,15 @@ describe('useCPUOpponent utility functions', () => {
   });
 });
 
-// モジュール関数のテストはfindWinningMove、findBlockingMove、chooseBestMagic、findValidPositionsForMagic、findBestPositionForMagicなど
+// Module function tests include findWinningMove, findBlockingMove, chooseBestMagic, findValidPositionsForMagic, findBestPositionForMagic, etc.
 
-// これらの関数は直接exportされていないため、useCPUOpponentフック内にあるためテストするには、
-// useEffectを使わずに直接これらの関数をexportするか、別途テスト用にexportする必要があります。
-// または、フックのテスト用にテストベッドを作成します。
+// These functions are not directly exported, so to test them, we need to either
+// export them directly without using useEffect, or export them separately for testing.
+// Or create a test bed for hook testing.
 
-// useCPUOpponentフック自体のテスト
+// Test for useCPUOpponent hook itself
 describe('useCPUOpponent hook', () => {
-  // フックの基本的な動作テスト
+  // Basic hook behavior tests
   describe('basic behavior', () => {
     const onMoveMock = jest.fn();
 
@@ -77,7 +77,7 @@ describe('useCPUOpponent hook', () => {
       jest.useRealTimers();
     });
 
-    // テスト: CPUモードでない場合は何もしない
+    // Test: Do nothing when not in CPU mode
     test('should do nothing when not in CPU mode', () => {
       const squares = [null, null, null, null, 'O', null, null, null, null] as (
         | 'X'
@@ -91,7 +91,7 @@ describe('useCPUOpponent hook', () => {
         blockedSquares,
         size: 3,
         winLength: 3,
-        isCPUMode: false, // CPUモードでない
+        isCPUMode: false, // Not in CPU mode
         cpuLevel: 1,
         isPlayerTurn: false,
         winner: null,
@@ -103,11 +103,11 @@ describe('useCPUOpponent hook', () => {
       renderHook(() => useCPUOpponent(props));
       jest.advanceTimersByTime(1500);
 
-      // CPUモードでないので何も実行されないことを確認
+      // Confirm nothing is executed when not in CPU mode
       expect(onMoveMock).not.toHaveBeenCalled();
     });
 
-    // テスト: プレイヤーのターンの場合は何もしない
+    // Test: Do nothing when it is player's turn
     test("should do nothing when it is player's turn", () => {
       const squares = [null, null, null, null, 'O', null, null, null, null] as (
         | 'X'
@@ -123,7 +123,7 @@ describe('useCPUOpponent hook', () => {
         winLength: 3,
         isCPUMode: true,
         cpuLevel: 1,
-        isPlayerTurn: true, // プレイヤーのターン
+        isPlayerTurn: true, // Player's turn
         winner: null,
         cpuHand: [],
         cpuMana: 3,
@@ -133,11 +133,11 @@ describe('useCPUOpponent hook', () => {
       renderHook(() => useCPUOpponent(props));
       jest.advanceTimersByTime(1500);
 
-      // プレイヤーのターンなので何も実行されないことを確認
+      // Confirm nothing is executed on player's turn
       expect(onMoveMock).not.toHaveBeenCalled();
     });
 
-    // テスト: 勝者がいる場合は何もしない
+    // Test: Do nothing when there is a winner
     test('should do nothing when there is a winner', () => {
       const squares = [null, null, null, null, 'O', null, null, null, null] as (
         | 'X'
@@ -163,12 +163,12 @@ describe('useCPUOpponent hook', () => {
       renderHook(() => useCPUOpponent(props));
       jest.advanceTimersByTime(1500);
 
-      // 勝者がいるので何も実行されないことを確認
+      // Confirm nothing is executed when there is a winner
       expect(onMoveMock).not.toHaveBeenCalled();
     });
   });
 
-  // CPUの手番の決定ロジックテスト
+  // CPU move decision logic tests
   describe('CPU move decision', () => {
     const onMoveMock = jest.fn();
 
@@ -193,7 +193,7 @@ describe('useCPUOpponent hook', () => {
       )[];
       const blockedSquares = Array(9).fill(null) as ('X' | 'O' | null)[];
 
-      // 勝利条件のモック: OOO が並ぶと勝利
+      // Mock victory condition: OOO in a row wins
       (calculateWinner as jest.Mock).mockImplementation((testSquares) => {
         const topRow = testSquares.slice(0, 3);
         if (topRow.filter((s: string | null) => s === 'O').length === 3)
@@ -218,7 +218,7 @@ describe('useCPUOpponent hook', () => {
       renderHook(() => useCPUOpponent(props));
       jest.advanceTimersByTime(1500);
 
-      // 位置2に置くことで勝利できる
+      // Can win by placing at position 2
       expect(onMoveMock).toHaveBeenCalledWith(2, expect.any(Object));
     });
 
@@ -233,14 +233,14 @@ describe('useCPUOpponent hook', () => {
       )[];
       const blockedSquares = Array(9).fill(null) as ('X' | 'O' | null)[];
 
-      // プレイヤーの勝利条件とCPUの勝利条件をモック
+      // Mock player and CPU victory conditions
       (calculateWinner as jest.Mock).mockImplementation((testSquares) => {
-        // プレイヤーの勝利条件
+        // Player victory condition
         const topRow = testSquares.slice(0, 3);
         if (topRow.filter((s: string | null) => s === 'X').length === 3)
           return { winner: 'X', winningLine: [0, 1, 2] };
 
-        // どの手を打ってもCPUは勝利できない
+        // CPU cannot win with any move
         return { winner: null, winningLine: null };
       });
 
@@ -261,7 +261,7 @@ describe('useCPUOpponent hook', () => {
       renderHook(() => useCPUOpponent(props));
       jest.advanceTimersByTime(1500);
 
-      // 勝利手がないので、プレイヤーの勝利をブロックする位置2に置く
+      // No winning move, so block player's victory at position 2
       expect(onMoveMock).toHaveBeenCalledWith(2, expect.any(Object));
     });
 
@@ -276,12 +276,12 @@ describe('useCPUOpponent hook', () => {
       )[];
       const blockedSquares = Array(9).fill(null) as ('X' | 'O' | null)[];
 
-      // プレイヤーとCPUどちらも勝利できないようにモック
+      // Mock so neither player nor CPU can win
       (calculateWinner as jest.Mock).mockImplementation(() => {
         return { winner: null, winningLine: null };
       });
 
-      // 魔法カードを手札に持っている
+      // Have magic card in hand
       const testMagic = {
         ...MAGIC_CARDS.normal,
         id: 'test-magic',
@@ -289,7 +289,7 @@ describe('useCPUOpponent hook', () => {
         type: 'normal' as const,
       };
       const cpuHand: Card[] = [testMagic];
-      const cpuMana = 3; // 十分なマナ
+      const cpuMana = 3; // Sufficient mana
 
       const props = {
         squares,
@@ -309,7 +309,7 @@ describe('useCPUOpponent hook', () => {
 
       jest.advanceTimersByTime(1500);
 
-      // 魔法を使って位置が選ばれることを確認
+      // Confirm position is chosen using magic
       expect(onMoveMock).toHaveBeenCalled();
       expect(onMoveMock.mock.calls[0][1]).toBe(testMagic);
     });
@@ -325,14 +325,14 @@ describe('useCPUOpponent hook', () => {
       )[];
       const blockedSquares = Array(9).fill(null) as ('X' | 'O' | null)[];
 
-      // プレイヤーとCPUどちらも勝利できないようにモック
+      // Mock so neither player nor CPU can win
       (calculateWinner as jest.Mock).mockImplementation(() => {
         return { winner: null, winningLine: null };
       });
 
-      // 空の手札でテスト
+      // Test with empty hand
       const cpuHand: Card[] = [];
-      const cpuMana = 3; // 十分なマナ
+      const cpuMana = 3; // Sufficient mana
 
       const props = {
         squares,
@@ -352,7 +352,7 @@ describe('useCPUOpponent hook', () => {
 
       jest.advanceTimersByTime(1500);
 
-      // 汎用魔法を使うことを確認
+      // Confirm generic magic is used
       expect(onMoveMock).toHaveBeenCalled();
       expect(onMoveMock.mock.calls[0][1]).toEqual(GENERIC_MAGIC);
     });
@@ -368,7 +368,7 @@ describe('useCPUOpponent hook', () => {
       )[];
       const blockedSquares = Array(9).fill(null) as ('X' | 'O' | null)[];
 
-      // 高コストな魔法カード
+      // High cost magic card
       const expensiveMagic = {
         ...MAGIC_CARDS.normal,
         id: 'expensive-magic',
@@ -376,9 +376,9 @@ describe('useCPUOpponent hook', () => {
         type: 'normal' as const,
       };
       const cpuHand: Card[] = [expensiveMagic];
-      const cpuMana = 0; // マナ不足
+      const cpuMana = 0; // Insufficient mana
 
-      // プレイヤーとCPUどちらも勝利できないようにモック
+      // Mock so neither player nor CPU can win
       (calculateWinner as jest.Mock).mockImplementation(() => {
         return { winner: null, winningLine: null };
       });
@@ -397,7 +397,7 @@ describe('useCPUOpponent hook', () => {
         onMove: onMoveMock,
       };
 
-      // コンソールログをモック
+      // Mock console log
       const originalConsoleLog = console.log;
       console.log = jest.fn();
 
@@ -405,10 +405,10 @@ describe('useCPUOpponent hook', () => {
 
       jest.advanceTimersByTime(1500);
 
-      // コンソールログを元に戻す
+      // Restore console log
       console.log = originalConsoleLog;
 
-      // マナ不足で何も実行されないことを確認
+      // Confirm nothing is executed due to insufficient mana
       expect(onMoveMock).not.toHaveBeenCalled();
     });
 
@@ -423,7 +423,7 @@ describe('useCPUOpponent hook', () => {
       )[];
       const blockedSquares = Array(9).fill(null) as ('X' | 'O' | null)[];
 
-      // 複数の魔法カード
+      // Multiple magic cards
       const lowCostMagic = {
         ...MAGIC_CARDS.normal,
         id: 'low-cost-magic',
@@ -437,9 +437,9 @@ describe('useCPUOpponent hook', () => {
         type: 'normal' as const,
       };
       const cpuHand: Card[] = [lowCostMagic, highCostMagic];
-      const cpuMana = 4; // 両方使用可能なマナ
+      const cpuMana = 4; // Mana sufficient for both
 
-      // プレイヤーとCPUどちらも勝利できないようにモック
+      // Mock so neither player nor CPU can win
       (calculateWinner as jest.Mock).mockImplementation(() => {
         return { winner: null, winningLine: null };
       });
@@ -462,13 +462,13 @@ describe('useCPUOpponent hook', () => {
 
       jest.advanceTimersByTime(1500);
 
-      // コスト高の魔法が選ばれることを確認
+      // Confirm higher cost magic is chosen
       expect(onMoveMock).toHaveBeenCalled();
       expect(onMoveMock.mock.calls[0][1]).toBe(highCostMagic);
     });
   });
 
-  // 特殊な魔法効果のテスト
+  // Special magic effect tests
   describe('special magic effects', () => {
     const onMoveMock = jest.fn();
 
@@ -501,7 +501,7 @@ describe('useCPUOpponent hook', () => {
       const cpuHand: Card[] = [replaceMagic];
       const cpuMana = 3;
 
-      // 勝利条件なし
+      // No victory condition
       (calculateWinner as jest.Mock).mockReturnValue({
         winner: null,
         winningLine: null,
@@ -525,12 +525,12 @@ describe('useCPUOpponent hook', () => {
 
       jest.advanceTimersByTime(1500);
 
-      // replace魔法を使用していることを確認
+      // Confirm replace magic is used
       expect(onMoveMock).toHaveBeenCalled();
       const magic = onMoveMock.mock.calls[0][1];
       expect(magic).toBe(replaceMagic);
 
-      // Xの位置（1, 3, 5のいずれか）に置いていることを確認
+      // Confirm placement at X positions (1, 3, 5)
       const position = onMoveMock.mock.calls[0][0];
       expect([1, 3, 5]).toContain(position);
     });
@@ -554,7 +554,7 @@ describe('useCPUOpponent hook', () => {
       const cpuHand: Card[] = [crossDestroyMagic];
       const cpuMana = 3;
 
-      // 勝利条件なし
+      // No victory condition
       (calculateWinner as jest.Mock).mockReturnValue({
         winner: null,
         winningLine: null,
@@ -578,11 +578,11 @@ describe('useCPUOpponent hook', () => {
 
       jest.advanceTimersByTime(1500);
 
-      // crossDestroy魔法を使用していることを確認
+      // Confirm crossDestroy magic is used
       expect(onMoveMock).toHaveBeenCalled();
       expect(onMoveMock.mock.calls[0][1]).toBe(crossDestroyMagic);
 
-      // 中央（位置4）に置くと最も多くのXを破壊できる
+      // Center position (4) can destroy the most X stones
       expect(onMoveMock.mock.calls[0][0]).toBe(4);
     });
   });

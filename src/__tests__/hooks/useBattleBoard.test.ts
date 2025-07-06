@@ -27,7 +27,7 @@ describe('useBattleBoard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    // setter用のモック関数を個別に用意
+    // Prepare individual mock functions for setters
     setXIsNextMock = jest.fn();
     setSquaresMock = jest.fn();
     setSquaresMetaInfoMock = jest.fn();
@@ -103,14 +103,14 @@ describe('useBattleBoard', () => {
     it('should update when store state changes', () => {
       const { result, rerender } = renderHook(() => useBattleBoard());
 
-      // 初期状態
+      // Initial state
       expect(result.current.xIsNext).toBe(true);
 
-      // 状態を変更
+      // Change state
       mockStore.use.xIsNext.mockReturnValue(false);
       rerender();
 
-      // 更新された状態を確認
+      // Verify updated state
       expect(result.current.xIsNext).toBe(false);
     });
 

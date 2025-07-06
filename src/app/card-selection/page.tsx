@@ -3,7 +3,7 @@
 import { CardSelectionPopup } from '@/components/CardSelectionPopup';
 import { DeckButton } from '@/components/DeckButton';
 import { useGameStore } from '@/store';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 import { useRouter } from 'next/navigation';
 
 export default function CardSelection() {
@@ -11,10 +11,9 @@ export default function CardSelection() {
   const addCard = useGameStore.use.addCard();
 
   const handleCardSelect = (card: Card) => {
-    // ここで選択したカードの処理を行う
+    // Process selected card here
     addCard(card);
-    console.log('Selected card:', card);
-    // 次の画面へ遷移
+    // Navigate to next screen
     router.push('/');
   };
 

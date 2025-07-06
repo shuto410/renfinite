@@ -1,15 +1,5 @@
 import { StateCreator } from 'zustand';
-
-export interface GameConfigState {
-  size: number;
-  winLength: number;
-  isCPUMode: boolean;
-  cpuLevel: number;
-  setSize: (newSize: number) => void;
-  setWinLength: (newWinLength: number) => void;
-  setIsCPUMode: (newIsCPUMode: boolean) => void;
-  setCPULevel: (newCPULevel: number) => void;
-}
+import { GameConfigState } from '@/types/store';
 
 export const createGameConfigSlice: StateCreator<GameConfigState> = (set) => ({
   size: 9,

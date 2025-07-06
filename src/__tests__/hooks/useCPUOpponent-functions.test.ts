@@ -6,7 +6,7 @@ import {
   findValidPositionsForMagic,
   findBestPositionForMagic,
 } from '@/hooks/useCPUOpponent';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 import { MAGIC_CARDS } from '@/constants/decks';
 
 // Mock the calculateWinner function

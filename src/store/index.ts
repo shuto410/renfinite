@@ -1,22 +1,15 @@
 import { create } from 'zustand';
-import { createBattleBoardSlice, BattleBoardState } from './battleBoard';
-import { GameConfigState, createGameConfigSlice } from './gameConfig';
+import { createBattleBoardSlice } from './battleBoard';
+import { createGameConfigSlice } from './gameConfig';
 import { StoreApi, UseBoundStore } from 'zustand';
-import { createMagicSystemSlice, MagicSystemState } from './magicSystem';
-import { MoveHistoryState, createMoveHistorySlice } from './moveHistory';
-import { createPlayerDeckSlice, PlayerDeckState } from './playerDeckSlice';
-import { createItemsSlice, ItemsState } from './items';
-import { createStageRouteSlice, StageRouteState } from './stageRoute';
+import { createMagicSystemSlice } from './magicSystem';
+import { createMoveHistorySlice } from './moveHistory';
+import { createPlayerDeckSlice } from './playerDeckSlice';
+import { createItemsSlice } from './items';
+import { createStageRouteSlice } from './stageRoute';
+import { StoreState } from '@/types/store';
 
-const gameStore = create<
-  GameConfigState &
-    BattleBoardState &
-    MagicSystemState &
-    MoveHistoryState &
-    PlayerDeckState &
-    ItemsState &
-    StageRouteState
->((...a) => ({
+const gameStore = create<StoreState>((...a) => ({
   ...createGameConfigSlice(...a),
   ...createBattleBoardSlice(...a),
   ...createMagicSystemSlice(...a),

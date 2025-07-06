@@ -1,4 +1,4 @@
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 
 interface GameStatusProps {
   winner: 'X' | 'O' | null;
@@ -31,7 +31,7 @@ export function GameStatusMessage({
 
   return (
     <div className='max-w-2xl'>
-      {/* ゲーム状態 */}
+      {/* Game status */}
       <div className='bg-gray-800 rounded-lg p-2 mb-2 shadow-lg'>
         <p className='text-sm text-gray-300'>{status}</p>
       </div>

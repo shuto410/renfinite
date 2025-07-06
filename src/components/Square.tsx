@@ -1,6 +1,6 @@
 interface SquareProps {
   value: 'X' | 'O' | null;
-  blockedBy?: 'X' | 'O' | null; // どちらのプレイヤーがブロックしたか
+  blockedBy?: 'X' | 'O' | null; // Which player blocked
   isLastPlaced: boolean;
   attackPower: number | null;
   onSquareClick: () => void;
@@ -13,7 +13,7 @@ export default function Square({
   attackPower,
   onSquareClick,
 }: SquareProps) {
-  // 自分がブロックしたマスは置ける
+  // Squares blocked by yourself can be placed
   const isBlockedSquare = blockedBy !== null;
 
   return (
@@ -34,7 +34,7 @@ export default function Square({
             } opacity-10`}
           ></div>
 
-          {/* ブロックのパターンを表示 */}
+          {/* Display block pattern */}
           <div className='absolute inset-0 pointer-events-none'>
             <div
               className='w-full h-full'

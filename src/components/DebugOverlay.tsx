@@ -32,13 +32,13 @@
 // }) => {
 //   const [isVisible, setIsVisible] = useState(false);
 
-//   // 全セルの評価を計算
+//   // Calculate evaluation for all cells
 //   const evaluations: CellEvaluation[] = [];
 //   for (let i = 0; i < squares.length; i++) {
 //     if (squares[i] || (blockedSquares[i] && blockedSquares[i] !== 'O'))
 //       continue;
 //     const evaluation = evaluateCell(squares, blockedSquares, i);
-//     if (evaluation.totalScore === -1) continue; // 無効な位置はスキップ
+//     if (evaluation.totalScore === -1) continue; // Skip invalid positions
 
 //     evaluations.push({
 //       position: i,
@@ -49,22 +49,22 @@
 //     });
 //   }
 
-//   // スコアの絶対値で降順ソート
+//   // Sort by absolute score in descending order
 //   const sortedEvaluations = [...evaluations].sort(
 //     (a, b) => Math.abs(b.totalScore) - Math.abs(a.totalScore),
 //   );
 
-//   // 位置からスコアを取得するマップを作成
+//   // Create a map from position to score
 //   const positionToEval = new Map(
 //     evaluations.map((evaluation) => [evaluation.position, evaluation]),
 //   );
 
-//   // スコアの正規化（色分け用）
+//   // Normalize scores (for color coding)
 //   const maxAbsScore = Math.max(
 //     ...evaluations.map((evaluation) => Math.abs(evaluation.totalScore)),
 //   );
 
-//   // スコアに基づいて背景色を決定
+//   // Determine background color based on score
 //   const getBackgroundColor = (score: number) => {
 //     const normalizedScore = score / maxAbsScore;
 //     const intensity = Math.min(Math.abs(normalizedScore) * 255, 255);
@@ -75,7 +75,7 @@
 //     }
 //   };
 
-//   // スコアに基づいてテキスト色を決定
+//   // Determine text color based on score
 //   const getTextColor = (score: number) => {
 //     const normalizedScore = Math.abs(score / maxAbsScore);
 //     return normalizedScore > 0.5 ? 'white' : 'black';

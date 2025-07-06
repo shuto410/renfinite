@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 import {
   Tooltip,
   TooltipContent,
@@ -59,15 +59,15 @@ export function MagicCard({
       }`}
       onClick={onClick}
     >
-      {/* カードのフチ */}
+      {/* Card border */}
       {/* <div className='absolute inset-0 rounded-lg border-[14px] border-gray-400 z-10'></div> */}
       {/* <div className='absolute inset-0 rounded-lg bg-gradient-to-br from-gray-600 to-gray-900 p-[2px] -z-10'></div> */}
 
-      {/* カードの内容 */}
+      {/* Card content */}
       <div
         className={`relative ${sizeClasses[size].padding} border-2 border-gray-900 bg-gray-600 rounded-lg`}
       >
-        {/* カード名とコスト */}
+        {/* Card name and cost */}
         <div
           className={`flex justify-between items-center bg-indigo-950 ${sizeClasses[size].header}`}
         >
@@ -81,7 +81,7 @@ export function MagicCard({
           </div>
         </div>
 
-        {/* カード画像 */}
+        {/* Card image */}
         <div className='relative w-full aspect-square'>
           <Image
             src={imageSrc || '/images/block_stone.jpg'}
@@ -92,7 +92,7 @@ export function MagicCard({
         </div>
 
         <div className={`bg-slate-50 ${sizeClasses[size].padding}`}>
-          {/* レアリティ表示 */}
+          {/* Rarity display */}
           {/* <div
             className={`text-gray-700 text-sm mb-2 ${
               rarityColors[rarity || 'common']
@@ -101,7 +101,7 @@ export function MagicCard({
             {rarity?.toUpperCase() || 'COMMON'}
           </div> */}
 
-          {/* 説明文ツールチップ */}
+          {/* Description tooltip */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

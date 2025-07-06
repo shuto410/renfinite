@@ -36,7 +36,7 @@ describe('useMagicSystem', () => {
     jest.clearAllMocks();
     jest.useFakeTimers();
 
-    // setter用のモック関数を個別に用意
+    // Prepare individual mock functions for setters
     setPlayerDeckMock = jest.fn();
     setCpuDeckMock = jest.fn();
     setPlayerHandMock = jest.fn();
@@ -122,12 +122,12 @@ describe('useMagicSystem', () => {
     });
   });
 
-  describe('useEffect - 手札補充', () => {
+  describe('useEffect - Hand Replenishment', () => {
     it('should not draw cards when there is a final winner', () => {
       mockStore.use.finalWinner.mockReturnValue('X');
       renderHook(() => useMagicSystem());
 
-      // 手札補充のuseEffectが実行されないことを確認
+      // Confirm hand replenishment useEffect is not executed
       expect(setPlayerHandMock).not.toHaveBeenCalled();
       expect(setPlayerDeckMock).not.toHaveBeenCalled();
     });
@@ -180,7 +180,7 @@ describe('useMagicSystem', () => {
     });
   });
 
-  describe('useEffect - マナ補充', () => {
+  describe('useEffect - Mana Regeneration', () => {
     it('should not regenerate mana when there is a final winner', () => {
       mockStore.use.finalWinner.mockReturnValue('X');
       renderHook(() => useMagicSystem());
@@ -262,7 +262,7 @@ describe('useMagicSystem', () => {
 
       renderHook(() => useMagicSystem());
 
-      // drawCardは内部関数なので、useEffectを通じてテスト
+      // drawCard is an internal function, so test through useEffect
       mockStore.use.xIsNext.mockReturnValue(true);
 
       expect(mockStore.use.setPlayerHand).toHaveBeenCalled();
@@ -324,7 +324,7 @@ describe('useMagicSystem', () => {
       mockStore.use.cpuRenCount.mockReturnValue(0);
 
       const { result } = renderHook(() => useMagicSystem());
-      jest.clearAllMocks(); // 副作用リセット
+      jest.clearAllMocks(); // Reset side effects
 
       act(() => {
         result.current.castMagic(mockMagic, 0);
@@ -348,7 +348,7 @@ describe('useMagicSystem', () => {
       mockStore.use.cpuRenCount.mockReturnValue(0);
 
       const { result } = renderHook(() => useMagicSystem());
-      jest.clearAllMocks(); // 副作用リセット
+      jest.clearAllMocks(); // Reset side effects
 
       act(() => {
         result.current.castMagic(mockMagic, -1);
@@ -549,10 +549,10 @@ describe('useMagicSystem', () => {
     it('should update when store state changes', () => {
       const { result, rerender } = renderHook(() => useMagicSystem());
 
-      // 初期状態
+      // Initial state
       expect(result.current.selectedMagic).toBe(null);
 
-      // 状態を変更
+      // Change state
       const newMagic = {
         id: 'test',
         cost: 1,
@@ -565,7 +565,7 @@ describe('useMagicSystem', () => {
       mockStore.use.selectedMagic.mockReturnValue(newMagic);
       rerender();
 
-      // 更新された状態を確認
+      // Verify updated state
       expect(result.current.selectedMagic).toBe(newMagic);
     });
 

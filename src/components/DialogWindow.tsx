@@ -20,7 +20,7 @@ export const DialogWindow: React.FC<DialogWindowProps> = ({
       onClick={onClick}
     >
       <div className='w-full max-w-4xl relative'>
-        {/* キャラクター画像 */}
+        {/* Character image */}
         <div className='absolute bottom-full left-0 mb-4 w-64 h-96'>
           <Image
             src={characterImage}
@@ -30,21 +30,21 @@ export const DialogWindow: React.FC<DialogWindowProps> = ({
           />
         </div>
 
-        {/* 会話ウィンドウ */}
+        {/* Dialogue window */}
         <div className='bg-gray-900/90 border-2 border-cyan-500 rounded-lg p-6 backdrop-blur-sm'>
-          {/* 装飾的な要素 */}
+          {/* Decorative elements */}
           <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-cyan-500' />
           <div className='absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-cyan-500' />
 
-          {/* キャラクター名 */}
+          {/* Character name */}
           <div className='text-cyan-400 text-xl font-bold mb-2'>
             {characterName}
           </div>
 
-          {/* 会話テキスト */}
+          {/* Dialogue text */}
           <div className='text-white text-lg leading-relaxed'>{dialogue}</div>
 
-          {/* クリックを促すインジケーター */}
+          {/* Click indicator */}
           <div className='absolute bottom-4 right-4 text-cyan-400 animate-pulse'>
             Click to continue...
           </div>

@@ -1,4 +1,4 @@
-import type { BlockDirection } from '@/types';
+import type { BlockDirection } from '@/types/battle';
 
 export function applyBlockEffect(
   position: number,
@@ -63,12 +63,12 @@ export function applyCrossDestroy(position: number, size: number): number[] {
   const col = position % size;
   const targets: number[] = [];
 
-  // 斜め四方向のチェック
+  // Check diagonal four directions
   const directions = [
-    [-1, -1], // 左上
-    [-1, 1], // 右上
-    [1, -1], // 左下
-    [1, 1], // 右下
+    [-1, -1], // Top-left
+    [-1, 1], // Top-right
+    [1, -1], // Bottom-left
+    [1, 1], // Bottom-right
   ];
 
   for (const [dr, dc] of directions) {
@@ -87,16 +87,16 @@ export function applyAllDestroy(position: number, size: number): number[] {
   const col = position % size;
   const targets: number[] = [];
 
-  // 斜め四方向のチェック
+  // Check diagonal four directions
   const directions = [
-    [-1, -1], // 左上
-    [-1, 1], // 右上
-    [1, -1], // 左下
-    [1, 1], // 右下
-    [0, -1], // 左
-    [0, 1], // 右
-    [-1, 0], // 上
-    [1, 0], // 下
+    [-1, -1], // Top-left
+    [-1, 1], // Top-right
+    [1, -1], // Bottom-left
+    [1, 1], // Bottom-right
+    [0, -1], // Left
+    [0, 1], // Right
+    [-1, 0], // Up
+    [1, 0], // Down
   ];
 
   for (const [dr, dc] of directions) {

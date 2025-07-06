@@ -4,7 +4,7 @@ import {
   MAX_MANA,
 } from '@/constants/decks';
 import { useGameStore } from '@/store';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 import { useEffect } from 'react';
 
 export function useMagicSystem() {
@@ -33,12 +33,12 @@ export function useMagicSystem() {
   const crossDestroyAndPlace = useGameStore.use.crossDestroyAndPlace();
   const allDestroyAndPlace = useGameStore.use.allDestroyAndPlace();
 
-  // ターン開始時に手札を補充
+  // Replenish hand at turn start
   useEffect(() => {
-    // 勝者がいる場合は手札を補充しない
+    // Don't replenish hand if there's a winner
     if (finalWinner) return;
 
-    // 現在のプレイヤーの手札が最大数より少ない場合に補充
+    // Replenish if current player's hand is below maximum
     const currentState = xIsNext ? playerState : cpuState;
     if (
       currentState.hand.length < MAX_HAND_SIZE &&
@@ -50,26 +50,26 @@ export function useMagicSystem() {
       currentState.deck.length === 0 &&
       currentState.discardPile.length > 0
     ) {
-      // デッキが空で捨て札があれば、捨て札をデッキに戻してシャッフル
+      // If deck is empty and discard pile exists, shuffle discard pile back to deck
       if (xIsNext) {
         reshufflePlayerDiscard();
-        // シャッフル後にカードを引く
+        // Draw card after shuffling
         setTimeout(() => drawCard(true), 0);
       } else {
         reshuffleCpuDiscard();
-        // シャッフル後にカードを引く
+        // Draw card after shuffling
         setTimeout(() => drawCard(false), 0);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xIsNext, finalWinner]);
 
-  // ターン開始時にマナを1補充
+  // Replenish mana by 1 at turn start
   useEffect(() => {
-    // 勝者がいる場合はマナを補充しない
+    // Don't replenish mana if there's a winner
     if (finalWinner) return;
 
-    // 現在のプレイヤーのマナを補充
+    // Replenish current player's mana
     if (xIsNext) {
       setPlayerMana(
         Math.min(
@@ -88,7 +88,7 @@ export function useMagicSystem() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xIsNext, finalWinner]);
 
-  // 手札を補充
+  // Replenish hand
   function drawCard(isPlayer: boolean) {
     const state = isPlayer ? playerState : cpuState;
     const setHand = isPlayer ? setPlayerHand : setCpuHand;
@@ -106,9 +106,8 @@ export function useMagicSystem() {
     }
   }
 
-  // 魔法を使用
+  // Cast magic
   function castMagic(magic: Card, position: number) {
-    console.log('castMagic: ', magic, position);
     const isPlayer = xIsNext;
     const state = isPlayer ? playerState : cpuState;
     const setHand = isPlayer ? setPlayerHand : setCpuHand;
@@ -116,15 +115,15 @@ export function useMagicSystem() {
     const addToDiscard = isPlayer ? addToPlayerDiscard : addToCpuDiscard;
 
     if (state.mana >= magic.cost && position >= 0) {
-      // 手札から削除して捨て札に追加
-      const newHand = state.hand.filter((m) => m !== magic);
+      // Remove from hand and add to discard pile
+      const newHand = state.hand.filter((m: Card) => m !== magic);
       setHand(newHand);
       setMana(state.mana - magic.cost);
 
-      // 使用したカードを捨て札に追加
+      // Add used card to discard pile
       addToDiscard([magic]);
 
-      // 効果を適用
+      // Apply effect
       switch (magic.type) {
         case 'block':
           placeBlock(position, null);

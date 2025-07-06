@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 import { MAGIC_CARDS } from '@/constants/decks';
 import { MagicCard } from './MagicCard';
 
@@ -14,7 +14,7 @@ export const CardSelectionPopup: React.FC<CardSelectionPopupProps> = ({
   onClose,
   isOpen,
 }) => {
-  // ランダムに3枚のカードを選択し、IDを付与
+  // Randomly select 3 cards and assign IDs
   const [availableCards, setAvailableCards] = useState<Card[]>([]);
 
   useEffect(() => {

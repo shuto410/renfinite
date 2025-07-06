@@ -1,6 +1,6 @@
 import React from 'react';
 import { positionToCoordinates } from '@/utils/boardUtils';
-import { Card } from '@/types';
+import { Card } from '@/types/battle';
 import { useGameStore } from '@/store';
 
 export interface MoveRecord {
@@ -21,7 +21,7 @@ const MoveHistory: React.FC<MoveHistoryProps> = ({
 }) => {
   const moves = useGameStore((state) => state.moveRecords);
 
-  // 最新の動きを最初に表示するために逆順にする
+  // Reverse order to display latest moves first
   const recentMoves = [...moves].reverse().slice(0, maxDisplayed);
 
   return (
@@ -35,7 +35,7 @@ const MoveHistory: React.FC<MoveHistoryProps> = ({
             const isPlayer = move.player === 'X';
             const playerName = isPlayer ? 'Player' : 'CPU';
             const coords = positionToCoordinates(move.position, boardSize);
-            // const magicName = move.magic ? move.magic.name : '通常の石';
+            // const magicName = move.magic ? move.magic.name : 'Normal Stone';
             const magicName = move.magic?.cardType;
 
             return (

@@ -34,19 +34,19 @@ export function useBattleBoard() {
 
   const { winner, completedRen } = calculateWinner(squares, size, winLength);
 
-  // 蓮が完成したら石を削除し、プレイヤーのカウントを増やす
+  // Remove stones and increase player count when ren is completed
   useEffect(() => {
     if (completedRen && completedRen.length > 0 && winner) {
-      // winnerは'X'または'O'で確定
+      // winner is determined as 'X' or 'O'
       const totalRenAttackPower = completedRen.reduce((acc, position) => {
         return acc + (squaresMetaInfo[position].attackPower ?? 0);
       }, 0);
 
-      // 少し遅延を入れて、プレイヤーが蓮の完成を確認できるようにする
+      // Add slight delay so player can confirm ren completion
       const timer = setTimeout(() => {
         const newSquares = [...squares];
         const newSquaresMetaInfo = [...squaresMetaInfo];
-        // 蓮を構成する石を削除
+        // Remove stones that form the ren
         completedRen.forEach((position) => {
           newSquares[position] = null;
           newSquaresMetaInfo[position] = { attackPower: null };
@@ -54,14 +54,14 @@ export function useBattleBoard() {
         setSquares(newSquares);
         setSquaresMetaInfo(newSquaresMetaInfo);
 
-        // 対応するプレイヤーの連カウントを増やす
+        // Increase ren count for corresponding player
         if (winner === 'X') {
           const newCount = playerRenCount + 1;
           setPlayerRenCount(newCount);
           const newCpuHitPoints = cpuHitPoints - totalRenAttackPower;
           setCpuHitPoints(newCpuHitPoints > 0 ? newCpuHitPoints : 0);
 
-          // 勝利条件を確認
+          // Check victory condition
           if (newCpuHitPoints <= 0) {
             setFinalWinner('X');
           }
@@ -71,12 +71,12 @@ export function useBattleBoard() {
           const newPlayerHitPoints = playerHitPoints - totalRenAttackPower;
           setPlayerHitPoints(newPlayerHitPoints > 0 ? newPlayerHitPoints : 0);
 
-          // 勝利条件を確認
+          // Check victory condition
           if (newPlayerHitPoints <= 0) {
             setFinalWinner('O');
           }
         }
-      }, 500); // 500ミリ秒の遅延
+      }, 500); // 500ms delay
 
       return () => clearTimeout(timer);
     }
